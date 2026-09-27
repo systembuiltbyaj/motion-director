@@ -1,0 +1,10 @@
+{
+  "voice": "am_michael",
+  "speed": 1.0,
+  "dir": "vo",
+  "lines": [
+    { "id": "a1", "text": "Your agent picks the right tools, and wires every step." },
+    { "id": "a2", "text": "Leads get qualified, routed, and followed up. Automatically." },
+    { "id": "a3", "text": "So what are you waiting for?" }
+  ]
+}

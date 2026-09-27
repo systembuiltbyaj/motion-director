@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Brand System — aj-motion-style</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/aj-motion.js"></script>
+    <link rel="stylesheet" href="assets/aj-motion.css" />
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-latin.woff2") format("woff2"); font-weight: 100 900; }
+      @font-face { font-family: "Instrument Serif"; src: url("assets/fonts/instrument-serif-latin.woff2") format("woff2"); font-weight: 400; font-style: normal; }
+      body { margin: 0; background: #000; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #000; color: #fff; font-family: "Inter", sans-serif; }
+      .scene { position: absolute; inset: 0; overflow: hidden; }
+      .serif { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; letter-spacing: -0.01em; }
+      .blue { background: var(--aj-accent); }
+      .caps { font-weight: 900; text-transform: uppercase; letter-spacing: -0.045em; line-height: 0.88; }
+      .mark { background: #fff; -webkit-mask: url("assets/media/aj-mark-dark.webp") center / contain no-repeat; mask: url("assets/media/aj-mark-dark.webp") center / contain no-repeat; }
+      .label { font-size: 22px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.8; }
+
+      /* S1 */
+      #s1-img { position: absolute; inset: 0; }
+      /* ocean-texture.webp is a text-free crop of the Casa Lume hero, so nothing competes with the title. */
+      #s1-img img { width: 100%; height: 100%; object-fit: cover; filter: blur(2px) saturate(1.1); }
+      #s1-img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.45)); }
+      #s1-title { position: absolute; left: 0; right: 0; top: 310px; text-align: center; font-size: 200px; line-height: 1.02; }
+      #s1-sign { position: absolute; left: 0; right: 0; bottom: 70px; display: flex; justify-content: center; align-items: center; gap: 14px; font-size: 30px; font-weight: 600; }
+      #s1-sign .mark { width: 40px; height: 40px; }
+
+      /* S2 */
+      #s2-small { position: absolute; left: 0; right: 0; top: 440px; text-align: center; font-size: 64px; }
+      #s2-line { position: absolute; left: 0; right: 0; top: 480px; margin: 0; text-align: center; font-size: 84px; }
+
+      /* S3 */
+      .giant-wrap { position: absolute; left: 0; top: 250px; white-space: nowrap; }
+      .giant { font-size: 470px; font-weight: 900; letter-spacing: -0.05em; line-height: 0.9; text-transform: uppercase; background: url("assets/media/ocean-texture.webp") center / cover; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+      .reflect { position: absolute; left: 0; top: 540px; transform: scaleY(-1); opacity: 0.18; -webkit-mask: linear-gradient(transparent 40%, #000); mask: linear-gradient(transparent 40%, #000); }
+
+      /* S4 tiles */
+      .tiles { position: absolute; inset: 60px; display: grid; grid-template-columns: 1fr 1.25fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 16px; }
+      .tile { position: relative; border-radius: 6px; padding: 26px; box-sizing: border-box; overflow: hidden; }
+      .tile.white { background: #fff; color: #000; }
+      .tile.dark { background: #15161c; }
+      .t-logo { grid-row: span 2; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 26px; }
+      .t-logo .mark { width: 180px; height: 180px; }
+      .t-logo span { font-size: 40px; font-weight: 700; letter-spacing: -0.02em; }
+      .swatches { position: absolute; left: 26px; right: 26px; bottom: 26px; top: 80px; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; }
+      .swatches div { border-radius: 4px; padding: 14px; font-size: 20px; font-weight: 600; display: flex; align-items: flex-end; }
+      .t-type p { position: absolute; left: 26px; right: 26px; bottom: 26px; margin: 0; font-size: 58px; line-height: 1.02; }
+      .timing { position: absolute; left: 26px; right: 26px; bottom: 26px; display: flex; gap: 12px; }
+      .timing div { flex: 1; height: 110px; border: 2px solid currentColor; border-radius: 6px; display: grid; place-items: center; font-size: 30px; font-weight: 600; }
+      .t-curve svg { position: absolute; inset: 70px 30px 30px; width: calc(100% - 60px); height: calc(100% - 100px); }
+      .t-curve path { fill: none; stroke: #fff; stroke-width: 4; }
+
+      /* S5 easing */
+      #s5-blue { position: absolute; left: 0; top: 0; width: 1080px; height: 1080px; }
+      #s5-blue .label { position: absolute; left: 0; right: 0; top: 90px; text-align: center; }
+      #curve-svg { position: absolute; left: 140px; top: 190px; width: 800px; height: 700px; overflow: visible; }
+      #curve { fill: none; stroke: #fff; stroke-width: 6; stroke-linecap: round; }
+      .handle { stroke: rgba(255, 255, 255, 0.5); stroke-width: 2; }
+      .knot { fill: #fff; }
+      #dot { position: absolute; left: 0; top: 0; width: 40px; height: 40px; border-radius: 50%; background: #fff; box-shadow: 0 0 30px rgba(255, 255, 255, 0.8); }
+      #s5-text { position: absolute; left: 1180px; top: 440px; width: 520px; margin: 0; font-size: 72px; line-height: 1.1; }
+
+      /* S6 motion grid */
+      #s6-cap { position: absolute; left: 0; right: 0; top: 110px; margin: 0; text-align: center; font-size: 52px; }
+      #grid-frame { position: absolute; left: 460px; top: 290px; width: 1000px; height: 560px; transform-origin: 50% 50%; }
+      #grid-frame svg { position: absolute; inset: 0; overflow: visible; }
+      .bp { fill: none; stroke: rgba(255, 255, 255, 0.6); stroke-width: 2; }
+      .bp.dash { stroke-dasharray: 6 8; }
+      #grid-word { position: absolute; left: 50%; top: 50%; padding: 22px 60px; background: #fff; color: var(--aj-accent); border-radius: 10px; font-size: 76px; }
+
+      /* S7 spec */
+      #spec { position: absolute; left: 110px; top: 110px; }
+      #spec div { font-weight: 800; letter-spacing: -0.04em; line-height: 1; margin-bottom: 18px; white-space: nowrap; }
+      #spec small { font-weight: 500; opacity: 0.7; margin-left: 24px; letter-spacing: -0.01em; }
+      #spec-card { position: absolute; right: 90px; top: 110px; width: 620px; height: 860px; border-radius: 8px; padding: 40px; box-sizing: border-box; }
+      #spec-card h3 { margin: 0; font-size: 58px; font-weight: 800; letter-spacing: -0.03em; }
+      #spec-card p { position: absolute; left: 40px; right: 40px; bottom: 40px; margin: 0; font-size: 64px; line-height: 1.05; }
+
+      /* S8 pins */
+      #pins { position: absolute; inset: 0; transform-origin: 50% 50%; }
+      .pin { position: absolute; display: flex; align-items: center; gap: 18px; white-space: nowrap; }
+      .pin svg { flex: none; }
+      .pin svg path { fill: #fff; }
+
+      /* S9 billboard */
+      #hall { position: absolute; inset: 0; perspective: 1400px; background: radial-gradient(80% 60% at 50% 50%, #1a1d26, #000); }
+      .beams { position: absolute; inset: 0; }
+      .beams line { stroke: rgba(255, 255, 255, 0.12); stroke-width: 2; }
+      #board { position: absolute; left: 460px; top: 260px; width: 1000px; height: 560px; border: 18px solid #0d0f14; border-radius: 6px; box-shadow: 0 40px 120px rgba(31, 91, 255, 0.35); overflow: hidden; transform: rotateY(-18deg); }
+      #board img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+      #board .over { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(31, 91, 255, 0.85), rgba(31, 91, 255, 0.2)); display: flex; align-items: center; padding-left: 60px; }
+      #board .caps { font-size: 120px; }
+
+      /* S10 */
+      #s10 .blue { position: absolute; inset: 0; }
+      #s10-grid { position: absolute; inset: 0; }
+      #s10-grid line { stroke: rgba(255, 255, 255, 0.14); stroke-width: 1.5; }
+      #lock { position: absolute; left: 0; right: 0; top: 330px; display: flex; flex-direction: column; align-items: center; gap: 26px; }
+      #lock .mark { width: 200px; height: 200px; }
+      #lock-name { font-size: 110px; font-weight: 800; letter-spacing: -0.04em; }
+      #lock-role { font-size: 48px; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="20.5" data-aj-flavor="electric-system">
+      <section id="s1" class="scene clip" data-start="0" data-duration="2.3">
+        <div id="s1-img"><img src="assets/media/ocean-texture.webp" alt="" /></div>
+        <div id="s1-title" class="caps"><div id="t1">Our systems.</div><div id="t2">In motion.</div></div>
+        <div id="s1-sign"><span class="mark"></span>System Built by AJ</div>
+      </section>
+
+      <section id="s2" class="scene clip" data-start="2.3" data-duration="1.7">
+        <div id="s2-small" class="caps">Our systems. In motion.</div>
+        <p id="s2-line" class="serif">Built for operators, by an operator.</p>
+      </section>
+
+      <section id="s3" class="scene clip" data-start="3.95" data-duration="1.75">
+        <div id="giant-wrap" class="giant-wrap"><div class="giant">Automate</div><div class="giant reflect">Automate</div></div>
+      </section>
+
+      <section id="s4" class="scene clip" data-start="5.65" data-duration="2.6">
+        <div id="tiles" class="tiles">
+          <div class="tile blue t-logo" id="tl-1"><div class="label" style="position: absolute; top: 26px; left: 26px">Logo</div><span class="mark"></span><span>System Built by AJ</span></div>
+          <div class="tile dark" id="tl-2"><div class="label">Colour</div><div class="swatches"><div class="blue">Electric</div><div style="background: #fff; color: #000">White</div><div style="background: #000; border: 1px solid #333">Night</div></div></div>
+          <div class="tile blue t-type" id="tl-3"><div class="label">Typography</div><p class="serif">Inspired by how businesses actually run.</p></div>
+          <div class="tile white" id="tl-4"><div class="label">Timing</div><div class="timing"><div>1.00</div><div>2.00</div><div>3.00</div></div></div>
+          <div class="tile blue t-curve" id="tl-5"><div class="label">Easing</div><svg viewBox="0 0 300 200" preserveAspectRatio="none"><path d="M 10 190 C 120 190, 130 10, 290 10" /></svg></div>
+          <div class="tile white" id="tl-6" style="grid-column: span 2; display: flex; align-items: flex-end"><div class="caps" style="font-size: 110px; color: var(--aj-accent)">Built to scale</div></div>
+        </div>
+      </section>
+
+      <section id="s5" class="scene clip" data-start="8.2" data-duration="2.25">
+        <div id="s5-blue" class="blue">
+          <div class="label">Emphasized easing</div>
+          <svg id="curve-svg" viewBox="0 0 800 700">
+            <line class="handle" x1="40" y1="660" x2="420" y2="660" /><line class="handle" x1="760" y1="40" x2="430" y2="40" />
+            <path id="curve" d="M 40 660 C 420 660, 430 40, 760 40" />
+            <circle class="knot" cx="40" cy="660" r="10" /><circle class="knot" cx="760" cy="40" r="10" />
+          </svg>
+          <div id="dot"></div>
+        </div>
+        <p id="s5-text" class="serif">dynamic out / extended in</p>
+      </section>
+
+      <section id="s6" class="scene clip blue" data-start="10.45" data-duration="2.4">
+        <p id="s6-cap" class="serif">A grid that holds every moving part.</p>
+        <div id="grid-frame">
+          <svg viewBox="0 0 1000 560">
+            <rect class="bp" x="0" y="0" width="1000" height="560" />
+            <rect class="bp dash" x="60" y="50" width="880" height="460" />
+            <rect class="bp" x="170" y="130" width="660" height="300" />
+            <line class="bp dash" x1="0" y1="280" x2="1000" y2="280" />
+            <line class="bp dash" x1="500" y1="0" x2="500" y2="560" />
+          </svg>
+          <div id="grid-word" class="caps">Systematic</div>
+        </div>
+      </section>
+
+      <section id="s7" class="scene clip" data-start="12.85" data-duration="2.0">
+        <div id="spec">
+          <div style="font-size: 150px">Display 0<small style="font-size: 44px">240/90% −5%</small></div>
+          <div style="font-size: 116px">Display 1<small style="font-size: 38px">192/90% −5%</small></div>
+          <div style="font-size: 88px">Display 2<small style="font-size: 32px">144/90% −4%</small></div>
+          <div style="font-size: 64px">Display 3<small style="font-size: 26px">96/95% −3%</small></div>
+          <div style="font-size: 46px">Display 4<small style="font-size: 22px">72/100% −2%</small></div>
+        </div>
+        <div id="spec-card" class="blue"><h3>Inter<br />Instrument Serif</h3><p class="serif">Typography drives motion in the frame.</p></div>
+      </section>
+
+      <section id="s8" class="scene clip" data-start="14.85" data-duration="2.1">
+        <div id="pins">
+          <div class="pin serif" id="pin-main" style="left: 700px; top: 450px; font-size: 130px"></div>
+          <div class="pin serif" style="left: 180px; top: 150px; font-size: 70px"></div>
+          <div class="pin serif" style="left: 1320px; top: 190px; font-size: 56px"></div>
+          <div class="pin serif" style="left: 260px; top: 800px; font-size: 62px"></div>
+          <div class="pin serif" style="left: 1260px; top: 760px; font-size: 80px"></div>
+          <div class="pin serif" style="left: 1500px; top: 470px; font-size: 44px"></div>
+        </div>
+      </section>
+
+      <section id="s9" class="scene clip" data-start="16.9" data-duration="2.0">
+        <div id="hall">
+          <svg class="beams" viewBox="0 0 1920 1080">
+            <line x1="0" y1="0" x2="760" y2="420" /><line x1="1920" y1="0" x2="1160" y2="420" />
+            <line x1="0" y1="1080" x2="760" y2="660" /><line x1="1920" y1="1080" x2="1160" y2="660" />
+            <line x1="0" y1="300" x2="760" y2="480" /><line x1="1920" y1="300" x2="1160" y2="480" />
+          </svg>
+          <div id="board"><img src="assets/media/ghl-full-system-build.webp" alt="" /><div class="over"><div class="caps">Built<br />to scale</div></div></div>
+        </div>
+      </section>
+
+      <section id="s10" class="scene clip" data-start="18.85" data-duration="1.65">
+        <div class="blue"></div>
+        <svg id="s10-grid" viewBox="0 0 1920 1080">
+          <line x1="0" y1="270" x2="1920" y2="270" /><line x1="0" y1="810" x2="1920" y2="810" />
+          <line x1="480" y1="0" x2="480" y2="1080" /><line x1="1440" y1="0" x2="1440" y2="1080" />
+        </svg>
+        <div id="lock"><span class="mark" id="lock-mark"></span><div id="lock-name">System Built by AJ</div><div id="lock-role" class="serif">AI Automation &amp; Business Systems Engineer</div></div>
+      </section>
+
+      <audio id="mix" src="assets/audio/mix.wav" data-start="0" data-duration="20.5" data-volume="1"></audio>
+    </div>
+
+    <script>
+      const PIN = '<svg width="0.7em" height="0.9em" viewBox="0 0 24 32"><path d="M12 0C5.4 0 0 5.3 0 11.9 0 20.8 12 32 12 32s12-11.2 12-20.1C24 5.3 18.6 0 12 0zm0 17a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/></svg>';
+      const PIN_NAMES = ["GoHighLevel", "n8n", "Zapier", "Supabase", "Claude", "Stripe"];
+
+      // Point on the cubic Bézier used by #curve (viewBox units), for a seek-safe dot ride.
+      function bezier(t) {
+        const p = [[40, 660], [420, 660], [430, 40], [760, 40]];
+        const u = 1 - t;
+        const k = [u * u * u, 3 * u * u * t, 3 * u * t * t, t * t * t];
+        return [0, 1].map((axis) => k.reduce((sum, w, i) => sum + w * p[i][axis], 0));
+      }
+
+      function build() {
+        document.querySelectorAll(".pin").forEach((pin, i) => { pin.innerHTML = PIN + `<span>${PIN_NAMES[i]}</span>`; });
+        const AJ = window.AJMotion;
+        const tl = gsap.timeline({ paused: true });
+
+        // S1 — cinematic push on the image; the title slams in two beats.
+        tl.fromTo("#s1-img img", { scale: 1.2 }, { scale: 1.04, duration: 2.3, ease: "power1.out" }, 0);
+        AJ.slam(tl, "#t1", 0.3, { from: 1.25, duration: 0.5 });
+        AJ.slam(tl, "#t2", 0.81, { from: 1.25, duration: 0.5 });
+        AJ.arrive(tl, "#s1-sign", 1.2, { y: 16, duration: 0.5 });
+
+        // S2 — hard cut to black: the title shrinks away and the serif statement builds.
+        tl.fromTo("#s2-small", { scale: 1 }, { scale: 0.6, opacity: 0, y: -200, duration: 0.6, ease: AJ.EASE.move }, 2.45);
+        AJ.buildSentence(tl, "#s2-line", 2.75, { stagger: 0.09 });
+
+        // S3 — giant image-filled word slides across like a billboard crawl.
+        tl.fromTo("#giant-wrap", { x: 700 }, { x: -1500, duration: 1.75, ease: "power1.inOut" }, 3.95);
+
+        // S4 — brand tiles slam in on consecutive beats (118 BPM ≈ 0.508 s); the curve tile draws.
+        ["#tl-1", "#tl-2", "#tl-3", "#tl-4", "#tl-5", "#tl-6"].forEach((tile, i) => AJ.slam(tl, tile, 5.7 + i * 0.254, { from: 1.08, duration: 0.4 }));
+        AJ.drawPath(tl, ".t-curve path", 7.0, { duration: 0.6 });
+        AJ.camera(tl, "#tiles", 7.75, { scale: 2.6, x: 380, y: -700, duration: 0.5, ease: "expo.in" });
+
+        // S5 — split: easing curve draws on blue and a dot rides it with that very easing.
+        AJ.drawPath(tl, "#curve", 8.25, { duration: 0.6 });
+        const svgBox = { left: 140, top: 190 };
+        const ride = { t: 0 };
+        const place = () => {
+          const [x, y] = bezier(ride.t);
+          gsap.set("#dot", { x: svgBox.left + x - 20, y: svgBox.top + y - 20 });
+        };
+        place();
+        tl.fromTo(ride, { t: 0 }, { t: 1, duration: 1.2, ease: "expo.inOut", onUpdate: place }, 8.9);
+        AJ.buildSentence(tl, "#s5-text", 8.5, { stagger: 0.12 });
+
+        // S6 — blueprint grid draws, the word bar sweeps in, then the frame tilts away in depth.
+        tl.set("#grid-word", { xPercent: -50, yPercent: -50 }, 0);
+        AJ.drawPath(tl, ".bp", 10.5, { duration: 0.6, stagger: 0.08 });
+        AJ.buildSentence(tl, "#s6-cap", 10.55, { stagger: 0.06 });
+        AJ.wipeIn(tl, "#grid-word", 11.0, { from: "left", duration: 0.45 });
+        tl.to("#grid-frame", { scale: 0.62, rotationY: -28, rotationX: 8, x: 180, duration: 1.1, ease: AJ.EASE.move }, 11.7);
+
+        // S7 — spec lines slam top-to-bottom, the card wipes up.
+        document.querySelectorAll("#spec div").forEach((line, i) => {
+          AJ.slam(tl, line, 12.9 + i * 0.1, { from: 1.12, duration: 0.35 });
+          tl.fromTo(line, { x: -60 }, { x: 0, duration: 0.4, ease: AJ.EASE.enter }, 12.9 + i * 0.1);
+        });
+        AJ.wipeIn(tl, "#spec-card", 13.2, { from: "bottom", duration: 0.55 });
+        AJ.buildSentence(tl, "#spec-card p", 13.6, { stagger: 0.07 });
+
+        // S8 — one big pin, then the camera pulls back to a constellation of tools.
+        tl.fromTo("#pin-main", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: AJ.EASE.enter }, 14.9);
+        tl.fromTo("#pins", { scale: 1.5 }, { scale: 1, duration: 1.0, ease: AJ.EASE.move }, 15.35);
+        document.querySelectorAll(".pin:not(#pin-main)").forEach((pin, i) => {
+          tl.fromTo(pin, { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.4, ease: AJ.EASE.pop }, 15.5 + i * 0.12);
+        });
+
+        // S9 — billboard in a dark hall; the camera dollies toward it.
+        tl.fromTo("#board", { rotationY: -38, scale: 0.7, opacity: 0 }, { rotationY: -14, scale: 1, opacity: 1, duration: 0.9, ease: AJ.EASE.enter }, 16.95);
+        tl.to("#board", { rotationY: -4, scale: 1.18, duration: 1.0, ease: "sine.inOut" }, 17.85);
+        tl.fromTo("#board img", { scale: 1.25 }, { scale: 1, duration: 1.9, ease: "power1.out" }, 16.95);
+
+        // S10 — blue lockup.
+        AJ.drawPath(tl, "#s10-grid line", 18.9, { duration: 0.5, stagger: 0.05 });
+        AJ.slam(tl, "#lock-mark", 18.95, { from: 1.4, duration: 0.5 });
+        AJ.arrive(tl, "#lock-name", 19.15, { y: 20, duration: 0.5 });
+        AJ.buildSentence(tl, "#lock-role", 19.4, { stagger: 0.05 });
+
+        window.__timelines["main"] = tl;
+      }
+
+      async function init() {
+        await document.fonts.ready;
+        build();
+      }
+      init();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,40 @@
+{
+  "duration": 24,
+  "bpm": 104,
+  "seed": 44,
+  "music": { "style": "pulse", "gain": 0.45, "drop": [[0, 2.3], [20.1, 21.2]], "fadeOut": 1.8 },
+  "duckDb": -10,
+  "vo": [
+    { "t": 12.9, "file": "vo/a1.wav" },
+    { "t": 16.9, "file": "vo/a2.wav" },
+    { "t": 20.9, "file": "vo/a3.wav" }
+  ],
+  "sfx": [
+    { "t": 0.3, "type": "shimmer", "gain": 0.4 },
+    { "t": 1.55, "type": "pop", "gain": 0.5 },
+    { "t": 2.0, "type": "whoosh", "gain": 0.4, "dur": 0.7 },
+    { "t": 2.6, "type": "type", "count": 44, "cps": 22, "gain": 0.45 },
+    { "t": 4.85, "type": "click", "gain": 0.7 },
+    { "t": 5.25, "type": "whoosh", "gain": 0.55, "dur": 0.8 },
+    { "t": 5.6, "type": "type", "count": 36, "cps": 17, "gain": 0.4 },
+    { "t": 8.45, "type": "pop", "gain": 0.35 },
+    { "t": 8.73, "type": "pop", "gain": 0.35, "pitch": 1.15 },
+    { "t": 9.01, "type": "pop", "gain": 0.35, "pitch": 1.3 },
+    { "t": 10.1, "type": "pop", "gain": 0.3 },
+    { "t": 10.19, "type": "pop", "gain": 0.3, "pitch": 1.2 },
+    { "t": 10.28, "type": "pop", "gain": 0.3, "pitch": 1.4 },
+    { "t": 11.2, "type": "swish", "gain": 0.4 },
+    { "t": 11.9, "type": "click", "gain": 0.5 },
+    { "t": 11.8, "type": "swish", "gain": 0.4 },
+    { "t": 12.5, "type": "click", "gain": 0.5 },
+    { "t": 13.2, "type": "whoosh", "gain": 0.45, "dur": 1.2 },
+    { "t": 15.1, "type": "whoosh", "gain": 0.45, "dur": 0.9 },
+    { "t": 17.3, "type": "pop", "gain": 0.3 },
+    { "t": 17.97, "type": "click", "gain": 0.6 },
+    { "t": 18.3, "type": "swish", "gain": 0.35 },
+    { "t": 20.1, "type": "riser", "gain": 0.45, "dur": 0.8 },
+    { "t": 20.8, "type": "impact", "gain": 0.45 },
+    { "t": 20.85, "type": "shimmer", "gain": 0.45 },
+    { "t": 22.6, "type": "chime", "gain": 0.5 }
+  ]
+}

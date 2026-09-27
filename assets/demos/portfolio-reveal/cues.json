@@ -1,0 +1,379 @@
+{
+  "duration": 21.0,
+  "bpm": 124,
+  "seed": 29,
+  "music": {
+    "style": "drive",
+    "gain": 0.55,
+    "drop": [
+      [
+        0,
+        0.85
+      ],
+      [
+        9.2,
+        10.95
+      ],
+      [
+        14.85,
+        15.8
+      ]
+    ],
+    "fadeOut": 1.8
+  },
+  "targetDb": -16.5,
+  "sfx": [
+    {
+      "t": 0.12,
+      "type": "type",
+      "count": 21,
+      "cps": 40,
+      "gain": 0.28
+    },
+    {
+      "t": 0.85,
+      "type": "riser",
+      "gain": 0.32,
+      "dur": 0.7
+    },
+    {
+      "t": 0.85,
+      "type": "impact",
+      "gain": 0.64
+    },
+    {
+      "t": 1.2,
+      "type": "click",
+      "gain": 0.28
+    },
+    {
+      "t": 1.29,
+      "type": "click",
+      "gain": 0.28
+    },
+    {
+      "t": 1.38,
+      "type": "click",
+      "gain": 0.32
+    },
+    {
+      "t": 1.95,
+      "type": "whoosh",
+      "gain": 0.44,
+      "dur": 0.5
+    },
+    {
+      "t": 2.3,
+      "type": "impact",
+      "gain": 0.56
+    },
+    {
+      "t": 2.65,
+      "type": "swish",
+      "gain": 0.28
+    },
+    {
+      "t": 2.95,
+      "type": "swish",
+      "gain": 0.24
+    },
+    {
+      "t": 3.3,
+      "type": "pop",
+      "gain": 0.24
+    },
+    {
+      "t": 3.4,
+      "type": "pop",
+      "gain": 0.24,
+      "pitch": 1.15
+    },
+    {
+      "t": 3.5,
+      "type": "pop",
+      "gain": 0.24,
+      "pitch": 1.3
+    },
+    {
+      "t": 3.6,
+      "type": "pop",
+      "gain": 0.24,
+      "pitch": 1.45
+    },
+    {
+      "t": 4.05,
+      "type": "swish",
+      "gain": 0.24
+    },
+    {
+      "t": 4.74,
+      "type": "click",
+      "gain": 0.6
+    },
+    {
+      "t": 5.6,
+      "type": "whoosh",
+      "gain": 0.48,
+      "dur": 0.55
+    },
+    {
+      "t": 6.3,
+      "type": "impact",
+      "gain": 0.56
+    },
+    {
+      "t": 6.8,
+      "type": "chime",
+      "gain": 0.24
+    },
+    {
+      "t": 7.1,
+      "type": "click",
+      "gain": 0.32
+    },
+    {
+      "t": 7.22,
+      "type": "click",
+      "gain": 0.32
+    },
+    {
+      "t": 7.34,
+      "type": "click",
+      "gain": 0.36
+    },
+    {
+      "t": 9.3,
+      "type": "whoosh",
+      "gain": 0.44,
+      "dur": 0.45
+    },
+    {
+      "t": 9.32,
+      "type": "subdrop",
+      "gain": 0.48
+    },
+    {
+      "t": 9.5,
+      "type": "shimmer",
+      "gain": 0.24
+    },
+    {
+      "t": 9.85,
+      "type": "impact",
+      "gain": 0.36
+    },
+    {
+      "t": 10.98,
+      "type": "riser",
+      "gain": 0.36,
+      "dur": 0.8
+    },
+    {
+      "t": 11.0,
+      "type": "impact",
+      "gain": 0.76
+    },
+    {
+      "t": 11.0,
+      "type": "subdrop",
+      "gain": 0.4
+    },
+    {
+      "t": 11.25,
+      "type": "click",
+      "gain": 0.56
+    },
+    {
+      "t": 11.32,
+      "type": "pop",
+      "gain": 0.36,
+      "pitch": 1.2
+    },
+    {
+      "t": 12.05,
+      "type": "click",
+      "gain": 0.48
+    },
+    {
+      "t": 12.1,
+      "type": "swish",
+      "gain": 0.36
+    },
+    {
+      "t": 12.25,
+      "type": "pop",
+      "gain": 0.24,
+      "pitch": 1.1
+    },
+    {
+      "t": 12.35,
+      "type": "pop",
+      "gain": 0.24,
+      "pitch": 1.25
+    },
+    {
+      "t": 12.45,
+      "type": "pop",
+      "gain": 0.24,
+      "pitch": 1.4
+    },
+    {
+      "t": 12.85,
+      "type": "impact",
+      "gain": 0.44
+    },
+    {
+      "t": 12.9,
+      "type": "chime",
+      "gain": 0.36
+    },
+    {
+      "t": 13.1,
+      "type": "shimmer",
+      "gain": 0.28
+    },
+    {
+      "t": 13.65,
+      "type": "impact",
+      "gain": 0.64
+    },
+    {
+      "t": 14.2,
+      "type": "click",
+      "gain": 0.28
+    },
+    {
+      "t": 14.3,
+      "type": "click",
+      "gain": 0.28
+    },
+    {
+      "t": 14.4,
+      "type": "click",
+      "gain": 0.28
+    },
+    {
+      "t": 15.15,
+      "type": "whoosh",
+      "gain": 0.4,
+      "dur": 0.5
+    },
+    {
+      "t": 15.3,
+      "type": "shimmer",
+      "gain": 0.32
+    },
+    {
+      "t": 15.8,
+      "type": "impact",
+      "gain": 0.8
+    },
+    {
+      "t": 15.8,
+      "type": "subdrop",
+      "gain": 0.48
+    },
+    {
+      "t": 16.45,
+      "type": "pop",
+      "gain": 0.28
+    },
+    {
+      "t": 16.6,
+      "type": "pop",
+      "gain": 0.28,
+      "pitch": 1.2
+    },
+    {
+      "t": 17.6,
+      "type": "whoosh",
+      "gain": 0.4,
+      "dur": 0.45
+    },
+    {
+      "t": 17.8,
+      "type": "impact",
+      "gain": 0.64
+    },
+    {
+      "t": 18.2,
+      "type": "click",
+      "gain": 0.36
+    },
+    {
+      "t": 18.32,
+      "type": "click",
+      "gain": 0.36
+    },
+    {
+      "t": 18.44,
+      "type": "click",
+      "gain": 0.4
+    },
+    {
+      "t": 18.6,
+      "type": "pop",
+      "gain": 0.28
+    },
+    {
+      "t": 18.68,
+      "type": "pop",
+      "gain": 0.28,
+      "pitch": 1.15
+    },
+    {
+      "t": 18.76,
+      "type": "pop",
+      "gain": 0.28,
+      "pitch": 1.3
+    },
+    {
+      "t": 18.9,
+      "type": "chime",
+      "gain": 0.36
+    }
+  ],
+  "duckDb": -9,
+  "vo": [
+    {
+      "t": 0.3,
+      "file": "vo/v1.wav"
+    },
+    {
+      "t": 2.35,
+      "file": "vo/v2.wav"
+    },
+    {
+      "t": 6.3,
+      "file": "vo/v3.wav"
+    },
+    {
+      "t": 9.2,
+      "file": "vo/v4.wav"
+    },
+    {
+      "t": 11.25,
+      "file": "vo/v5a.wav"
+    },
+    {
+      "t": 12.05,
+      "file": "vo/v5b.wav"
+    },
+    {
+      "t": 12.85,
+      "file": "vo/v5c.wav"
+    },
+    {
+      "t": 13.65,
+      "file": "vo/v6.wav"
+    },
+    {
+      "t": 15.5,
+      "file": "vo/v7.wav"
+    },
+    {
+      "t": 19.25,
+      "file": "vo/v8.wav"
+    }
+  ]
+}

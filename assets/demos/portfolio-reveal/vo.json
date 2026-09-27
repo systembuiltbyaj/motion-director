@@ -1,0 +1,47 @@
+{
+  "voice": "am_michael",
+  "speed": 1.05,
+  "dir": "vo",
+  "lines": [
+    {
+      "id": "v1",
+      "text": "I build digital systems."
+    },
+    {
+      "id": "v2",
+      "text": "Funnels that convert."
+    },
+    {
+      "id": "v3",
+      "text": "Websites, built different."
+    },
+    {
+      "id": "v4",
+      "text": "But that's just the front."
+    },
+    {
+      "id": "v5a",
+      "text": "Trigger."
+    },
+    {
+      "id": "v5b",
+      "text": "Route."
+    },
+    {
+      "id": "v5c",
+      "text": "Automate."
+    },
+    {
+      "id": "v6",
+      "text": "Systems that run."
+    },
+    {
+      "id": "v7",
+      "text": "I'm AJ. I build the systems behind the business."
+    },
+    {
+      "id": "v8",
+      "text": "Follow my builds."
+    }
+  ]
+}

@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>AI Canvas — aj-motion-style</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/aj-motion.js"></script>
+    <link rel="stylesheet" href="assets/aj-motion.css" />
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-latin.woff2") format("woff2"); font-weight: 100 900; }
+      body { margin: 0; background: #000; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #e85a24; color: var(--aj-fg); font-family: "Inter", sans-serif; }
+      .scene { position: absolute; inset: 0; }
+
+      /* Painterly cloud atmosphere: stacked blurred blobs + grain */
+      .cloud { position: absolute; inset: -12%; background: radial-gradient(60% 60% at 30% 40%, #ff8a3d, #e24a1c 55%, #b8361c); }
+      .blob { position: absolute; border-radius: 50%; filter: blur(70px); }
+      .b1 { width: 900px; height: 700px; left: -12%; top: 0%; background: #ffd2a6; opacity: 0.8; }
+      .b2 { width: 800px; height: 800px; right: 0%; top: 30%; background: #b8a4ef; opacity: 0.6; }
+      .b3 { width: 1000px; height: 600px; left: 30%; bottom: -5%; background: #ff6a2b; opacity: 0.9; }
+      .b4 { width: 600px; height: 600px; left: 45%; top: -10%; background: #fff1e3; opacity: 0.55; }
+
+      /* S1–S2: title morphs into the prompt card */
+      #title { position: absolute; left: 0; right: 0; top: 505px; margin: 0; text-align: center; font-size: 44px; font-weight: 500; color: #fff; letter-spacing: -0.01em; }
+      #card { position: absolute; left: 50%; top: 50%; width: 60px; height: 60px; background: #fff; border-radius: 30px; box-shadow: 0 30px 80px rgba(120, 40, 10, 0.25); overflow: hidden; }
+      #card-in { position: absolute; left: 0; top: 0; width: 820px; padding: 28px 32px; box-sizing: border-box; color: #1c1b1a; }
+      .agent { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 600; }
+      .agent i { width: 9px; height: 9px; border-radius: 50%; background: #29c46a; }
+      .input { margin-top: 18px; padding: 18px 20px; border-radius: 14px; background: #f3f1ee; font-size: 26px; min-height: 32px; }
+      .input .aj-caret { background: #ff5a1f; }
+      .send { position: absolute; right: 30px; bottom: 26px; width: 44px; height: 44px; border-radius: 50%; background: #1c1b1a; color: #fff; display: grid; place-items: center; font-size: 24px; font-weight: 700; }
+
+      /* Light canvas */
+      #canvas { position: absolute; inset: 0; background: #f1efec; color: #1c1b1a; clip-path: circle(0% at 50% 50%); }
+      #giant-track { position: absolute; left: 280px; top: 400px; white-space: nowrap; }
+      #giant { font-size: 170px; font-weight: 500; letter-spacing: -0.04em; color: #3a3632; }
+      #giant .aj-caret { width: 0.05em; background: linear-gradient(#ff5a1f, #ffc21f); }
+
+      .plan { position: absolute; left: 300px; top: 250px; width: 1100px; }
+      .plan h4 { margin: 0 0 34px; font-size: 38px; font-weight: 500; color: #8b857e; }
+      .step { display: flex; gap: 22px; align-items: flex-start; margin-bottom: 30px; font-size: 36px; }
+      .step .ic { flex: none; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; font-size: 22px; font-weight: 700; color: #fff; }
+      .step b { font-weight: 700; margin-right: 12px; }
+      .step span { color: #d0662f; }
+      .working { font-size: 28px; font-weight: 500; background: linear-gradient(90deg, #b9b2aa 0%, #1c1b1a 50%, #b9b2aa 100%); background-size: 300% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; }
+      #built { position: absolute; left: 300px; top: 640px; font-size: 36px; font-weight: 600; }
+      #built-tags { display: flex; gap: 14px; margin-top: 22px; font-size: 26px; }
+      .tag { padding: 8px 20px; border-radius: 10px; background: linear-gradient(90deg, #ff5a1f, #ff9a3c); color: #fff; font-weight: 600; }
+
+      .picker { position: absolute; top: 330px; display: flex; align-items: center; gap: 26px; }
+      .picker .ic { width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; font-size: 30px; color: #fff; }
+      .picker .dash { width: 40px; height: 3px; background: #1c1b1a; opacity: 0.4; }
+      .slot-window { height: 420px; overflow: hidden; position: relative; -webkit-mask: linear-gradient(transparent, #000 35%, #000 65%, transparent); mask: linear-gradient(transparent, #000 35%, #000 65%, transparent); }
+      .slot-list { padding-top: 175px; }
+      .slot-list div { height: 70px; line-height: 70px; font-size: 40px; font-weight: 600; transform-origin: left center; }
+      .picker label { position: absolute; top: -60px; left: 0; font-size: 26px; font-weight: 600; color: #8b857e; letter-spacing: 0.08em; text-transform: uppercase; }
+
+      #world { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 50% 50%; }
+      .node { position: absolute; width: 440px; border-radius: 18px; background: #fff; box-shadow: 0 20px 50px rgba(60, 40, 20, 0.14); overflow: hidden; }
+      .node img { display: block; width: 100%; height: 250px; object-fit: cover; }
+      .node p { margin: 0; padding: 14px 18px; font-size: 22px; font-weight: 600; }
+      .node p small { display: block; margin-top: 4px; font-size: 17px; font-weight: 500; color: #8b857e; }
+      .wires { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+      .wires path { fill: none; stroke: #b9b2aa; stroke-width: 3; }
+
+      #s7-q { position: absolute; left: 300px; top: 260px; margin: 0; font-size: 56px; font-weight: 600; letter-spacing: -0.02em; }
+      #chips { position: absolute; left: 300px; top: 380px; display: flex; gap: 18px; font-size: 38px; }
+      .chip { padding: 14px 30px; border-radius: 14px; background: #fbeee6; color: #1c1b1a; font-weight: 600; }
+      #adjust { position: absolute; left: 300px; top: 520px; font-size: 30px; }
+      .bento { position: absolute; left: 300px; top: 610px; display: grid; grid-template-columns: 420px 420px 420px; gap: 16px; }
+      .bento div { height: 280px; border-radius: 16px; overflow: hidden; position: relative; background: #fff; }
+      .bento img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .pill { position: absolute; left: 50%; bottom: 16px; padding: 8px 22px; border-radius: 999px; background: #fff; font-size: 22px; font-weight: 600; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18); }
+
+      /* End: a warm scrim keeps white type readable over the brightest cloud blobs. */
+      #end-scrim { position: absolute; left: 260px; top: 250px; width: 1400px; height: 560px; border-radius: 50%; background: radial-gradient(closest-side, rgba(150, 40, 10, 0.55), rgba(150, 40, 10, 0)); }
+      .frame-glass { position: absolute; border: 2px solid rgba(255, 255, 255, 0.45); border-radius: 180px; background: rgba(255, 255, 255, 0.06); }
+      #end-q { position: absolute; left: 0; right: 0; top: 420px; margin: 0; text-align: center; font-size: 64px; font-weight: 500; color: #fff; --aj-accent: #fff; --aj-on-accent: #d9481b; }
+      #end-brand { position: absolute; left: 0; right: 0; top: 540px; display: flex; justify-content: center; align-items: center; gap: 24px; font-size: 76px; font-weight: 700; color: #fff; letter-spacing: -0.03em; }
+      #end-brand span:last-child { font-weight: 400; }
+      .mark { width: 84px; height: 84px; background: #fff; -webkit-mask: url("assets/media/aj-mark-dark.webp") center / contain no-repeat; mask: url("assets/media/aj-mark-dark.webp") center / contain no-repeat; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="24" data-aj-flavor="warm-canvas">
+      <div class="cloud" data-layout-allow-overflow>
+        <div class="blob b1" data-layout-allow-overflow></div>
+        <div class="blob b2" data-layout-allow-overflow></div>
+        <div class="blob b3" data-layout-allow-overflow></div>
+        <div class="blob b4" data-layout-allow-overflow></div>
+      </div>
+
+      <section id="s1" class="scene clip" data-start="0" data-duration="5.6">
+        <p id="title">System Agent</p>
+        <div id="card">
+          <div id="card-in">
+            <div class="agent">System Agent <i></i></div>
+            <div class="input"><span id="prompt">Build a lead follow-up system for my clinic.</span></div>
+            <div id="send" class="send">↑</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-canvas" class="scene clip" data-start="5.1" data-duration="15.9">
+        <div id="canvas">
+          <div id="giant-track"><span id="giant">3 channels · 1 CRM · 0 missed leads</span></div>
+
+          <div id="plan" class="plan">
+            <h4>Let me start building</h4>
+            <div class="step"><div class="ic" style="background: #4d8bff">⌁</div><div><b>Capture</b><span>form + calendar booking</span></div></div>
+            <div class="step"><div class="ic" style="background: #8b5cf6">✦</div><div><b>Qualify</b><span>AI lead scoring</span></div></div>
+            <div class="step"><div class="ic" style="background: #ec4899">↻</div><div><b>Follow-up</b><span>SMS + email sequences</span></div></div>
+            <div class="working" id="working">Working</div>
+          </div>
+          <div id="built">All structures confirmed. Building full flow now
+            <div id="built-tags"><span class="tag">Capture</span><span class="tag">Qualify</span><span class="tag">Follow-up</span></div>
+          </div>
+
+          <div id="picker-a" class="picker" style="left: 300px">
+            <label>Orchestration</label>
+            <div class="ic" style="background: #ff5a1f">⚙</div><div class="dash"></div>
+            <div class="slot-window"><div id="list-a" class="slot-list"><div>Zapier</div><div>Make</div><div>n8n</div><div>Trigger.dev</div></div></div>
+          </div>
+          <div id="picker-b" class="picker" style="left: 1020px">
+            <label>CRM</label>
+            <div class="ic" style="background: #8b5cf6">◎</div><div class="dash"></div>
+            <div class="slot-window"><div id="list-b" class="slot-list"><div>HubSpot</div><div>Pipedrive</div><div>GoHighLevel</div><div>Salesforce</div></div></div>
+          </div>
+
+          <div id="world">
+            <svg class="wires" viewBox="0 0 1920 1080" data-layout-allow-overflow>
+              <path class="wire" d="M 560 540 C 680 540, 700 360, 820 360" />
+              <path class="wire" d="M 1260 360 C 1360 360, 1380 700, 1480 700" />
+              <path class="wire" d="M 1260 360 C 1380 360, 1400 120, 1480 120" />
+              <path class="wire" d="M 1920 700 C 2020 700, 2040 540, 2140 540" />
+            </svg>
+            <div class="node" style="left: 120px; top: 500px; width: 440px"><p>Prompt<small>Build a lead follow-up system…</small></p></div>
+            <div class="node" style="left: 820px; top: 210px"><img src="assets/media/sb-ai-lead-qualifier.webp" alt="" /><p>AI Lead Qualifier<small>score · qualify · route</small></p></div>
+            <div class="node" style="left: 1480px; top: 560px"><img src="assets/media/sb-smart-lead-router.webp" alt="" /><p>Smart Lead Router<small>GHL · Slack · Sheets</small></p></div>
+            <div class="node" style="left: 1480px; top: -20px"><img src="assets/media/sb-deal-won.webp" alt="" /><p>Deal Won alerts<small>Discord + Slack</small></p></div>
+            <div class="node" style="left: 2140px; top: 400px"><img src="assets/media/sales-dashboard.webp" alt="" /><p>Live pipeline<small>reporting</small></p></div>
+            <div class="node" style="left: -560px; top: 120px"><img src="assets/media/workflow-library.webp" alt="" /><p>Workflow library<small>60+ automations</small></p></div>
+            <div class="node" style="left: -560px; top: 700px"><img src="assets/media/funnel-analytics.webp" alt="" /><p>Funnel analytics<small>conversion view</small></p></div>
+            <div class="node" style="left: 820px; top: 760px"><img src="assets/media/rag-knowledge-bot.webp" alt="" /><p>Knowledge bot<small>answers from your docs</small></p></div>
+          </div>
+
+          <p id="s7-q">Pick follow-up channels:</p>
+          <div id="chips"><span class="chip">SMS</span><span class="chip">Email</span><span class="chip">WhatsApp</span><span class="chip">Voice</span></div>
+          <div id="adjust" class="working">Adjusting sequences…</div>
+          <div id="bento" class="bento">
+            <div><img src="assets/media/revenue-dashboard.webp" alt="" /><span class="pill">SMS</span><span class="pill">Email</span><span class="pill">Voice</span></div>
+            <div><img src="assets/media/sb-smart-lead-router.webp" alt="" /></div>
+            <div><img src="assets/media/funnel-analytics.webp" alt="" /></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="s-end" class="scene clip" data-start="20.4" data-duration="3.6">
+        <div class="frame-glass" id="fg1" style="left: -260px; top: 40px; width: 560px; height: 1000px"></div>
+        <div class="frame-glass" id="fg2" style="right: -260px; top: 40px; width: 560px; height: 1000px"></div>
+        <div class="frame-glass" id="fg3" style="left: 460px; top: -330px; width: 1000px; height: 460px"></div>
+        <div class="frame-glass" id="fg4" style="left: 460px; bottom: -330px; width: 1000px; height: 460px"></div>
+        <div id="end-scrim"></div>
+        <p id="end-q">So what are you waiting for?</p>
+        <div id="end-brand"><span class="mark"></span><span>System</span><span>Built by AJ</span></div>
+      </section>
+
+      <div class="aj-grain"></div>
+      <audio id="mix" src="assets/audio/mix.wav" data-start="0" data-duration="24" data-volume="1"></audio>
+    </div>
+
+    <script>
+      function build() {
+        const AJ = window.AJMotion;
+        const tl = gsap.timeline({ paused: true });
+        AJ.ambientDrift(tl, ".blob", 0, 24, { amp: 140, cycle: 10, seed: 4 });
+
+        // Centering via xPercent/yPercent survives the width/height morph (a CSS translate would freeze in px).
+        tl.set(["#card", ".pill"], { xPercent: -50 }, 0);
+        tl.set("#card", { yPercent: -50 }, 0);
+
+        // S1 — title holds, splits apart as a white tile grows out of its center into the prompt card.
+        AJ.arrive(tl, "#title", 0.2, { y: 16, blur: 10, duration: 0.8 });
+        tl.to("#title", { scaleX: 1.6, opacity: 0, filter: "blur(12px)", duration: 0.6, ease: AJ.EASE.exit }, 1.5);
+        tl.fromTo("#card", { width: 12, height: 12, opacity: 0 }, { width: 60, height: 60, opacity: 1, duration: 0.3, ease: AJ.EASE.pop }, 1.55);
+        tl.to("#card", { width: 820, height: 200, borderRadius: 22, duration: 0.8, ease: AJ.EASE.move }, 1.85);
+        tl.fromTo("#card-in", { opacity: 0 }, { opacity: 1, duration: 0.3 }, 2.4);
+
+        // S2 — the prompt types; the camera leans in; send is pressed.
+        tl.to("#card", { scale: 1.3, duration: 2.8, ease: "sine.inOut" }, 2.4);
+        const typed = AJ.typeOn(tl, "#prompt", 2.6, { cps: 22 });
+        tl.to("#send", { scale: 0.86, duration: 0.08, ease: "power2.in" }, typed + 0.2);
+        tl.to("#send", { scale: 1, backgroundColor: "#ff5a1f", duration: 0.35, ease: AJ.EASE.pop }, typed + 0.28);
+
+        // Canvas opens from the card's center.
+        tl.to("#canvas", { clipPath: "circle(80% at 50% 50%)", duration: 0.8, ease: AJ.EASE.move }, 5.15);
+
+        // S3 — giant type-on; the track slides so the caret stays near center (camera follows the cursor).
+        const giantText = document.getElementById("giant").textContent;
+        const ctx = document.createElement("canvas").getContext("2d");
+        ctx.font = '500 170px "Inter"';
+        const giantWidth = ctx.measureText(giantText).width;
+        const giantEnd = AJ.typeOn(tl, "#giant", 5.6, { cps: 17 });
+        tl.fromTo("#giant-track", { x: 0 }, { x: -(giantWidth - 1250), duration: giantEnd - 5.9, ease: "none" }, 5.9);
+        AJ.leave(tl, "#giant-track", 8.0, { y: -60, duration: 0.35 });
+
+        // S4 — agent plan, then the build confirmation with created tags.
+        AJ.arrive(tl, "#plan h4", 8.2, { y: 20, duration: 0.5 });
+        AJ.arrive(tl, "#plan .step", 8.45, { y: 26, duration: 0.55, stagger: 0.28 });
+        AJ.arrive(tl, "#working", 9.3, { y: 10, duration: 0.3 });
+        tl.fromTo(".working", { backgroundPosition: "100% 0" }, { backgroundPosition: "0% 0", duration: 1.2, ease: "none", repeat: AJ.repeatCount(11.2, 1.2) }, 9.3);
+        tl.to("#plan", { y: -200, opacity: 0.25, duration: 0.6, ease: AJ.EASE.move }, 9.75);
+        AJ.arrive(tl, "#built", 9.85, { y: 30, duration: 0.5 });
+        AJ.chipPop(tl, "#built-tags .tag", 10.1, { stagger: 0.09 });
+        AJ.leave(tl, ["#plan", "#built"], 10.75, { duration: 0.3 });
+
+        // S5 — two slot pickers lock onto the stack.
+        AJ.arrive(tl, "#picker-a", 10.95, { y: 20, duration: 0.45 });
+        AJ.slotFocus(tl, "#list-a", 11.2, { from: 0, to: 2, itemHeight: 70, duration: 0.7 });
+        AJ.arrive(tl, "#picker-b", 11.55, { y: 20, duration: 0.45 });
+        AJ.slotFocus(tl, "#list-b", 11.8, { from: 0, to: 2, itemHeight: 70, duration: 0.7 });
+        AJ.leave(tl, ["#picker-a", "#picker-b"], 12.65, { duration: 0.3 });
+
+        // S6 — node canvas: nodes pop, wires draw, the camera pans, then pulls back to reveal the whole system.
+        tl.set("#world", { x: 600, scale: 1.05 }, 0);
+        AJ.arrive(tl, "#world .node", 12.85, { y: 30, scale: 0.9, duration: 0.6, stagger: 0.12 });
+        AJ.drawPath(tl, ".wire", 13.3, { duration: 0.7, stagger: 0.2 });
+        AJ.camera(tl, "#world", 13.2, { x: -300, scale: 1.05, duration: 1.8 });
+        AJ.camera(tl, "#world", 15.1, { x: -60, y: 20, scale: 0.55, duration: 1.2 });
+        AJ.leave(tl, "#world", 16.5, { duration: 0.35 });
+
+        // S7 — channel chips, one selected; a bento of results with a cycling channel pill.
+        AJ.buildSentence(tl, "#s7-q", 16.8, { keyword: "channels", highlight: "color" });
+        AJ.chipPop(tl, "#chips .chip", 17.3, { select: 0, selectDelay: 0.2 });
+        AJ.arrive(tl, "#adjust", 18.1, { y: 10, duration: 0.3 });
+        AJ.arrive(tl, "#bento > div", 18.3, { y: 40, scale: 0.92, duration: 0.6, stagger: 0.1 });
+        // Channel pill cycles SMS → Email → Voice (stacked pills toggled with seek-safe sets).
+        const pills = document.querySelectorAll(".bento .pill");
+        pills.forEach((pill, i) => tl.set(pill, { opacity: i === 0 ? 1 : 0 }, 0));
+        [1, 2].forEach((i) => {
+          tl.set(pills[i - 1], { opacity: 0 }, 19.1 + (i - 1) * 0.5);
+          tl.set(pills[i], { opacity: 1 }, 19.1 + (i - 1) * 0.5);
+        });
+
+        // S8 — the canvas collapses into an orange orb that blooms back into the cloud.
+        tl.to("#canvas", { clipPath: "circle(3% at 50% 50%)", backgroundColor: "#ff6a2b", duration: 0.7, ease: "expo.in" }, 20.1);
+        tl.to("#canvas", { opacity: 0, duration: 0.3 }, 20.75);
+        AJ.arrive(tl, [".frame-glass"], 20.6, { y: 0, scale: 1.2, blur: 20, duration: 1.1, stagger: 0.06 });
+        AJ.arrive(tl, "#end-scrim", 20.7, { y: 0, scale: 0.8, blur: 0, duration: 0.8 });
+        AJ.buildSentence(tl, "#end-q", 20.9, { keyword: "waiting", highlight: "fill" });
+        AJ.arrive(tl, "#end-brand", 22.55, { y: 30, blur: 16, duration: 0.8 });
+
+        window.__timelines["main"] = tl;
+      }
+
+      async function init() {
+        await document.fonts.ready;
+        build();
+      }
+      init();
+    </script>
+  </body>
+</html>

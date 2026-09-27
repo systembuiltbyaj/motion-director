@@ -1,0 +1,17 @@
+# Demo media is private (client work, revenue dashboards, portrait). See assets/demos/MEDIA.md.
+assets/demos/_media/
+
+# Generated voiceover: regenerate with scripts/voice.mjs <demo>/vo.json
+assets/demos/*/vo/
+
+# Secrets and local tooling
+.env
+.env.*
+node_modules/
+__pycache__/
+*.pyc
+
+# Render output
+renders/
+*.mp4
+*.mov

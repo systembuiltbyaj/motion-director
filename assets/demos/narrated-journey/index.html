@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Narrated Journey — aj-motion-style</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/aj-motion.js"></script>
+    <link rel="stylesheet" href="assets/aj-motion.css" />
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-latin.woff2") format("woff2"); font-weight: 100 900; }
+
+      /* Custom flavor derived from Glow Dark: deep green + lime, with one world change to a light canvas. */
+      [data-aj-flavor="spark-green"] {
+        --aj-bg: #04221d;
+        --aj-bg-2: #0b4a3b;
+        --aj-fg: #effbe9;
+        --aj-muted: #9cc4b2;
+        --aj-accent: #d4f25a;
+        --aj-on-accent: #0a2a20;
+        --aj-orb-1: rgba(212, 242, 90, 0.28);
+        --aj-orb-2: rgba(24, 150, 110, 0.5);
+        --aj-orb-3: rgba(212, 242, 90, 0.18);
+        --aj-glow-strength: 1;
+        --light-bg: #eef5e2;
+        --light-ink: #0d3b2f;
+      }
+
+      body { margin: 0; background: #000; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--aj-bg); color: var(--aj-fg); font-family: "Inter", sans-serif; }
+      .scene { position: absolute; inset: 0; }
+      .world { position: absolute; inset: 0; transform-origin: 50% 50%; }
+      .spark { position: absolute; width: 72px; height: 72px; color: var(--aj-accent); filter: drop-shadow(0 0 18px var(--aj-accent)); }
+      .spark svg { width: 100%; height: 100%; display: block; }
+
+      /* S1 */
+      .rings { position: absolute; inset: 0; }
+      .rings circle { fill: none; stroke: color-mix(in srgb, var(--aj-accent) 55%, transparent); stroke-width: 2.5; }
+      #s1-line { position: absolute; left: 300px; top: 470px; margin: 0; font-size: 68px; font-weight: 600; letter-spacing: -0.02em; color: var(--aj-accent); }
+      .cursor { position: absolute; width: 46px; height: 46px; }
+
+      /* S2 */
+      .word-float { position: absolute; margin: 0; font-weight: 600; letter-spacing: -0.03em; color: var(--aj-fg); }
+      #w-lead { left: 240px; top: 250px; font-size: 96px; }
+      #w-question { right: 260px; top: 560px; font-size: 150px; color: var(--aj-accent); font-weight: 800; }
+      .ring-text { position: absolute; inset: 0; }
+      .ring-text text { font-size: 62px; font-weight: 700; fill: var(--aj-accent); letter-spacing: 0.02em; }
+
+      /* S3 */
+      .glass-wrap { position: absolute; left: 1080px; top: 250px; width: 420px; height: 420px; perspective: 1400px; }
+      .glass { position: absolute; inset: 0; border-radius: 64px; background: linear-gradient(145deg, rgba(212, 242, 90, 0.22), rgba(255, 255, 255, 0.04)); border: 2px solid rgba(212, 242, 90, 0.7); box-shadow: 0 0 80px rgba(212, 242, 90, 0.35), inset 0 0 60px rgba(212, 242, 90, 0.15); display: grid; place-items: center; }
+      .glass .spark { position: relative; width: 150px; height: 150px; }
+      #s3-line { position: absolute; left: 260px; top: 760px; margin: 0; font-size: 76px; font-weight: 500; letter-spacing: -0.02em; }
+      .streak { position: absolute; left: 0; top: 520px; width: 520px; height: 36px; border-radius: 18px; background: linear-gradient(90deg, transparent, var(--aj-accent)); filter: blur(2px) drop-shadow(0 0 30px var(--aj-accent)); }
+
+      /* Light world */
+      .light { position: absolute; inset: 0; background: radial-gradient(90% 80% at 20% 20%, #f8fcf2, var(--light-bg) 60%, #dcecc6); color: var(--light-ink); }
+      .light .orb { position: absolute; border-radius: 50%; filter: blur(80px); }
+      #s4-line, #s5-line { position: absolute; margin: 0; font-weight: 600; letter-spacing: -0.03em; }
+      #s4-line { left: 0; right: 0; top: 480px; text-align: center; font-size: 84px; }
+      .light .aj-key { color: var(--light-ink); }
+      .light .aj-key-bg { background: var(--aj-accent); box-shadow: none; }
+      .node-chip { position: absolute; left: 0; top: 0; padding: 20px 30px; border-radius: 18px; background: #fff; box-shadow: 0 18px 40px rgba(13, 59, 47, 0.14); font-size: 34px; font-weight: 700; color: var(--light-ink); white-space: nowrap; }
+      .node-chip i { display: inline-block; width: 14px; height: 14px; margin-right: 14px; border-radius: 50%; background: #1b8a62; vertical-align: middle; }
+      .flow-lines { position: absolute; inset: 0; }
+      .flow-lines path { fill: none; stroke: #1b8a62; stroke-width: 4; stroke-linecap: round; }
+      #s4-caption { position: absolute; left: 0; right: 0; top: 820px; margin: 0; text-align: center; font-size: 46px; font-weight: 500; color: #4d7a68; }
+      #growth { position: absolute; left: 0; right: 0; top: 380px; text-align: center; }
+      .growth-word { font-size: 300px; font-weight: 900; letter-spacing: -0.05em; line-height: 1; background: linear-gradient(90deg, #1b8a62, #a8d93a); -webkit-background-clip: text; background-clip: text; color: transparent; }
+      #growth .aj-echo-ghost--outline { background: none; color: #1b8a62; -webkit-text-stroke: 0; }
+
+      /* S5 */
+      .shot { position: absolute; left: 560px; top: 250px; width: 800px; border-radius: 26px; overflow: hidden; box-shadow: 0 40px 90px rgba(13, 59, 47, 0.25); }
+      .shot img { display: block; width: 100%; }
+      .ribbon { position: absolute; inset: 0; }
+      .ribbon .band { fill: none; stroke: url(#ribbonGrad); stroke-width: 70; stroke-linecap: round; }
+      .ribbon text { font-size: 30px; font-weight: 700; fill: #0d3b2f; letter-spacing: 0.08em; text-transform: uppercase; }
+      #s5-line { left: 0; right: 0; top: 880px; text-align: center; font-size: 60px; }
+
+      /* S6 */
+      #s6 .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 60px; }
+      #s6-row { display: flex; align-items: center; gap: 30px; }
+      #s6-row .spark { position: relative; width: 96px; height: 96px; color: #1b8a62; filter: none; }
+      #s6-line { margin: 0; font-size: 110px; font-weight: 600; letter-spacing: -0.03em; }
+      #s6-sign { display: flex; align-items: center; gap: 18px; font-size: 34px; font-weight: 600; color: #4d7a68; }
+      .mark { width: 54px; height: 54px; background: #1b8a62; -webkit-mask: url("assets/media/aj-mark-dark.webp") center / contain no-repeat; mask: url("assets/media/aj-mark-dark.webp") center / contain no-repeat; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="21" data-aj-flavor="spark-green">
+      <div class="aj-atmosphere" data-layout-allow-overflow>
+        <div class="aj-orb aj-orb--1" data-layout-allow-overflow></div>
+        <div class="aj-orb aj-orb--2" data-layout-allow-overflow></div>
+        <div class="aj-orb aj-orb--3" data-layout-allow-overflow></div>
+      </div>
+
+      <!-- S1 + S2: one dark world the camera pushes through -->
+      <section id="s1" class="scene clip" data-start="0" data-duration="7.1">
+        <div id="world1" class="world">
+          <svg class="rings" viewBox="0 0 1920 1080" data-layout-allow-overflow>
+            <circle id="ring-a" cx="620" cy="-160" r="760" />
+            <circle id="ring-b" cx="1300" cy="1260" r="760" />
+          </svg>
+          <p id="s1-line">Every system starts with a spark.</p>
+          <p id="w-lead" class="word-float">A lead.</p>
+          <p id="w-question" class="word-float">A question.</p>
+          <svg class="ring-text" viewBox="0 0 1920 1080" data-layout-allow-overflow>
+            <defs><path id="ringPath" d="M 260,1080 A 700,700 0 0 1 1660,1080" /></defs>
+            <text id="ring-text"><textPath id="ring-path-text" href="#ringPath" startOffset="100%">A follow-up nobody sent.</textPath></text>
+          </svg>
+        </div>
+        <svg id="cursor" class="cursor" viewBox="0 0 24 24"><path d="M3 2l7.5 19 2.4-7.6L20.5 11z" fill="#effbe9" stroke="#04221d" stroke-width="1.2" /></svg>
+      </section>
+
+      <section id="s3" class="scene clip" data-start="6.9" data-duration="2.3">
+        <div class="glass-wrap"><div id="glass" class="glass"><div class="spark" id="glass-spark"></div></div></div>
+        <p id="s3-line">What if it just worked?</p>
+        <div id="streak" class="streak"></div>
+      </section>
+
+      <!-- Light world -->
+      <section id="s4" class="scene clip" data-start="8.9" data-duration="12.1">
+        <div id="light" class="light">
+          <div class="orb" style="width: 900px; height: 900px; left: -300px; top: 300px; background: rgba(168, 217, 58, 0.35)" data-layout-allow-overflow></div>
+          <div class="orb" style="width: 700px; height: 700px; right: -200px; top: -250px; background: rgba(27, 138, 98, 0.18)" data-layout-allow-overflow></div>
+
+          <div id="beat-a">
+            <p id="s4-line">That's where systems thinking begins.</p>
+          </div>
+
+          <div id="beat-b">
+            <svg class="flow-lines" viewBox="0 0 1920 1080">
+              <path class="flow" d="M 470 560 L 690 560" />
+              <path class="flow" d="M 900 560 L 1060 560" />
+              <path class="flow" d="M 1270 560 L 1450 560" />
+            </svg>
+            <div class="node-chip" data-slot="0"><i></i>Lead</div>
+            <div class="node-chip" data-slot="1"><i></i>Qualify</div>
+            <div class="node-chip" data-slot="2"><i></i>Book</div>
+            <div class="node-chip" data-slot="3"><i></i>CRM</div>
+            <div class="node-chip" data-slot="-1"><i></i>Sheet</div>
+            <div class="node-chip" data-slot="-1"><i></i>Inbox</div>
+            <div class="node-chip" data-slot="-1"><i></i>Sticky note</div>
+            <div class="node-chip" data-slot="-1"><i></i>DM</div>
+            <p id="s4-caption">chaos → workflows</p>
+          </div>
+
+          <div id="growth"><span id="growth-word" class="growth-word">GROWTH</span></div>
+
+          <div id="beat-c">
+            <div id="shot" class="shot"><img src="assets/media/sales-dashboard.webp" alt="" /></div>
+            <svg class="ribbon" viewBox="0 0 1920 1080" data-layout-allow-overflow>
+              <defs>
+                <linearGradient id="ribbonGrad" x1="0" x2="1"><stop offset="0" stop-color="#d4f25a" /><stop offset="1" stop-color="#1b8a62" /></linearGradient>
+                <path id="ribbonPath" d="M 380 900 C 520 520, 700 140, 1180 170 S 1700 520, 1560 820" />
+              </defs>
+              <path id="ribbon-band" class="band" d="M 380 900 C 520 520, 700 140, 1180 170 S 1700 520, 1560 820" />
+              <text><textPath id="ribbon-text" href="#ribbonPath" startOffset="0%">built to run · automated · always on · built to run · automated · always on</textPath></text>
+            </svg>
+            <p id="s5-line">Built to run, even while you sleep.</p>
+          </div>
+
+          <div id="beat-d">
+            <div id="s6" style="position: absolute; inset: 0">
+              <div class="center">
+                <div id="s6-row"><div class="spark" id="end-spark"></div><p id="s6-line">Ready to grow?</p></div>
+                <div id="s6-sign"><span class="mark"></span>System Built by AJ</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div id="motif" class="spark" style="left: 0; top: 0"></div>
+      <div class="aj-grain"></div>
+      <audio id="mix" src="assets/audio/mix.wav" data-start="0" data-duration="21" data-volume="1"></audio>
+    </div>
+
+    <script>
+      const SPARK = '<svg viewBox="-50 -50 100 100"><g fill="currentColor">' +
+        Array.from({ length: 8 }, (_, i) => `<ellipse rx="11" ry="24" cy="-22" transform="rotate(${i * 45})"/>`).join("") +
+        '<circle r="14"/></g></svg>';
+
+      function build() {
+        document.querySelectorAll(".spark").forEach((el) => { el.innerHTML = SPARK; });
+        const AJ = window.AJMotion;
+        const tl = gsap.timeline({ paused: true });
+        AJ.ambientDrift(tl, ".aj-orb", 0, 21, { amp: 90, cycle: 9, seed: 11 });
+
+        // S1 — rings draw, the line builds on the voice, a cursor "clicks" the spark into being.
+        AJ.drawPath(tl, ".rings circle", 0.1, { duration: 1.6, stagger: 0.25 });
+        AJ.buildSentence(tl, "#s1-line", 0.4, { keyword: "spark", highlight: "fill", times: [0, 0.34, 0.78, 1.12, 1.38, 1.5] });
+        tl.fromTo("#cursor", { x: 1500, y: 700, opacity: 0 }, { x: 1180, y: 520, opacity: 1, duration: 1.1, ease: AJ.EASE.move }, 0.6);
+        tl.to("#cursor", { scale: 0.85, duration: 0.08, yoyo: true, repeat: 1 }, 1.72);
+        tl.to("#cursor", { opacity: 0, duration: 0.3 }, 2.4);
+        tl.fromTo("#motif", { x: 1250, y: 400, scale: 0, opacity: 1 }, { scale: 1, duration: 0.5, ease: AJ.EASE.pop }, 1.8);
+        AJ.exitSentence(tl, "#s1-line", 2.95);
+
+        // S2 — camera pushes through the rings; words land on the voice; the spark hops between them.
+        AJ.camera(tl, "#world1", 3.0, { scale: 1.12, x: -40, duration: 3.9, ease: "sine.inOut" });
+        tl.to(".rings circle", { rotation: 25, svgOrigin: "960 540", duration: 3.9, ease: "sine.inOut" }, 3.0);
+        AJ.arrive(tl, "#w-lead", 3.42, { y: 30, duration: 0.5 });
+        AJ.motifPath(tl, "#motif", [{ to: "#w-lead", dx: 230, dy: -40, scale: 0.6 }], 3.2, { duration: 0.35 });
+        AJ.arrive(tl, "#w-question", 3.96, { y: 40, scale: 0.9, duration: 0.6 });
+        AJ.motifPath(tl, "#motif", [{ to: "#w-question", dx: 470, dy: -70, scale: 0.9 }], 3.75, { duration: 0.35 });
+        tl.to(["#w-lead", "#w-question"], { opacity: 0.18, filter: "blur(4px)", duration: 0.4 }, 4.7);
+        tl.fromTo("#ring-path-text", { attr: { startOffset: "100%" } }, { attr: { startOffset: "12%" }, duration: 1.6, ease: AJ.EASE.enter }, 4.75);
+        AJ.motifPath(tl, "#motif", [{ x: 1500, y: 780, scale: 0.7 }, { x: 900, y: 360, scale: 1.2 }], 5.3, { duration: 1.3 });
+        AJ.leave(tl, ["#w-lead", "#w-question", "#ring-text", ".rings"], 6.6, { duration: 0.35 });
+
+        // S3 — glass tile swings in; the spark dives into it; "worked" lights up; a streak wipes to light.
+        // Explicit coordinates: #s3 isn't active at build time, so its layout can't be measured yet.
+        AJ.motifPath(tl, "#motif", [{ x: 1254, y: 424, scale: 0.3 }], 6.7, { duration: 0.45 });
+        tl.to("#motif", { opacity: 0, duration: 0.15 }, 7.1);
+        AJ.tiltFloat(tl, "#glass", 6.95, { rx: 8, ry: -18, until: 9.2, amp: 8 });
+        tl.fromTo("#glass", { rotation: 30 }, { rotation: 8, duration: 1.2, ease: AJ.EASE.enter }, 6.95);
+        tl.fromTo("#glass-spark", { scale: 0 }, { scale: 1, rotation: 90, duration: 0.8, ease: AJ.EASE.pop }, 7.15);
+        AJ.buildSentence(tl, "#s3-line", 7.0, { keyword: "worked?", highlight: "fill", times: [0, 0.3, 0.46, 0.56, 0.78] });
+        tl.fromTo("#streak", { x: -600 }, { x: 2100, duration: 0.55, ease: "power2.in" }, 8.45);
+
+        // Light world — the wipe reveals it; the line builds on the voice.
+        AJ.wipeIn(tl, "#light", 8.9, { from: "left", duration: 0.5 });
+        AJ.buildSentence(tl, "#s4-line", 9.0, { keyword: ["systems thinking"], highlight: "fill", times: [0, 0.26, 0.36, 0.78, 1.2] });
+        AJ.exitSentence(tl, "#s4-line", 10.95);
+
+        // Chaos → workflows: chips scatter on "chaos", then snap into a flow on "workflows".
+        const random = AJ.seededRandom(21);
+        const chips = Array.from(document.querySelectorAll(".node-chip"));
+        const slots = [[270, 520], [700, 520], [1070, 520], [1460, 520]];
+        chips.forEach((chip, i) => {
+          const scatter = { x: 200 + random() * 1400, y: 160 + random() * 600, rotation: -24 + random() * 48 };
+          tl.fromTo(chip, { ...scatter, scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: AJ.EASE.pop }, 11.7 + i * 0.05);
+          const slot = Number(chip.dataset.slot);
+          if (slot >= 0) {
+            tl.to(chip, { x: slots[slot][0], y: slots[slot][1], rotation: 0, duration: 0.8, ease: AJ.EASE.move }, 12.55 + slot * 0.05);
+          } else {
+            tl.to(chip, { scale: 0.4, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: AJ.EASE.exit }, 12.55);
+          }
+        });
+        AJ.drawPath(tl, ".flow", 13.2, { duration: 0.45, stagger: 0.12 });
+        AJ.arrive(tl, "#s4-caption", 11.8, { y: 20, duration: 0.5 });
+        AJ.leave(tl, ["#beat-b"], 14.2, { y: -40, duration: 0.3 });
+
+        // "growth" slams with an echo stack.
+        AJ.echoStack(tl, "#growth-word", 14.6, { count: 2 });
+        AJ.slam(tl, "#growth-word", 14.42, { from: 1.35, duration: 0.6 });
+        AJ.leave(tl, "#growth", 15.25, { duration: 0.35 });
+
+        // Ribbon wraps a real dashboard; text rides the ribbon; the line builds on the voice.
+        AJ.tiltFloat(tl, "#shot", 15.4, { rx: 6, ry: -10, until: 18.3, amp: 6 });
+        AJ.drawPath(tl, "#ribbon-band", 15.5, { duration: 1.2 });
+        tl.fromTo("#ribbon-text", { attr: { startOffset: "0%" } }, { attr: { startOffset: "-40%" }, duration: 3, ease: "none" }, 15.5);
+        tl.fromTo("#ribbon-text", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 15.9);
+        AJ.buildSentence(tl, "#s5-line", 15.6, { keyword: "sleep.", highlight: "fill", times: [0, 0.28, 0.46, 0.78, 1.32, 1.56, 1.7] });
+        AJ.leave(tl, "#beat-c", 18.2, { duration: 0.35 });
+
+        // Close — spark + question on the voice, then the signature.
+        tl.fromTo("#end-spark", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.7, ease: AJ.EASE.pop }, 18.45);
+        AJ.buildSentence(tl, "#s6-line", 18.6, { keyword: "grow?", highlight: "fill", times: [0, 0.32, 0.54] });
+        AJ.arrive(tl, "#s6-sign", 19.6, { y: 20, duration: 0.6 });
+
+        window.__timelines["main"] = tl;
+      }
+
+      async function init() {
+        await document.fonts.ready;
+        build();
+      }
+      init();
+    </script>
+  </body>
+</html>

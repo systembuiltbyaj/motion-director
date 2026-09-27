@@ -1,0 +1,13 @@
+{
+  "voice": "am_michael",
+  "speed": 0.95,
+  "dir": "vo",
+  "lines": [
+    { "id": "l1", "text": "Every system starts with a spark." },
+    { "id": "l2", "text": "A lead. A question. A follow-up nobody sent." },
+    { "id": "l3", "text": "What if it just worked?" },
+    { "id": "l4", "text": "That's where systems thinking begins. Turning chaos into workflows, and workflows into growth." },
+    { "id": "l5", "text": "Built to run, even while you sleep." },
+    { "id": "l6", "text": "Ready to grow?" }
+  ]
+}
