@@ -5,12 +5,12 @@
 //
 // Usage: node capture-site.mjs <out-dir> <name>=<url> [<name>=<url> ...] [--width 1440] [--max-height 3600] [--dry-run]
 //
-// Needs Playwright. It is resolved from the current project first, then from PLAYWRIGHT_FROM (a path to
-// any package.json whose node_modules has playwright). Install with: npm i -D playwright && npx playwright install chromium
+// Needs Playwright; see playwright.mjs for how it and Chromium are found (PLAYWRIGHT_FROM, PLAYWRIGHT_CHROMIUM,
+// the current project, the npx cache). Install with: npm i -D playwright && npx playwright install chromium
 import { mkdir } from "node:fs/promises";
-import { createRequire } from "node:module";
 import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { launchOptions, loadPlaywright } from "./playwright.mjs";
 
 export function parseTargets(args) {
   return args
@@ -23,18 +23,6 @@ export function parseTargets(args) {
       if (!/^https?:\/\//i.test(url)) throw new Error(`"${url}" is not an http(s) URL`);
       return { name, url };
     });
-}
-
-function loadPlaywright() {
-  const bases = [join(process.cwd(), "package.json"), process.env.PLAYWRIGHT_FROM].filter(Boolean);
-  for (const base of bases) {
-    try {
-      return createRequire(resolve(base)).require("playwright");
-    } catch {
-      // try the next location
-    }
-  }
-  throw new Error("Playwright not found. Run `npm i -D playwright && npx playwright install chromium` in this project, or set PLAYWRIGHT_FROM to a package.json that has it.");
 }
 
 function option(args, name, fallback) {
@@ -83,7 +71,7 @@ async function main() {
   }
   const { chromium } = loadPlaywright();
   await mkdir(outDir, { recursive: true });
-  const browser = await chromium.launch();
+  const browser = await chromium.launch(launchOptions());
   try {
     for (const target of targets) await capture(browser, target, outDir, width, maxHeight);
   } finally {

@@ -118,6 +118,7 @@ by most references becomes a law.
 ## Files
 
 - [references/layouts.md](references/layouts.md): the six layouts (structure, pacing, moves, audio) and how to choose
+- [references/website-case-study.md](references/website-case-study.md): recipe + capture rules + gotchas for films that present a website
 - [references/sound-design.md](references/sound-design.md): cue sheets, SFX palette, music styles, voiceover, loudness
 - [references/flavors.md](references/flavors.md): palettes and deriving one from a client brand
 - [references/design-language.md](references/design-language.md) · [references/motion-grammar.md](references/motion-grammar.md) · [references/signature-moves.md](references/signature-moves.md) · [references/story-structures.md](references/story-structures.md) · [references/audit.md](references/audit.md)
