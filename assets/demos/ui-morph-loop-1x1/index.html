@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1080" />
+    <title>UI Morph Loop — motion-director</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/motion-director.js"></script>
+    <link rel="stylesheet" href="assets/motion-director.css" />
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-latin.woff2") format("woff2"); font-weight: 100 900; }
+      body { margin: 0; background: #000; }
+      #root { position: relative; width: 1080px; height: 1080px; overflow: hidden; background: var(--md-bg); color: var(--md-fg); font-family: "Inter", sans-serif; --md-grain-opacity: 0.1; }
+      #world { position: absolute; inset: 0; transform-origin: 50% 50%; }
+
+      /* The one shape. Every state is this element; only its size, radius and fill change. */
+      #shape { position: absolute; left: 540px; top: 540px; width: 380px; height: 104px; border-radius: 52px; background: var(--md-fg); color: #fff; overflow: hidden; box-shadow: 0 18px 40px rgba(28, 27, 26, 0.16); }
+      .slot { font-weight: 600; font-size: 34px; letter-spacing: -0.01em; white-space: nowrap; }
+      #s-button { opacity: 1; }
+
+      #spinner { width: 56px; height: 56px; }
+      #spinner circle { fill: none; stroke: #fff; stroke-width: 6; stroke-linecap: round; stroke-dasharray: 90 200; }
+      #check { width: 56px; height: 56px; }
+      #check path { fill: none; stroke: #fff; stroke-width: 7; stroke-linecap: round; stroke-linejoin: round; }
+
+      #s-island { justify-items: start; padding: 0 34px; grid-template-columns: auto 1fr auto; gap: 18px; place-items: center start; }
+      #s-island .dot { width: 22px; height: 22px; border-radius: 50%; background: var(--md-accent); }
+      #s-island .name { font-size: 28px; max-width: 360px; overflow: hidden; text-overflow: ellipsis; }
+      #s-island .name span { color: rgba(255, 255, 255, 0.55); font-weight: 500; }
+      #s-island .now { font-size: 22px; color: rgba(255, 255, 255, 0.5); font-weight: 500; }
+
+      .light { color: var(--md-fg); }
+      #s-slider { padding: 0 44px; grid-template-rows: auto auto; gap: 22px; place-items: center stretch; }
+      #s-slider .row { display: flex; justify-content: space-between; font-size: 26px; font-weight: 600; }
+      #s-slider .row span:last-child { color: var(--md-muted); font-variant-numeric: tabular-nums; }
+      #track { position: relative; height: 12px; border-radius: 6px; background: #e4e0da; }
+      #fill { position: absolute; left: 0; top: 0; bottom: 0; width: 100%; border-radius: 6px; background: var(--md-accent); transform-origin: 0 50%; }
+      #knob { position: absolute; left: 30%; top: 50%; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; background: #fff; box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22); }
+
+      #toggle-knob { position: absolute; left: 12px; top: 12px; width: 96px; height: 96px; border-radius: 50%; background: #fff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18); }
+
+      #s-tabs { grid-template-columns: repeat(3, 1fr); padding: 0 12px; }
+      #s-tabs .tab { position: relative; z-index: 1; text-align: center; font-size: 28px; }
+      #indicator { position: absolute; left: 12px; top: 12px; width: 205px; height: 86px; border-radius: 43px; background: var(--md-fg); }
+      #s-tabs .tab.on { color: #fff; }
+
+      #s-chart { padding: 44px; grid-template-rows: auto 1fr; place-items: stretch; gap: 28px; }
+      #s-chart .head { display: flex; justify-content: space-between; font-size: 28px; font-weight: 700; }
+      #s-chart .head span { color: var(--md-muted); font-weight: 500; font-size: 24px; }
+      #bars { position: relative; display: flex; align-items: flex-end; gap: 22px; }
+      #bars i { flex: 1; border-radius: 12px 12px 4px 4px; background: #e4e0da; transform-origin: 50% 100%; }
+      #bars i.peak { background: var(--md-accent); }
+      #tip { position: absolute; left: 50%; top: -6px; padding: 8px 16px; border-radius: 12px; background: var(--md-fg); color: #fff; font-size: 22px; font-weight: 600; opacity: 0; transform: translateX(-50%); }
+
+      #s-cmdk { grid-template-columns: auto 1fr; gap: 22px; padding: 0 30px; place-items: center start; }
+      #s-cmdk .key { padding: 8px 14px; border-radius: 12px; background: #eeebe6; font-size: 24px; font-weight: 700; color: var(--md-muted); }
+      #query { font-size: 32px; font-weight: 500; }
+      #query .md-caret { background: var(--md-accent); }
+
+      #s-toast { grid-template-columns: auto auto; gap: 18px; justify-content: center; }
+      #s-toast .ok { width: 40px; height: 40px; border-radius: 50%; background: var(--md-accent); display: grid; place-items: center; }
+      #s-toast .ok svg { width: 22px; height: 22px; }
+      #s-toast .ok path { fill: none; stroke: #fff; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1080" data-duration="16" data-md-flavor="warm-canvas">
+      <div class="md-grain"></div>
+      <div id="world">
+        <div id="shape">
+          <div class="md-swap-slot slot" id="s-button">Get started</div>
+          <div class="md-swap-slot slot" id="s-loader"><svg id="spinner" viewBox="0 0 56 56"><circle cx="28" cy="28" r="23" /></svg></div>
+          <div class="md-swap-slot slot" id="s-check"><svg id="check" viewBox="0 0 56 56"><path d="M14 29 L24 39 L43 18" /></svg></div>
+          <div class="md-swap-slot slot" id="s-island"><i class="dot"></i><div class="name">{{brand.name}} <span>· New booking</span></div><div class="now">now</div></div>
+          <div class="md-swap-slot slot light" id="s-slider">
+            <div class="row"><span>Volume</span><span id="vol">30</span></div>
+            <div id="track"><div id="fill"></div><div id="knob"></div></div>
+          </div>
+          <div class="md-swap-slot slot" id="s-toggle"><div id="toggle-knob"></div></div>
+          <div class="md-swap-slot slot light" id="s-tabs"><div id="indicator"></div><div class="tab on" id="tab-day">Day</div><div class="tab">Week</div><div class="tab" id="tab-month">Month</div></div>
+          <div class="md-swap-slot slot light" id="s-chart">
+            <div class="head">This week <span>Bookings</span></div>
+            <div id="bars"><i style="height: 38%"></i><i style="height: 55%"></i><i style="height: 47%"></i><i class="peak" style="height: 88%"><b id="tip">Thu</b></i><i style="height: 62%"></i><i style="height: 44%"></i><i style="height: 30%"></i></div>
+          </div>
+          <div class="md-swap-slot slot light" id="s-cmdk"><div class="key">⌘K</div><div id="query">new booking</div></div>
+          <div class="md-swap-slot slot" id="s-toast"><div class="ok"><svg viewBox="0 0 22 22"><path d="M5 11.5 L9.5 16 L17 7" /></svg></div>Saved</div>
+        </div>
+      </div>
+      <div class="md-cursor" id="cursor"><span class="md-cursor-ripple"></span></div>
+      <audio id="mix" src="assets/audio/mix.wav" data-start="0" data-duration="16" data-volume="1"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      // 120 BPM: one beat is 0.5 s, and something changes on every beat. 16 s = 8 bars, and the last
+      // frame matches the first, so the file loops seamlessly on social.
+      const CENTER = 540;
+      const REST = { x: 800, y: 790 };
+      // The camera scales the world so each state fills the frame; the cursor lives outside the world
+      // (constant size), so its targets are converted from shape offsets to screen space.
+      const zoomFor = (width, height) => Math.min(2.2, Math.max(1, Math.min(820 / width, 700 / height)));
+      const screen = (dx, dy, zoom) => ({ x: CENTER + dx * zoom, y: CENTER + dy * zoom });
+
+      function build() {
+        const MD = window.MotionDirector;
+        const tl = gsap.timeline({ paused: true });
+        const shape = document.querySelector("#shape");
+        gsap.set(shape, { xPercent: -50, yPercent: -50 });
+        gsap.set("#fill", { scaleX: 0.3 });
+
+        let zoom = zoomFor(380, 104);
+        gsap.set("#world", { scale: zoom });
+        gsap.set("#cursor", REST);
+
+        // One state change: the shape morphs, the camera re-frames, the content swaps.
+        const toState = (at, { width, height, radius, fill, from, to }) => {
+          zoom = zoomFor(width, height);
+          MD.morphTo(tl, shape, at, { width, height, borderRadius: radius, backgroundColor: fill });
+          MD.camera(tl, "#world", at, { scale: zoom, duration: 0.6 });
+          MD.contentSwap(tl, from, to, at + 0.05, { duration: 0.26 });
+        };
+
+        // 0–1: the button, clicked on beat 2.
+        MD.cursor(tl, "#cursor", 0.45, { ...screen(80, 12, zoom), duration: 0.55, click: true });
+
+        // 1: loader.
+        toState(1.0, { width: 104, height: 104, radius: 52, fill: "#1c1b1a", from: "#s-button", to: "#s-loader" });
+        tl.to("#spinner", { rotation: 720, svgOrigin: "28 28", duration: 1.4, ease: "none" }, 1.1);
+        MD.cursor(tl, "#cursor", 1.2, { ...REST, duration: 0.7 });
+
+        // 2.5: check.
+        toState(2.5, { width: 104, height: 104, radius: 52, fill: "#ff5a1f", from: "#s-loader", to: "#s-check" });
+        MD.drawPath(tl, "#check path", 2.65, { duration: 0.4 });
+
+        // 3.5: the check stretches into a notification island.
+        toState(3.5, { width: 560, height: 112, radius: 56, fill: "#1c1b1a", from: "#s-check", to: "#s-island" });
+
+        // 5: slider card; the cursor grabs the knob on beat and drags it.
+        toState(5.0, { width: 600, height: 170, radius: 34, fill: "#ffffff", from: "#s-island", to: "#s-slider" });
+        const knobStart = () => screen(-256 + 512 * 0.3, 38, zoomFor(600, 170));
+        const knobEnd = () => screen(-256 + 512 * 0.85, 38, zoomFor(600, 170));
+        MD.cursor(tl, "#cursor", 5.6, { ...knobStart(), duration: 0.4 });
+        MD.cursor(tl, "#cursor", 6.0, { ...knobEnd(), duration: 0.9, drag: true, ease: "power2.inOut" });
+        tl.to("#knob", { x: 512 * 0.55, duration: 0.9, ease: "power2.inOut" }, 6.08);
+        tl.to("#fill", { scaleX: 0.85, duration: 0.9, ease: "power2.inOut" }, 6.08);
+        MD.countUp(tl, "#vol", 85, 6.08, { from: 30, duration: 0.9, punch: false });
+
+        // 7.5: toggle, flipped on beat 17.
+        toState(7.5, { width: 220, height: 120, radius: 60, fill: "#d9d4cd", from: "#s-slider", to: "#s-toggle" });
+        const toggleZoom = zoomFor(220, 120);
+        MD.cursor(tl, "#cursor", 7.95, { ...screen(30, 10, toggleZoom), duration: 0.55, click: true });
+        tl.to("#toggle-knob", { x: 100, duration: 0.4, ease: MD.EASE.spring }, 8.5);
+        tl.to(shape, { backgroundColor: "#ff5a1f", duration: 0.3, ease: "none" }, 8.5);
+
+        // 9: tabs; the indicator slides to "Month" on click.
+        toState(9.0, { width: 640, height: 110, radius: 55, fill: "#ffffff", from: "#s-toggle", to: "#s-tabs" });
+        const tabsZoom = zoomFor(640, 110);
+        MD.cursor(tl, "#cursor", 9.45, { ...screen(212, 8, tabsZoom), duration: 0.55, click: true });
+        tl.to("#indicator", { x: 411, duration: 0.45, ease: MD.EASE.spring }, 10.0);
+        tl.set("#tab-day", { color: "#1c1b1a" }, 10.1);
+        tl.set("#tab-month", { color: "#ffffff" }, 10.2);
+
+        // 10.5: the tabs open into a chart; bars grow, hover shows a tooltip.
+        toState(10.5, { width: 640, height: 440, radius: 34, fill: "#ffffff", from: "#s-tabs", to: "#s-chart" });
+        tl.fromTo("#bars i", { scaleY: 0 }, { scaleY: 1, duration: 0.6, ease: MD.EASE.enter, stagger: 0.06 }, 10.8);
+        MD.cursor(tl, "#cursor", 11.3, { ...screen(40, 20, zoomFor(640, 440)), duration: 0.5 });
+        tl.fromTo("#tip", { opacity: 0, y: 10 }, { opacity: 1, y: -52, duration: 0.3, ease: MD.EASE.pop }, 11.8);
+
+        // 12.25: collapse into ⌘K and type.
+        toState(12.25, { width: 640, height: 120, radius: 26, fill: "#ffffff", from: "#s-chart", to: "#s-cmdk" });
+        MD.cursor(tl, "#cursor", 12.3, { ...REST, duration: 0.6 });
+        MD.typeOn(tl, "#query", 12.6, { cps: 22 });
+
+        // 13.5: enter → toast.
+        toState(13.5, { width: 480, height: 100, radius: 50, fill: "#1c1b1a", from: "#s-cmdk", to: "#s-toast" });
+
+        // 14.75: back to the button; everything is at its first-frame value before 16 s.
+        toState(14.75, { width: 380, height: 104, radius: 52, fill: "#1c1b1a", from: "#s-toast", to: "#s-button" });
+
+        window.__timelines["main"] = tl;
+      }
+
+      async function init() {
+        await document.fonts.ready;
+        build();
+      }
+      init();
+    </script>
+  </body>
+</html>

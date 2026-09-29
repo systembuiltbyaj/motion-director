@@ -266,3 +266,133 @@
   background: var(--md-accent);
   box-shadow: 0 0 24px 6px color-mix(in srgb, var(--md-accent) 60%, transparent);
 }
+
+/* ---------------------------------------------------------------- UI morph + cursor */
+
+/* A pointer drawn in CSS, so no image asset is needed. Tip sits at the element's top-left. */
+.md-cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 34px;
+  height: 34px;
+  z-index: 50;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+.md-cursor::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--md-fg);
+  clip-path: polygon(0 0, 0 86%, 24% 66%, 40% 100%, 54% 94%, 39% 61%, 70% 61%);
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+}
+.md-cursor-ripple {
+  position: absolute;
+  left: -18px;
+  top: -18px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid var(--md-accent);
+  opacity: 0;
+}
+
+/* Two stacked contents inside one morphing container (contentSwap). */
+.md-swap-slot {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+}
+
+/* Word portal overlay: a full-frame SVG whose mask cuts the word out of the outgoing scene's color. */
+.md-portal {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.md-strike {
+  position: absolute;
+  left: -0.04em;
+  right: -0.04em;
+  top: 52%;
+  height: 0.07em;
+  border-radius: 0.04em;
+  background: var(--md-fg);
+  transform: scaleX(0);
+}
+
+.md-spin-window {
+  overflow: hidden;
+}
+
+/* ---------------------------------------------------------------- HUD add-on */
+
+.md-hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  font-family: var(--md-font-body);
+  font-variant-numeric: tabular-nums;
+  font-size: 18px;
+  letter-spacing: 0.08em;
+  color: color-mix(in srgb, var(--md-fg) 70%, transparent);
+  opacity: 0;
+}
+.md-hud-corner {
+  position: absolute;
+  width: 34px;
+  height: 34px;
+  border: 0 solid color-mix(in srgb, var(--md-fg) 55%, transparent);
+}
+.md-hud-corner--tl { top: 40px; left: 40px; border-top-width: 2px; border-left-width: 2px; }
+.md-hud-corner--tr { top: 40px; right: 40px; border-top-width: 2px; border-right-width: 2px; }
+.md-hud-corner--bl { bottom: 40px; left: 40px; border-bottom-width: 2px; border-left-width: 2px; }
+.md-hud-corner--br { bottom: 40px; right: 40px; border-bottom-width: 2px; border-right-width: 2px; }
+.md-hud-tc { position: absolute; top: 52px; left: 92px; font-variant-numeric: tabular-nums; }
+.md-hud-meta { position: absolute; top: 52px; right: 92px; text-transform: uppercase; }
+.md-hud-chapter { position: absolute; bottom: 52px; right: 92px; font-variant-numeric: tabular-nums; color: var(--md-accent); }
+
+/* Figma-style selection box (selectBox). */
+.md-select {
+  position: absolute;
+  border: 2px solid var(--md-accent);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 30;
+}
+.md-select-handle {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--md-bg);
+  border: 2px solid var(--md-accent);
+}
+.md-select-handle--tl { top: -7px; left: -7px; }
+.md-select-handle--tr { top: -7px; right: -7px; }
+.md-select-handle--bl { bottom: -7px; left: -7px; }
+.md-select-handle--br { bottom: -7px; right: -7px; }
+.md-select-label {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: var(--md-accent);
+  color: var(--md-on-accent);
+  font: 600 15px/1.2 var(--md-font-body);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Easing graph (easeGraph). */
+.md-ease-path { fill: none; stroke: var(--md-accent); stroke-width: 4; stroke-linecap: round; }
+.md-ease-dot { fill: var(--md-fg); }

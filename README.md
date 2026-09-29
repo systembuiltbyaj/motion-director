@@ -1,7 +1,7 @@
 # motion-director
 
 A [Claude Code](https://claude.com/claude-code) skill that gives Claude a complete motion-design system
-for [HyperFrames](https://hyperframes.heygen.com) videos: six presentation layouts, a shared
+for [HyperFrames](https://hyperframes.heygen.com) videos: eight presentation layouts, a shared
 kinetic-typography language, color flavors, deterministic GSAP helpers, and a free local sound engine
 (music bed, motion-synced sound effects, and voiceover). No API keys or subscriptions needed: everything
 renders on your machine, with ElevenLabs or your own cloned voice as optional voice upgrades.
@@ -20,6 +20,11 @@ assets, render.
 | **AI Canvas** | AI product demo: prompt types, agent plans, node canvas with a camera pull-back | SFX, voice in the second half | 16:9 |
 | **Agency Split** | Fast promo: amber panels, typed copy, image splits, logo wall | Music + SFX | 16:9 · **9:16** |
 | **Portfolio Reveal** | Personal brand reel: show the work → reveal the system behind it → reveal the builder | Sparse voiceover + SFX | 16:9 |
+| **UI Morph Loop** | One UI element morphs through 10 states, cursor-driven, camera re-frames each; loops seamlessly | Music + SFX | **1:1** |
+| **Stage Film** | Calm premium product film on a rounded stage: list spin, strike → underline, color flood, word portal | Music + SFX | 16:9 |
+
+Plus the **HUD frame** add-on (timecode, BPM, chapter counter, selection boxes, ease graphs) for craft and
+capability reels on any layout.
 
 Layouts without a ready-made 9:16 version are re-laid-out for vertical by Claude, keeping the same timings.
 
@@ -85,8 +90,9 @@ publish.
 
 ## Tools
 
-- `assets/motion-director.js`: 25+ timeline helpers (`buildSentence`, `typeOn`, `slam`, `whip`,
-  `zoomThrough`, `tiltFloat`, `drawPath`, `camera`, …), all seek-safe for frame-by-frame rendering.
+- `assets/motion-director.js`: 35+ timeline helpers (`buildSentence`, `typeOn`, `slam`, `whip`,
+  `camera`, `morphTo`, `cursor`, `textPortal`, `listSpin`, `hudFrame`, …), all seek-safe for frame-by-frame
+  rendering.
 - `assets/motion-director.css`: flavor tokens (Glow Dark, Electric System, Warm Canvas, Bold Split).
 - `scripts/doctor.mjs`: setup check with a fix for each missing piece.
 - `scripts/scaffold.mjs`: seeds a HyperFrames project from any demo, with your brand and SAMPLE media.
@@ -98,6 +104,7 @@ publish.
   set `"provider"` in `vo.json` to `elevenlabs` or `openai-compatible` (VoiceStudio, a Chatterbox or VoxCPM2
   server, OpenAI) for a premium or cloned voice; keys go in `.env` (see `.env.example`). Every line is
   level-matched, and a line is re-voiced only when its request changes.
+- `scripts/beat-frames.mjs`: one frame per beat of a render, tiled into a contact sheet for review.
 - `scripts/transcribe.py`: word timings for sync, plus a check that every voice line is audible
   in the final mix.
 - `scripts/capture-site.mjs`: full-page captures of live funnels and websites for browser-frame shots.

@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Stage Film — motion-director</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/motion-director.js"></script>
+    <link rel="stylesheet" href="assets/motion-director.css" />
+    <style>
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-latin.woff2") format("woff2"); font-weight: 100 900; }
+      body { margin: 0; background: #000; }
+      #root {
+        position: relative; width: 1920px; height: 1080px; overflow: hidden; color: var(--md-fg); font-family: "Inter", sans-serif;
+        background:
+          radial-gradient(55% 70% at 8% 0%, color-mix(in srgb, var(--md-accent) 70%, transparent), transparent 72%),
+          radial-gradient(45% 55% at 100% 100%, color-mix(in srgb, var(--md-accent) 30%, transparent), transparent 70%),
+          #05060a;
+        --md-grain-opacity: 0.12;
+      }
+
+      /* The stage: ~80% of the width, ~75% of the height, a little below center. Everything plays inside it. */
+      #stage { position: absolute; left: 192px; top: 160px; width: 1536px; height: 810px; border-radius: 44px; overflow: hidden; background: #0b0b0e; box-shadow: 0 40px 120px rgba(0, 0, 0, 0.55), inset 0 0 0 1px rgba(255, 255, 255, 0.06); }
+      .scene { position: absolute; inset: 0; display: grid; place-items: center; align-content: center; text-align: center; }
+      .kicker { font-size: 26px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--md-muted); }
+      .title { margin: 18px 0 0; font-size: 104px; font-weight: 800; letter-spacing: -0.035em; line-height: 1; }
+      .sub { margin-top: 22px; font-size: 32px; color: var(--md-muted); }
+      .line { font-size: 64px; font-weight: 700; letter-spacing: -0.025em; }
+
+      /* The persistent element: a stories-style progress rail that carries continuity across every shot. */
+      #rail { position: absolute; left: 48px; right: 48px; top: 34px; display: flex; gap: 10px; z-index: 20; }
+      #rail i { position: relative; flex: 1; height: 5px; border-radius: 3px; background: rgba(255, 255, 255, 0.16); overflow: hidden; }
+      #rail b { position: absolute; inset: 0; background: #fff; transform-origin: 0 50%; }
+
+      #spin-window { position: relative; height: 96px; margin-top: 26px; overflow: hidden; }
+      #spin-list { margin: 0; padding: 0; list-style: none; }
+      #spin-list li { height: 96px; line-height: 96px; font-size: 76px; font-weight: 800; letter-spacing: -0.03em; color: var(--md-accent); }
+      #spin-q { display: inline-block; margin-left: 8px; font-size: 76px; font-weight: 800; color: #fff; opacity: 0; }
+      #spin-row { display: flex; align-items: center; justify-content: center; }
+
+      .big { position: relative; display: inline-block; font-size: 120px; font-weight: 800; letter-spacing: -0.04em; line-height: 1.05; }
+      .small { font-size: 34px; font-weight: 600; color: var(--md-muted); margin: 10px 0; }
+      #not-word { color: #fff; }
+
+      #flood { position: absolute; inset: 0; z-index: 12; display: grid; place-items: center; background: var(--md-accent); clip-path: inset(100% 0% 0% 0%); }
+      #flood-word { font-size: 180px; font-weight: 900; letter-spacing: -0.05em; color: var(--md-on-accent); opacity: 0; }
+
+      #app { width: 960px; padding: 34px 38px; text-align: left; color: #111318; border-radius: 28px; background: #fff; box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5); }
+      #app-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+      #app-head h3 { margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.01em; }
+      #app-head h3 span { color: #8a93a6; font-weight: 500; }
+      #run { padding: 14px 26px; border-radius: 16px; background: var(--md-accent); color: var(--md-on-accent); font-size: 24px; font-weight: 700; }
+      .task { display: grid; grid-template-columns: 52px 1fr auto; align-items: center; gap: 18px; padding: 18px 0; border-top: 1px solid #eceef3; font-size: 27px; font-weight: 600; }
+      .task .who { width: 52px; height: 52px; border-radius: 50%; background: #e8ecf6; }
+      .task small { display: block; margin-top: 2px; font-size: 20px; font-weight: 500; color: #8a93a6; }
+      .status { position: relative; min-width: 150px; height: 44px; }
+      .status span { position: absolute; inset: 0; display: grid; place-items: center; border-radius: 22px; font-size: 20px; font-weight: 700; }
+      .pending { background: #f1f2f6; color: #8a93a6; }
+      .sent { background: var(--md-accent); color: var(--md-on-accent); opacity: 0; }
+      #summary { margin-top: 26px; justify-self: center; }
+
+      #its { position: absolute; left: 0; right: 0; top: 150px; z-index: 16; text-align: center; font-size: 44px; font-weight: 600; color: var(--md-muted); opacity: 0; }
+      #portal { z-index: 15; opacity: 0; }
+      #portal-word { font-family: "Inter", sans-serif; font-weight: 900; font-size: 330px; letter-spacing: -14px; }
+
+      #end { z-index: 14; background: var(--md-accent); color: var(--md-on-accent); opacity: 0; }
+      #lockup { display: flex; align-items: center; gap: 30px; }
+      #mark { display: grid; place-items: center; width: 120px; height: 120px; border-radius: 34px; background: var(--md-on-accent); color: var(--md-accent); font-size: 52px; font-weight: 900; }
+      #end-name { font-size: 96px; font-weight: 800; letter-spacing: -0.035em; }
+      #end-url { margin-top: 26px; font-size: 32px; font-weight: 600; opacity: 0.85; }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="18" data-md-flavor="electric-system">
+      <div class="md-grain"></div>
+      <div id="stage">
+        <div id="rail"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
+
+        <section class="scene" id="s1">
+          <div class="kicker" id="s1-kicker">Introducing</div>
+          <div class="title" id="s1-title">{{brand.name}}</div>
+          <div class="sub" id="s1-sub">{{brand.tagline}}</div>
+        </section>
+
+        <section class="scene" id="s2">
+          <div class="line" id="s2-line">Every week, you're chasing</div>
+          <div id="spin-row">
+            <div id="spin-window"><ul id="spin-list"><li>invoices</li><li>bookings</li><li>reminders</li><li>reports</li><li>onboarding</li><li>approvals</li><li>renewals</li><li>follow-ups</li><li>reviews</li><li>handoffs</li></ul></div>
+            <span id="spin-q">?</span>
+          </div>
+        </section>
+
+        <section class="scene" id="s3">
+          <div class="small" id="s3-a">Not</div>
+          <div class="big" id="not-word">more tools.<span class="md-strike" id="strike"></span></div>
+          <div class="small" id="s3-b">Just</div>
+          <div class="big" id="yes-word">one system.</div>
+        </section>
+
+        <section class="scene" id="s5">
+          <div id="app">
+            <div id="app-head"><h3>Follow-ups <span>· Today</span></h3><div id="run">Run</div></div>
+            <div class="task"><i class="who"></i><div>New website lead<small>Form · 9:42</small></div><div class="status"><span class="pending">Pending</span><span class="sent">Sent ✓</span></div></div>
+            <div class="task"><i class="who"></i><div>Missed call<small>Phone · 10:15</small></div><div class="status"><span class="pending">Pending</span><span class="sent">Sent ✓</span></div></div>
+            <div class="task"><i class="who"></i><div>Quote requested<small>Email · 11:03</small></div><div class="status"><span class="pending">Pending</span><span class="sent">Sent ✓</span></div></div>
+          </div>
+          <div class="md-chip" id="summary">All caught up</div>
+        </section>
+
+        <section class="scene" id="end">
+          <div id="lockup"><div id="mark">{{brand.initials}}</div><div id="end-name">{{brand.name}}</div></div>
+          <div id="end-url">{{brand.url}}</div>
+        </section>
+
+        <!-- Word portal: the stage color with "LIVE." cut out, so the end scene shows through the letters. -->
+        <svg class="md-portal" id="portal" viewBox="0 0 1536 810">
+          <defs>
+            <mask id="portal-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1536" height="810">
+              <rect width="1536" height="810" fill="#fff" />
+              <g id="portal-in"><text id="portal-word" x="768" y="560" text-anchor="middle" fill="#000">LIVE.</text></g>
+            </mask>
+          </defs>
+          <rect width="1536" height="810" fill="#0b0b0e" mask="url(#portal-mask)" />
+        </svg>
+        <div id="its">It's</div>
+
+        <div id="flood"><div id="flood-word">Meet it.</div></div>
+      </div>
+      <div class="md-cursor" id="cursor"><span class="md-cursor-ripple"></span></div>
+      <audio id="mix" src="assets/audio/mix.wav" data-start="0" data-duration="18" data-volume="1"></audio>
+    </div>
+    <script>
+      window.__timelines = window.__timelines || {};
+
+      // Scene starts; the rail fills one segment per scene, so the viewer always knows where they are.
+      const SCENES = [0.2, 2.6, 5.7, 8.3, 9.4, 12.6];
+      const RAIL_END = 14.7;
+
+      function build() {
+        const MD = window.MotionDirector;
+        const tl = gsap.timeline({ paused: true });
+        const segments = Array.from(document.querySelectorAll("#rail b"));
+        gsap.set(segments, { scaleX: 0 });
+        segments.forEach((segment, i) => {
+          const end = SCENES[i + 1] ?? RAIL_END;
+          tl.to(segment, { scaleX: 1, duration: end - SCENES[i], ease: "none" }, SCENES[i]);
+        });
+        gsap.set("#cursor", { x: 1700, y: 1000, opacity: 0 });
+
+        // 1. Intro: kicker, product name, tagline.
+        MD.arrive(tl, "#s1-kicker", 0.3, { duration: 0.6 });
+        const name = document.querySelector("#s1-title");
+        MD.buildSentence(tl, name, 0.55, { keyword: name.textContent, highlight: "color" });
+        MD.arrive(tl, "#s1-sub", 1.2, { y: 20 });
+        MD.leave(tl, ["#s1-kicker", "#s1-title", "#s1-sub"], 2.35);
+
+        // 2. Too-fast list lands on the pain, and a "?" pops 0.2 s later.
+        MD.buildSentence(tl, "#s2-line", 2.6, { keyword: "chasing", highlight: "color" });
+        MD.arrive(tl, "#spin-window", 3.0, { y: 0, blur: 0, duration: 0.2 });
+        const landed = MD.listSpin(tl, "#spin-list", 3.05, { land: 7, laps: 3, duration: 1.9 });
+        tl.fromTo("#spin-q", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.35, ease: MD.EASE.pop }, landed + 0.2);
+        MD.leave(tl, ["#s2-line", "#spin-row"], 5.45);
+
+        // 3. "Not more tools. Just one system.": the strike drops and becomes the underline.
+        MD.arrive(tl, ["#s3-a", "#not-word"], 5.75, { stagger: 0.08 });
+        const notWord = document.querySelector("#not-word");
+        const yesWord = document.querySelector("#yes-word");
+        const drop = yesWord.offsetTop + yesWord.offsetHeight * 0.96 - (notWord.offsetTop + notWord.offsetHeight * 0.52);
+        tl.to(notWord, { color: "#5b6273", duration: 0.3, ease: "none" }, 6.55);
+        MD.arrive(tl, ["#s3-b", "#yes-word"], 6.85, { stagger: 0.08 });
+        MD.strikeToUnderline(tl, "#strike", 6.3, { hold: 0.75, drop });
+        MD.leave(tl, "#s3 > *", 8.15);
+
+        // 4. Brand-color flood as the interstitial.
+        MD.wipeIn(tl, "#flood", 8.3, { from: "bottom", duration: 0.45 });
+        MD.slam(tl, "#flood-word", 8.55, { from: 1.25 });
+        tl.to("#flood", { clipPath: "inset(0% 0% 100% 0%)", duration: 0.45, ease: MD.EASE.move }, 9.25);
+
+        // 5. The product: a real-feeling UI, the cursor runs it, rows resolve one by one.
+        MD.arrive(tl, "#app", 9.35, { y: 70, duration: 0.8 });
+        tl.to("#cursor", { opacity: 1, duration: 0.2, ease: "none" }, 9.7);
+        MD.cursor(tl, "#cursor", 9.9, { x: 1450, y: 330, duration: 0.6, click: true });
+        tl.to("#run", { scale: 0.94, duration: 0.08, yoyo: true, repeat: 1, ease: "power2.inOut" }, 10.5);
+        document.querySelectorAll(".task").forEach((task, i) => {
+          const at = 10.8 + i * 0.3;
+          tl.to(task.querySelector(".pending"), { opacity: 0, duration: 0.15, ease: "none" }, at);
+          tl.fromTo(task.querySelector(".sent"), { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.35, ease: MD.EASE.pop }, at);
+        });
+        MD.cursor(tl, "#cursor", 11.0, { x: 1760, y: 1000, duration: 0.8 });
+        tl.to("#cursor", { opacity: 0, duration: 0.25, ease: "none" }, 11.6);
+        MD.chipPop(tl, "#summary", 11.8);
+        MD.leave(tl, ["#app", "#summary"], 12.4);
+
+        // 6. Word portal: "It's LIVE." The end scene already shows through the letters, then the camera
+        //    dives through the L's stem into it.
+        tl.set("#end", { opacity: 1 }, 12.6);
+        tl.set("#portal", { opacity: 1 }, 12.6);
+        const word = document.querySelector("#portal-word");
+        const box = word.getBBox();
+        // The entrance scales a wrapper, so the word itself only ever has one origin (the dive's):
+        // two tweens with different svgOrigins on one element shift each other.
+        tl.fromTo("#portal-in", { scale: 0.86 }, { scale: 1, duration: 0.7, ease: MD.EASE.enter, svgOrigin: `${box.x + box.width / 2} ${box.y + box.height / 2}` }, 12.6);
+        MD.arrive(tl, "#its", 12.75, { y: 20, duration: 0.5 });
+        MD.leave(tl, "#its", 13.75, { duration: 0.25 });
+        // Dive through the L's stem: measure that glyph (not the whole word) and aim inside its stroke,
+        // above the foot. An origin in the open counter would fill the frame with the overlay instead.
+        const glyph = word.getExtentOfChar(0);
+        const stem = `${glyph.x + glyph.width * 0.28} ${560 - 330 * 0.4}`;
+        MD.textPortal(tl, word, 13.8, { scale: 42, duration: 0.9, origin: stem, overlay: "#portal" });
+
+        // 7. End card on the accent, then a micro-breath so the hold never looks frozen.
+        MD.arrive(tl, "#lockup", 14.75, { y: 30 });
+        MD.arrive(tl, "#end-url", 15.1, { y: 16 });
+        MD.breathe(tl, "#end", 15.9, { duration: 2 });
+
+        window.__timelines["main"] = tl;
+      }
+
+      async function init() {
+        await document.fonts.ready;
+        build();
+      }
+      init();
+    </script>
+  </body>
+</html>

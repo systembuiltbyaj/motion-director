@@ -107,3 +107,25 @@ test("normalizeWord strips punctuation but keeps letters and digits", () => {
   assert.equal(MD.normalizeWord("24/7!"), "247");
   assert.equal(MD.normalizeWord("Cafés,"), "cafés");
 });
+
+test("formatTimecode renders HH:MM:SS:FF and never rounds up into the next second", () => {
+  assert.equal(MD.formatTimecode(0), "00:00:00:00");
+  assert.equal(MD.formatTimecode(12.5, 30), "00:00:12:15");
+  assert.equal(MD.formatTimecode(3725.999, 30), "01:02:05:29");
+  assert.equal(MD.formatTimecode(1, 24), "00:00:01:00");
+  assert.throws(() => MD.formatTimecode(-1), /seconds/);
+});
+
+test("planSpin lands on the chosen item after whole laps", () => {
+  assert.deepEqual(MD.planSpin(10, 3, { laps: 3 }), { total: 34, landIndex: 33 });
+  assert.deepEqual(MD.planSpin(5, 0, { laps: 1 }), { total: 6, landIndex: 5 });
+  assert.throws(() => MD.planSpin(5, 5), /land/);
+  assert.throws(() => MD.planSpin(0, 0), /count/);
+});
+
+test("planEaseCurve samples an ease into an SVG path inside the box, y flipped", () => {
+  const linear = MD.planEaseCurve((t) => t, { width: 100, height: 50, samples: 4 });
+  assert.equal(linear, "M0,50 L25,37.5 L50,25 L75,12.5 L100,0");
+  const overshoot = MD.planEaseCurve((t) => (t === 1 ? 1 : t * 1.2), { width: 100, height: 50, samples: 2 });
+  assert.equal(overshoot, "M0,50 L50,20 L100,0");
+});

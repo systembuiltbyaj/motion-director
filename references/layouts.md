@@ -1,9 +1,9 @@
 # Presentation Layouts
 
-Six distinct ways to present: five from the reference films, plus Portfolio Reveal, built from a
-personal brand reel. A **layout** decides structure, pacing, camera, and audio. A **flavor**
-(`flavors.md`) decides palette. They're independent: any layout can
-take any flavor, but each has a default that matches its source.
+Eight distinct ways to present: five from the reference films, Portfolio Reveal from a personal
+brand reel, and UI Morph Loop and Stage Film from a study of prompted AI motion films. A **layout**
+decides structure, pacing, camera, and audio. A **flavor** (`flavors.md`) decides palette. They're
+independent: any layout can take any flavor, but each has a default that matches its source.
 
 Pick the layout first, based on the message and the assets you have, then the flavor. Every layout
 has a runnable demo: `node scripts/scaffold.mjs <project> --demo <name>`.
@@ -16,7 +16,10 @@ has a runnable demo: `node scripts/scaffold.mjs <project> --demo <name>`.
 5. AI Canvas
 6. Agency Split
 7. Portfolio Reveal
-8. Mixing layouts
+8. UI Morph Loop
+9. Stage Film
+10. HUD frame (add-on for any layout)
+11. Mixing layouts
 
 ## 1. Choosing
 
@@ -28,9 +31,12 @@ has a runnable demo: `node scripts/scaffold.mjs <project> --demo <name>`.
 | An AI, SaaS, or workflow product demo; "how it works" | **AI Canvas** | Shows the product thinking and building, prompt to result |
 | A service, agency, or personal-brand promo with real photos or screens | **Agency Split** | Typed copy + image panels move fast and carry a lot of real material |
 | A personal brand or portfolio reel: "here's my work, here's what runs behind it, here's me" | **Portfolio Reveal** | Earns the reveal of the person by showing the work first; the "front vs. system" twist sells technical depth |
+| A short UI sting, feature teaser or social loop: "look how smooth this product feels" | **UI Morph Loop** | One element never cuts, so the product's craft is the whole story; loops seamlessly in a feed |
+| A calm, premium product or feature film for a SaaS or app | **Stage Film** | The product sits on a stage with lots of space around it; restrained, one idea per second, quieter than Launch Hype |
 
 Automation and systems work usually wants **AI Canvas** (how a system works) or **Launch Hype** (what it
 achieves). Personal brand and portfolio reels want **Portfolio Reveal**. Client promos with footage usually want **Agency Split**.
+A capability or "how we work" reel for a studio or freelancer takes any layout plus the **HUD frame** (§10).
 
 ## 2. Brand System  ·  demo `brand-system`  ·  source: brand-guideline film
 
@@ -135,7 +141,58 @@ achieves). Personal brand and portfolio reels want **Portfolio Reveal**. Client 
   visual (see sound-design.md §5). Music drops for the twist and the collapse; strongest impact on
   the name reveal.
 
-## 8. Mixing layouts
+## 8. UI Morph Loop  ·  demo `ui-morph-loop` (1:1)  ·  source: prompted "one shape, never cut" UI films
+
+- **Default flavor:** Warm Canvas with the grain turned down (warm light gray, near-black components,
+  one accent). Pure black-and-white plus one accent also works.
+- **Pacing:** 120 BPM `pulse`, **something changes on every beat**, 16 s = 8 bars. Zero cuts: the whole
+  film is one element.
+- **Structure:** button → clicked → loader → check → stretches into a notification island → slider
+  card (the cursor drags it) → toggle flipped on the beat → tabs (indicator slides) → opens into a chart
+  (bars grow, hover tooltip) → collapses into ⌘K (types a query) → toast → **back to the button, so the
+  last frame is the first**. Swap the states for the product's real components.
+- **Signature moves:** `morphTo` (size, radius, fill on a spring with a tiny overshoot at most),
+  `contentSwap` (blur swap, exit and entry timed separately), `cursor` with click ripples and drags,
+  `camera` re-framing so each state fills the frame. The cursor lives outside the camera's world so it
+  keeps one size; convert its targets from shape offsets to screen space.
+- **Loop rule:** every property ends at its first-frame value before the last frame. Check it: the first
+  and last frames should compare at PSNR ≥ 40 dB
+  (`ffmpeg -i first.png -i last.png -lavfi psnr -f null -`).
+- **Banned:** bouncy or elastic easing, glows, gradients on UI chrome, particle bursts, dead beats.
+- **Audio:** music + SFX, no voice. A click on every press, pops laddered up on sequences, swishes on
+  morphs, `type` under typing, one impact on the payoff state.
+
+## 9. Stage Film  ·  demo `stage-film`  ·  source: prompted product films on a "stage in a canvas"
+
+- **Default flavor:** Electric System. Outside the stage: the accent as soft light from one corner,
+  fading to near-black. Inside: near-black, white type, muted gray, the accent for emphasis only.
+- **Pacing:** 110 BPM `pulse`, about **one idea per second**, compact type (no giant headings) with a
+  lot of negative space. Continuous transitions; the only hard change is the brand-color flood.
+- **Structure:** a rounded **stage** covering ~80% × 75% of the frame, a little below center, holds
+  everything. A **persistent element** (here a stories-style progress rail; a player bar or nav works
+  too) stays put across every shot and advances with each scene. Intro (kicker + name + tagline) → the
+  pain as a **too-fast list that lands** on one word, "?" pops 0.2 s later → "Not *more tools*. Just *one
+  system*." with the **strike dropping into the underline** → **brand-color flood** interstitial → the
+  product UI, a cursor runs it, rows resolve one by one → **word portal**: "It's LIVE." with the end
+  scene showing through the letters, then the camera dives through a letter's stem → end card with a
+  micro-breath.
+- **Signature moves:** `listSpin`, `strikeToUnderline`, `wipeIn` flood, `cursor`, `textPortal`, `breathe`.
+- **Rules:** outgoing titles leave before incoming titles take the same space; oversized moves stay
+  clipped to the stage; no outer captions, watermarks or counters outside the stage.
+- **Audio:** music + SFX (a sparse voice line per scene also works). Ticks under the spin, a pop on the
+  "?", riser + impact into the flood and the portal.
+
+## 10. HUD frame (add-on for any layout)
+
+Not a layout: frame chrome that turns any layout into a craft or capability reel, the film annotating
+itself. `hudFrame(tl, "#hud", 0, duration, { bpm, chapters: sceneStarts, label })` adds corner brackets,
+a running timecode, a label + BPM readout and a chapter counter (01/07) to an empty full-frame layer.
+Pair it with `selectBox` (a Figma-style selection frame with handles and a W × H label around a real
+element) and `easeGraph` (the ease being used, drawn with a dot riding it). Use it when the audience
+buys the craft (studios, freelancers, agencies pitching motion or design); skip it for end customers,
+who read chrome as clutter.
+
+## 11. Mixing layouts
 
 A longer piece can chain two layouts. For example, Narrated Journey for the story and AI Canvas for
 the demo, joined by one world-change transition. Keep one flavor across the whole piece, and never

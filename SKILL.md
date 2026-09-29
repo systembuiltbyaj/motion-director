@@ -3,17 +3,17 @@ name: motion-director
 description: >
   Use when the user asks to make, design, storyboard, score or animate any motion video: a promo, ad,
   explainer, product or launch video, brand film, website case study, portfolio reel or showreel,
-  animated deck, or a social reel (16:9, or 9:16 for Reels, Shorts and TikTok). Also use when they
-  share a website URL, screenshots, a Figma file, a PDF or pitch deck, a screen recording, or only a
-  text brief and want a video made from it; when they ask for kinetic typography, sound effects, a
-  music bed or voiceover on a video; or when adding reference videos to evolve the style. Use it
-  alongside /hyperframes, which stays the render engine, never instead of it.
+  animated deck, a UI animation loop, or a social reel (16:9, 1:1, or 9:16 for Reels, Shorts and
+  TikTok). Also use when they share a website URL, screenshots, a Figma file, a PDF or pitch deck, a
+  screen recording, or only a text brief and want a video made from it; when they ask for kinetic
+  typography, sound effects, a music bed or voiceover on a video; or when adding reference videos to
+  evolve the style. Use it alongside /hyperframes, which stays the render engine, never instead of it.
 ---
 
 # Motion Director
 
 A motion design system distilled from five reference films plus a personal portfolio reel. It is
-**not one template.** Each presents differently, so the skill keeps six
+**not one template.** Each presents differently, so the skill keeps eight
 **layouts** (different structures, pacing, camera, and audio) on top of one shared type-and-motion
 language, with interchangeable color **flavors**. Everything runs locally and free by default; API
 keys are only for optional voice providers.
@@ -92,7 +92,8 @@ Every layout follows these. They're what all five references have in common.
 7. **Sound.** Write `cues.json` at the same timestamps as the tweens, run `scripts/sound.mjs`, and
    reference `assets/audio/mix.wav` with an `<audio id>`.
 8. **Audit and verify.** Run [references/audit.md](references/audit.md), then `npx hyperframes lint`
-   and `check` (0 errors), render a draft, **look at frames at each beat**, run
+   and `check` (0 errors), render a draft, **look at every beat** (`scripts/beat-frames.mjs <render> --bpm N`
+   tiles one frame per beat), run
    `scripts/transcribe.py <render>.mp4` to confirm every voice line is intelligible, and check
    loudness. Fix, then do the final render.
 
@@ -111,6 +112,9 @@ time and returns the time its move settles.
 | Hard-cut hit | `slam(tl, el, t, { from: 1.2 })` |
 | Transitions | `panelPush` · `whip` · `zoomThrough` · `camera(tl, world, t, { scale, x, y })` |
 | UI / product | `tiltFloat` · `chipPop(…, { select })` · `slotFocus` · `countUp` · `drawPath` |
+| UI morph + cursor | `morphTo(tl, shape, t, { width, height, borderRadius, backgroundColor })` · `contentSwap(tl, old, next, t)` · `cursor(tl, el, t, { x, y, click | drag })` |
+| Word transitions | `textPortal(tl, maskText, t, { origin, overlay })` · `listSpin(tl, list, t, { land })` · `strikeToUnderline(tl, line, t, { drop })` · `breathe` (final hold) |
+| Craft add-ons | `hudFrame(tl, layer, 0, total, { bpm, chapters, label })` · `selectBox(tl, el, box, t)` · `easeGraph(tl, svg, t, { ease })` |
 | Motif / atmosphere | `motifPath(tl, el, [{ x, y } \| { to, dx, dy }], t)` · `ambientDrift` |
 | Generic in/out | `arrive` · `leave` |
 | Timing math | `snapToBeat` · `beatGrid` · `readHold(words)` · `seededRandom` · `repeatCount` |
@@ -131,14 +135,14 @@ by most references becomes a law.
 ## Files
 
 - [references/intake.md](references/intake.md): what to do with each kind of input (URL, screenshots, Figma, PDF, footage, brief only) + the asset inventory
-- [references/layouts.md](references/layouts.md): the six layouts (structure, pacing, moves, audio) and how to choose
+- [references/layouts.md](references/layouts.md): the eight layouts (structure, pacing, moves, audio), the HUD add-on, and how to choose
 - [references/website-case-study.md](references/website-case-study.md): recipe + capture rules + gotchas for films that present a website
 - [references/sound-design.md](references/sound-design.md): cue sheets, SFX palette, music styles, voiceover, loudness
 - [references/flavors.md](references/flavors.md): palettes and deriving one from a client brand
 - [references/design-language.md](references/design-language.md) · [references/motion-grammar.md](references/motion-grammar.md) · [references/signature-moves.md](references/signature-moves.md) · [references/story-structures.md](references/story-structures.md) · [references/audit.md](references/audit.md)
 - `assets/motion-director.js` · `assets/motion-director.css` · `assets/fonts/` (Inter, Instrument Serif, Dancing Script; OFL) · `assets/frame-template.md`
-- `assets/demos/<layout>/` (index.html with `{{brand.*}}` tokens, cues.json, vo.json for voiced ones; `<layout>-9x16/` for ready-made vertical versions) · `assets/demos/MEDIA.md` (what each demo image should show) · `assets/demos/_placeholders/` (committed SAMPLE media) · `assets/demos/_media/` (optional, never committed: your own images, used before the samples)
+- `assets/demos/<layout>/` (index.html with `{{brand.*}}` tokens, cues.json, vo.json for voiced ones; `<layout>-9x16/` and `-1x1/` for other ready-made aspects) · `assets/demos/MEDIA.md` (what each demo image should show) · `assets/demos/_placeholders/` (committed SAMPLE media) · `assets/demos/_media/` (optional, never committed: your own images, used before the samples)
 - `brand.example.json` → `brand.json` (who the video is for; `scripts/brand.mjs` validates and fills it)
-- `scripts/doctor.mjs` (setup check) · `scripts/scaffold.mjs` · `scripts/prep-media.mjs` (any image in → WebP + shape, size and palette report) · `scripts/sound.mjs` · `scripts/voice.mjs` (+ `scripts/voice/` providers, `scripts/env.mjs` for keys, `.env.example`) · `scripts/capture-site.mjs` · `scripts/transcribe.py` · `scripts/make-placeholders.mjs` (maintainers only)
+- `scripts/doctor.mjs` (setup check) · `scripts/scaffold.mjs` · `scripts/prep-media.mjs` (any image in → WebP + shape, size and palette report) · `scripts/sound.mjs` · `scripts/voice.mjs` (+ `scripts/voice/` providers, `scripts/env.mjs` for keys, `.env.example`) · `scripts/capture-site.mjs` · `scripts/beat-frames.mjs` (one frame per beat, tiled) · `scripts/transcribe.py` · `scripts/make-placeholders.mjs` (maintainers only)
 - [PROMPTS.md](PROMPTS.md): copy-paste prompts for users
 - Tests: `node --test tests/*.test.mjs`

@@ -29,6 +29,8 @@
     whipOut: "power4.in",
     whipIn: "power4.out",
     drift: "sine.inOut",
+    // UI springs: settle with at most a tiny overshoot (bouncy easing reads as a template).
+    spring: "back.out(1.15)",
   };
 
   const TIMING = {
@@ -188,6 +190,36 @@
     return ghosts;
   }
 
+  /** HH:MM:SS:FF for a HUD readout. Floors, so a frame never shows the next second early. */
+  function formatTimecode(seconds, fps = 30) {
+    assertFiniteNumber(seconds, "seconds");
+    if (seconds < 0) throw new RangeError("MotionDirector: seconds must be 0 or more");
+    const frames = Math.floor(seconds * fps + 1e-6);
+    const pad = (value) => String(value).padStart(2, "0");
+    const whole = Math.floor(frames / fps);
+    return `${pad(Math.floor(whole / 3600))}:${pad(Math.floor(whole / 60) % 60)}:${pad(whole % 60)}:${pad(frames % fps)}`;
+  }
+
+  /** A spinning list repeats its items `laps` times, then lands on `landIndex` of the last lap. */
+  function planSpin(count, land, opts = {}) {
+    const { laps = 3 } = opts;
+    if (!Number.isInteger(count) || count < 1) throw new RangeError("MotionDirector: planSpin count must be a positive integer");
+    if (!Number.isInteger(land) || land < 0 || land >= count) throw new RangeError(`MotionDirector: planSpin land must be 0..${count - 1}`);
+    const landIndex = laps * count + land;
+    return { total: landIndex + 1, landIndex };
+  }
+
+  /** SVG path of an easing function drawn in a width × height box (y up), for on-screen ease graphs. */
+  function planEaseCurve(ease, opts = {}) {
+    const { width = 400, height = 240, samples = 48 } = opts;
+    const points = [];
+    for (let i = 0; i <= samples; i += 1) {
+      const t = i / samples;
+      points.push(`${i ? "L" : "M"}${round(width * t)},${round(height - height * ease(t))}`);
+    }
+    return points.join(" ");
+  }
+
   // ---------------------------------------------------------------- DOM appliers (browser)
 
   function resolveOne(target) {
@@ -227,7 +259,7 @@
    */
   function splitWords(target, opts = {}) {
     const element = resolveOne(target);
-    if (element.__ajSplit) return element.__ajSplit;
+    if (element.__mdSplit) return element.__mdSplit;
     const plan = planWords(element.textContent, opts);
     element.textContent = "";
     const words = [];
@@ -254,8 +286,8 @@
       const next = plan[i + 1];
       if (next && !(item.isKeyword && next.isKeyword)) element.appendChild(root.document.createTextNode(" "));
     });
-    element.__ajSplit = { plan, words, keyGroups };
-    return element.__ajSplit;
+    element.__mdSplit = { plan, words, keyGroups };
+    return element.__mdSplit;
   }
 
   function addHighlight(tl, group, at, mode, element) {
@@ -315,7 +347,7 @@
   /** Exit a split sentence: words lift and blur away quickly. */
   function exitSentence(tl, target, at, opts = {}) {
     const element = resolveOne(target);
-    const words = element.__ajSplit ? element.__ajSplit.words : [element];
+    const words = element.__mdSplit ? element.__mdSplit.words : [element];
     const { stagger = TIMING.exitStagger, duration = TIMING.exitDuration } = opts;
     tl.to(words, { yPercent: -50, opacity: 0, filter: "blur(10px)", duration, ease: EASE.exit, stagger }, at);
     // Highlight layers (pill, sweep, bracket corners) live outside the words, so they leave separately.
@@ -677,6 +709,207 @@
     return round(at + duration);
   }
 
+  // ---------------------------------------------------------------- UI morph, cursor, transitions
+
+  /**
+   * One container reshapes into the next UI state: pass any of width, height, borderRadius,
+   * backgroundColor, color, x, y. A spring with at most a tiny overshoot; never cut between states.
+   */
+  function morphTo(tl, target, at, opts = {}) {
+    const { duration = 0.55, ease = EASE.spring, ...props } = opts;
+    tl.to(resolveOne(target), { ...props, duration, ease }, at);
+    return round(at + duration);
+  }
+
+  /**
+   * Content inside a morphing container swaps with a short blur. The exit and entry are timed
+   * separately, so the new content lands while the old is still clearing. Stack both absolutely.
+   */
+  function contentSwap(tl, from, to, at, opts = {}) {
+    const { duration = 0.3, blur = 8, overlap = 0.4 } = opts;
+    if (from) tl.to(resolveOne(from), { opacity: 0, scale: 0.94, filter: `blur(${blur}px)`, duration, ease: EASE.exit }, at);
+    const enter = at + (from ? duration * (1 - overlap) : 0);
+    // No immediate render: slots start hidden in CSS, and a slot that is visible on frame 0 (a loop's
+    // first state) must stay visible until its own swap comes round again.
+    tl.fromTo(resolveOne(to), { opacity: 0, scale: 1.06, filter: `blur(${blur}px)` }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: duration * 1.4, ease: EASE.enter, immediateRender: false }, enter);
+    return round(enter + duration * 1.4);
+  }
+
+  /**
+   * A visible cursor moves to (x, y) in its positioning space. `click` presses at the end (returns the
+   * press time, so the UI reaction can start on it); `drag` holds the press for the whole move.
+   * An optional `.md-cursor-ripple` child flashes on each click.
+   */
+  function cursor(tl, target, at, opts = {}) {
+    const { x, y, duration = 0.5, click = false, drag = false, ease = "power3.inOut" } = opts;
+    assertFiniteNumber(x, "cursor x");
+    assertFiniteNumber(y, "cursor y");
+    const element = resolveOne(target);
+    let time = at;
+    if (drag) {
+      tl.to(element, { scale: 0.86, duration: 0.08, ease: "power2.out" }, time);
+      time += 0.08;
+    }
+    tl.to(element, { x, y, duration, ease }, time);
+    time += duration;
+    if (drag) {
+      tl.to(element, { scale: 1, duration: 0.2, ease: EASE.pop }, time);
+      return round(time);
+    }
+    if (click) {
+      tl.to(element, { scale: 0.86, duration: 0.07, ease: "power2.in" }, time);
+      tl.to(element, { scale: 1, duration: 0.25, ease: EASE.pop }, time + 0.07);
+      const ripple = element.querySelector(".md-cursor-ripple");
+      if (ripple) tl.fromTo(ripple, { scale: 0.2, opacity: 0.7 }, { scale: 2.4, opacity: 0, duration: 0.45, ease: "power2.out" }, time + 0.05);
+      time += 0.07;
+    }
+    return round(time);
+  }
+
+  /**
+   * Word portal: an overlay in the outgoing scene's color with the word cut out of it, so the next
+   * scene already shows through the letters. The word then scales up about `origin` (an "x y" point
+   * inside a letter's stroke, in SVG units) until the hole fills the frame. `target` is the SVG
+   * <text> inside the overlay's <mask>; the overlay itself is hidden once the portal completes.
+   */
+  function textPortal(tl, target, at, opts = {}) {
+    const { scale = 40, duration = 0.9, origin, overlay } = opts;
+    const element = resolveOne(target);
+    tl.fromTo(element, { scale: 1 }, { scale, duration, ease: "expo.in", svgOrigin: origin }, at);
+    const end = round(at + duration);
+    if (overlay) tl.set(resolveOne(overlay), { opacity: 0 }, end);
+    return end;
+  }
+
+  /**
+   * Too-fast-to-read list: repeats the list's items `laps` times, spins through them with motion blur,
+   * and decelerates onto item `land`. Build-time DOM (clones), so call it with the rest of the build.
+   * Pop the payoff (a "?", a highlight) about 0.2 s after the returned landing time.
+   */
+  function listSpin(tl, list, at, opts = {}) {
+    const listEl = resolveOne(list);
+    const originals = Array.from(listEl.children);
+    const { land = originals.length - 1, laps = 3, duration = 1.8, dim = 0.25 } = opts;
+    const plan = planSpin(originals.length, land, { laps });
+    if (!listEl.__mdSpin) {
+      for (let lap = 0; lap < laps; lap += 1) originals.forEach((item) => listEl.insertBefore(item.cloneNode(true), originals[0]));
+      listEl.__mdSpin = true;
+    }
+    const items = Array.from(listEl.children);
+    const itemHeight = opts.itemHeight || items[0].getBoundingClientRect().height;
+    tl.fromTo(listEl, { y: 0, filter: "blur(6px)" }, { y: -plan.landIndex * itemHeight, duration, ease: "expo.out" }, at);
+    tl.to(listEl, { filter: "blur(0px)", duration: duration * 0.45, ease: "power2.out" }, at + duration * 0.35);
+    tl.fromTo(items, { opacity: dim }, { opacity: (i) => (i === plan.landIndex ? 1 : dim), duration: duration * 0.3, ease: "none" }, at + duration * 0.7);
+    return round(at + duration);
+  }
+
+  /**
+   * "Not X, but Y": a strike line draws through a word, holds, then drops to the baseline and turns
+   * into the accent underline. `target` is the line element, absolutely placed across the word.
+   */
+  function strikeToUnderline(tl, target, at, opts = {}) {
+    const { hold = 0.6, duration = 0.5, drop } = opts;
+    const line = resolveOne(target);
+    const distance = drop ?? line.parentElement.offsetHeight * 0.5;
+    tl.fromTo(line, { scaleX: 0, transformOrigin: "0% 50%" }, { scaleX: 1, duration: 0.35, ease: EASE.enter }, at);
+    const move = at + 0.35 + hold;
+    tl.to(line, { y: distance, backgroundColor: cssToken(line, "--md-accent", "#3df5b0"), duration, ease: EASE.move }, move);
+    return round(move + duration);
+  }
+
+  /** Micro-breath on the final hold (1.000 → 1.012 → 1.000), so an end card never reads as frozen. */
+  function breathe(tl, target, at, opts = {}) {
+    const { amount = 0.012, duration = 1.6 } = opts;
+    const element = resolveOne(target);
+    tl.to(element, { scale: 1 + amount, duration: duration / 2, ease: EASE.drift }, at);
+    tl.to(element, { scale: 1, duration: duration / 2, ease: EASE.drift }, at + duration / 2);
+    return round(at + duration);
+  }
+
+  // ---------------------------------------------------------------- HUD add-on (craft / capability reels)
+
+  /**
+   * Frame chrome for any layout: corner brackets, a running timecode, a BPM readout and a chapter
+   * counter. Builds its DOM into `container` (a full-frame layer above the scene) and runs until `until`.
+   * `chapters` is a list of start times; the counter reads "01/07" style.
+   */
+  function hudFrame(tl, container, at, until, opts = {}) {
+    const { bpm, fps = 30, chapters = [], label = "" } = opts;
+    const layer = resolveOne(container);
+    layer.classList.add("md-hud");
+    if (!layer.__mdHud) {
+      ["tl", "tr", "bl", "br"].forEach((corner) => layer.appendChild(el("span", `md-hud-corner md-hud-corner--${corner}`)));
+      layer.appendChild(el("span", "md-hud-tc", formatTimecode(at, fps)));
+      layer.appendChild(el("span", "md-hud-meta", [label, bpm ? `${bpm} BPM` : ""].filter(Boolean).join("  ·  ")));
+      layer.appendChild(el("span", "md-hud-chapter", chapters.length ? `01/${String(chapters.length).padStart(2, "0")}` : ""));
+      layer.__mdHud = true;
+    }
+    const timecode = layer.querySelector(".md-hud-tc");
+    const chapter = layer.querySelector(".md-hud-chapter");
+    tl.fromTo(layer, { opacity: 0 }, { opacity: 1, duration: 0.4, ease: "none" }, at);
+    const clock = { t: at };
+    const total = String(chapters.length).padStart(2, "0");
+    // Seek-safe: both readouts are recomputed from the tweened clock on every frame, never accumulated.
+    const render = () => {
+      timecode.textContent = formatTimecode(clock.t, fps);
+      if (!chapters.length) return;
+      const current = Math.max(1, chapters.filter((start) => start <= clock.t + 1e-6).length);
+      chapter.textContent = `${String(current).padStart(2, "0")}/${total}`;
+    };
+    tl.fromTo(clock, { t: at }, { t: until, duration: until - at, ease: "none", onUpdate: render }, at);
+    return round(until);
+  }
+
+  /**
+   * Figma-style selection box around an element: frame, four handles and a W × H label, as if the film
+   * is annotating its own design. Measures the element at build time (its clip must be active then).
+   */
+  function selectBox(tl, target, box, at, opts = {}) {
+    const { pad = 12, duration = 0.35 } = opts;
+    const element = resolveOne(target);
+    const frame = resolveOne(box);
+    frame.classList.add("md-select");
+    if (!frame.__mdSelect) {
+      ["tl", "tr", "bl", "br"].forEach((corner) => frame.appendChild(el("span", `md-select-handle md-select-handle--${corner}`)));
+      frame.appendChild(el("span", "md-select-label"));
+      frame.__mdSelect = true;
+    }
+    const space = frame.offsetParent || root.document.body;
+    const spaceRect = space.getBoundingClientRect();
+    const scale = space.offsetWidth ? spaceRect.width / space.offsetWidth : 1;
+    const rect = element.getBoundingClientRect();
+    const width = rect.width / scale;
+    const height = rect.height / scale;
+    frame.querySelector(".md-select-label").textContent = `${Math.round(width)} × ${Math.round(height)}`;
+    tl.set(frame, { left: (rect.left - spaceRect.left) / scale - pad, top: (rect.top - spaceRect.top) / scale - pad, width: width + pad * 2, height: height + pad * 2 }, at);
+    tl.fromTo(frame, { opacity: 0, scale: 1.04 }, { opacity: 1, scale: 1, duration, ease: EASE.enter }, at);
+    return round(at + duration);
+  }
+
+  /**
+   * On-screen easing graph: draws the curve of a GSAP ease inside an SVG and rides a dot along it,
+   * labelled with the ease's name. `svg` needs a <path class="md-ease-path"> and a <circle class="md-ease-dot">.
+   */
+  function easeGraph(tl, svg, at, opts = {}) {
+    const { ease = "expo.out", width = 400, height = 240, duration = 1.4 } = opts;
+    const svgEl = resolveOne(svg);
+    const path = svgEl.querySelector(".md-ease-path");
+    const dot = svgEl.querySelector(".md-ease-dot");
+    path.setAttribute("d", planEaseCurve(root.gsap.parseEase(ease), { width, height }));
+    const drawn = drawPath(tl, path, at, { duration: duration * 0.6 });
+    const length = path.getTotalLength();
+    const state = { d: 0 };
+    tl.fromTo(state, { d: 0 }, {
+      d: length, duration, ease: "none",
+      onUpdate: () => {
+        const point = path.getPointAtLength(state.d);
+        dot.setAttribute("cx", point.x);
+        dot.setAttribute("cy", point.y);
+      },
+    }, drawn);
+    return round(drawn + duration);
+  }
+
   return {
     EASE,
     TIMING,
@@ -692,6 +925,9 @@
     beatGrid,
     repeatCount,
     seededRandom,
+    formatTimecode,
+    planSpin,
+    planEaseCurve,
     // DOM
     splitWords,
     buildSentence,
@@ -715,5 +951,15 @@
     camera,
     slam,
     wipeIn,
+    morphTo,
+    contentSwap,
+    cursor,
+    textPortal,
+    listSpin,
+    strikeToUnderline,
+    breathe,
+    hudFrame,
+    selectBox,
+    easeGraph,
   };
 });
