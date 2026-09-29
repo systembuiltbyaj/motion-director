@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Generate voiceover lines locally with HyperFrames' Kokoro TTS (free, offline after first model
 // download), one WAV per line, then print each line's duration so the timeline can be built around
-// real speech instead of guesses. Existing WAVs are reused unless --force.
+// real speech instead of guesses. Existing WAVs are reused unless --force or the line text changed
+// (each WAV keeps the text it was spoken from in <id>.txt, so edited copy never plays stale audio).
 //
 // Usage: node voice.mjs <vo.json> [--force] [--dry-run]
 // vo.json: { "voice": "am_michael", "speed": 1.0, "dir": "vo", "lines": [{ "id": "l1", "text": "..." }] }
@@ -11,7 +12,7 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { decodeWavMono, SAMPLE_RATE } from "./sound.mjs";
 
-const HYPERFRAMES = "hyperframes@0.8.77";
+export const HYPERFRAMES = "hyperframes@0.8.77";
 
 async function exists(path) {
   try {
@@ -45,9 +46,12 @@ async function main() {
       console.log(`[dry-run] ${line.id}: "${line.text}" -> ${out}`);
       continue;
     }
-    if (force || !(await exists(out))) {
+    const textFile = join(outDir, `${line.id}.txt`);
+    const spokenText = (await exists(textFile)) ? await readFile(textFile, "utf8") : null;
+    const stale = spokenText !== null && spokenText !== line.text;
+    if (force || stale || !(await exists(out))) {
+      if (stale) console.log(`${line.id}: text changed, regenerating`);
       // Text goes through a .txt file: on Windows npx needs a shell, which would split raw text on spaces.
-      const textFile = join(outDir, `${line.id}.txt`);
       await writeFile(textFile, line.text, "utf8");
       const quote = (value) => (process.platform === "win32" ? `"${value}"` : value);
       const result = spawnSync(

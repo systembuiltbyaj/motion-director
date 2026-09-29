@@ -117,7 +117,7 @@ accent pill. Hero words are uppercase and tight. Stats use tabular numerals in a
 
 ## Numerals & Claims (hard rule)
 
-Every number on screen comes from the client or AJ, with its source noted here: <stat — source>.
+Every number on screen comes from the user or the client, with its source noted here: <stat — source>.
 
 ## Known Gaps
 

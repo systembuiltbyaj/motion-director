@@ -61,7 +61,7 @@
       .strokes { position: absolute; inset: 0; }
       .strokes path { fill: none; stroke: var(--aj-accent); stroke-width: 26; stroke-linecap: round; filter: drop-shadow(0 0 20px var(--aj-accent)); }
       #lockup { position: absolute; left: 0; right: 0; top: 400px; display: flex; justify-content: center; align-items: center; gap: 40px; }
-      .mark { width: 220px; height: 220px; background: var(--aj-accent); filter: drop-shadow(0 0 30px rgba(61, 245, 176, 0.6)); -webkit-mask: url("assets/media/aj-mark-dark.webp") center / contain no-repeat; mask: url("assets/media/aj-mark-dark.webp") center / contain no-repeat; }
+      .mark { width: 220px; height: 220px; background: var(--aj-accent); filter: drop-shadow(0 0 30px rgba(61, 245, 176, 0.6)); -webkit-mask: url("assets/media/logo-mark.webp") center / contain no-repeat; mask: url("assets/media/logo-mark.webp") center / contain no-repeat; }
       #wordmark { font-size: 110px; font-weight: 800; letter-spacing: -0.04em; line-height: 0.95; }
       #wordmark small { display: block; margin-top: 16px; font-size: 34px; font-weight: 500; letter-spacing: 0.02em; color: var(--aj-muted); }
     </style>
@@ -130,7 +130,7 @@
           <path class="stroke" d="M 520 760 L 820 300" />
           <path class="stroke" d="M 640 780 L 980 780" />
         </svg>
-        <div id="lockup"><div class="mark" id="mark"></div><div id="wordmark">System Built by AJ<small>AI Automation &amp; Business Systems Engineer</small></div></div>
+        <div id="lockup"><div class="mark" id="mark"></div><div id="wordmark">{{brand.name}}<small>{{brand.role}}</small></div></div>
       </section>
 
       <div class="aj-grain"></div>

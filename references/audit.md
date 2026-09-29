@@ -10,6 +10,8 @@ only show up in pixels.
 - [ ] **One accent.** No second saturated color outside footage or UI mockups.
 - [ ] **One keyword per line**, and each keyword is the actual point of its line.
 - [ ] **Weight contrast.** Keywords are visibly heavier than their line.
+- [ ] **No SAMPLE media left** in the final render (`scaffold.mjs` lists them); every image is the user's or rebuilt in HTML.
+- [ ] **Brand is right:** the lockup, URL and handle match this film's `brand.json` (client films use the client's).
 - [ ] **Flavor is consistent.** A single `data-aj-flavor`; custom tokens only through CSS variables.
 - [ ] Text sits inside the safe margins at its **largest** animated size (overshoot, echo, zoom).
 

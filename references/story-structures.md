@@ -46,7 +46,7 @@ Openers differ by layout (full structures in `layouts.md`):
 - ≤ 8 words per line and ≤ 2 lines per beat. Split longer thoughts across beats.
 - Each line gets exactly one keyword to highlight. If you can't pick one, the line isn't sharp yet.
 - Claims need proof on screen in the same beat (a UI card, stat, footage, or logo).
-- Stats and client names come from AJ or the client, never invented.
+- Stats and client names come from the user or the client, never invented.
 - The CTA is a question ("Ready to build yours?") or a direct action ("Book a call"), with the
   keyword highlighted.
 

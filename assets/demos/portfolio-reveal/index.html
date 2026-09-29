@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1920, height=1080" />
-    <title>System Built by AJ — Portfolio Reel (16:9)</title>
+    <title>Portfolio Reveal — aj-motion-style</title>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
     <script src="assets/aj-motion.js"></script>
     <link rel="stylesheet" href="assets/aj-motion.css" />
@@ -11,8 +11,8 @@
       @font-face { font-family: "Inter"; src: url("assets/fonts/inter-latin.woff2") format("woff2"); font-weight: 100 900; }
       @font-face { font-family: "Dancing Script"; src: url("assets/fonts/dancing-script-latin.woff2") format("woff2"); font-weight: 400 700; }
 
-      /* AJ brand: black foundation, white type, violet systems, yellow impact (used sparingly). */
-      [data-aj-flavor="aj-brand"] {
+      /* Reveal flavor: black foundation, white type, violet systems, yellow impact (used sparingly). */
+      [data-aj-flavor="reveal"] {
         --aj-bg: #07050d;
         --aj-fg: #ffffff;
         --aj-muted: #a79cc4;
@@ -106,7 +106,7 @@
       #tech span.sl { color: var(--violet); }
       #point { position: absolute; left: 950px; top: 530px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 0 40px 12px rgba(108, 32, 255, 0.9); }
 
-      /* S6 AJ */
+      /* S6 the builder */
       #bg-aj { position: absolute; right: -40px; top: -80px; font-size: 1050px; font-weight: 900; letter-spacing: -0.07em; line-height: 1; color: rgba(108, 32, 255, 0.13); }
       #portrait { position: absolute; left: 930px; bottom: 0; height: 1000px; }
       #hello { position: absolute; left: 110px; top: 210px; margin: 0; font-family: "Dancing Script", cursive; font-size: 72px; font-weight: 700; color: rgba(255, 255, 255, 0.9); }
@@ -117,7 +117,7 @@
       /* S7 final */
       #s7-line { position: absolute; left: 0; top: 500px; width: 1920px; height: 3px; background: var(--violet); box-shadow: 0 0 30px var(--violet); transform-origin: 0 50%; opacity: 0.6; }
       #lockup { position: absolute; left: 0; right: 0; top: 190px; display: flex; justify-content: center; align-items: center; gap: 44px; }
-      .mark { width: 190px; height: 190px; background: #fff; -webkit-mask: url("assets/media/aj-mark-dark.webp") center / contain no-repeat; mask: url("assets/media/aj-mark-dark.webp") center / contain no-repeat; }
+      .mark { width: 190px; height: 190px; background: #fff; -webkit-mask: url("assets/media/logo-mark.webp") center / contain no-repeat; mask: url("assets/media/logo-mark.webp") center / contain no-repeat; }
       #brand { font-size: 150px; }
       #services { position: absolute; left: 0; right: 0; top: 590px; display: flex; justify-content: center; gap: 44px; font-size: 48px; font-weight: 900; letter-spacing: -0.02em; }
       #follow { position: absolute; left: 0; right: 0; top: 745px; text-align: center; }
@@ -132,7 +132,7 @@
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="21" data-aj-flavor="aj-brand">
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="21" data-aj-flavor="reveal">
       <div id="grid" data-layout-allow-overflow></div>
       <div id="glow-a" class="glow" data-layout-allow-overflow></div>
       <div id="glow-b" class="glow" data-layout-allow-overflow></div>
@@ -221,27 +221,27 @@
 
       <!-- S6 · who builds it -->
       <section id="s6" class="scene clip" data-start="15.1" data-duration="2.85">
-        <div id="bg-aj" data-layout-allow-overflow>AJ</div>
-        <img id="portrait" src="assets/media/aj-hero-cutout.webp" alt="AJ Bactad" />
+        <div id="bg-aj" data-layout-allow-overflow>{{brand.initials}}</div>
+        <img id="portrait" src="assets/media/portrait-cutout.webp" alt="{{brand.first}} {{brand.last}}" />
         <p id="hello">Hello, I'm</p>
-        <div id="name" class="display"><div class="mask"><div id="n1">AJ</div></div><div class="mask"><div id="n2">Bactad</div></div></div>
-        <div id="creds"><div id="cr1">Certified GHL Admin</div><div id="cr2" class="y">+ AI Automation Specialist</div></div>
+        <div id="name" class="display"><div class="mask"><div id="n1">{{brand.first}}</div></div><div class="mask"><div id="n2">{{brand.last}}</div></div></div>
+        <div id="creds"><div id="cr1">{{brand.cred1}}</div><div id="cr2" class="y">{{brand.cred2}}</div></div>
         <p id="behind">I build the systems behind the business.</p>
       </section>
 
       <!-- S7 · brand + follow -->
       <section id="s7" class="scene clip" data-start="17.6" data-duration="3.4">
         <div id="s7-line"></div>
-        <div id="lockup"><div class="mark" id="mark"></div><div id="brand" class="display"><div class="mask"><div id="b1">System</div></div><div class="mask"><div id="b2">Built by AJ<span class="y">.</span></div></div></div></div>
+        <div id="lockup"><div class="mark" id="mark"></div><div id="brand" class="display"><div class="mask"><div id="b1">{{brand.line1}}</div></div><div class="mask"><div id="b2">{{brand.line2}}<span class="y">.</span></div></div></div></div>
         <div id="services"><span>Funnels.</span><span>Websites.</span><span class="y">Automations.</span></div>
         <p id="follow" class="micro">Follow my builds</p>
         <div id="socials">
           <span class="soc" id="so-li"><svg viewBox="0 0 40 40"><rect width="40" height="40" rx="8" fill="#fff" /><circle cx="12" cy="11.5" r="3" fill="#07050d" /><rect x="9.3" y="16" width="5.4" height="15" fill="#07050d" /><path d="M18 16h5v2.2c.9-1.5 2.6-2.6 5-2.6 3.8 0 5.5 2.4 5.5 6.6V31h-5.3v-8c0-2.2-.8-3.4-2.6-3.4s-2.9 1.3-2.9 3.4v8H18z" fill="#07050d" /></svg></span>
           <span class="soc" id="so-fb"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="#fff" /><path d="M22.2 40V25.3h4.6l.7-5.4h-5.3v-3.4c0-1.6.4-2.6 2.7-2.6h2.8V9.1c-.5-.1-2.2-.2-4.1-.2-4 0-6.8 2.5-6.8 7v3.9h-4.6v5.4h4.6V40z" fill="#07050d" /></svg></span>
           <span class="soc" id="so-ig"><svg viewBox="0 0 40 40"><rect x="3" y="3" width="34" height="34" rx="10" fill="none" stroke="#fff" stroke-width="3.5" /><circle cx="20" cy="20" r="7.5" fill="none" stroke="#fff" stroke-width="3.5" /><circle cx="29.5" cy="10.5" r="2.4" fill="#fff" /></svg></span>
-          <span id="handle">@ajbactad29</span>
+          <span id="handle">{{brand.handle}}</span>
         </div>
-        <div id="url">workwithaj.ajautomate.co</div>
+        <div id="url">{{brand.url}}</div>
       </section>
 
       <svg id="cursor" viewBox="0 0 24 24"><path d="M3 2l7.5 19 2.4-7.6L20.5 11z" fill="#f7cb1e" stroke="#07050d" stroke-width="1.4" /></svg>

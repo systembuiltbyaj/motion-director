@@ -4,6 +4,9 @@ assets/demos/_media/
 # Generated voiceover: regenerate with scripts/voice.mjs <demo>/vo.json
 assets/demos/*/vo/
 
+# Your own brand identity (scaffold.mjs reads it; copy brand.example.json to start)
+brand.json
+
 # Secrets and local tooling
 .env
 .env.*

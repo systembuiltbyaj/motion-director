@@ -16,7 +16,7 @@
       .serif { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; letter-spacing: -0.01em; }
       .blue { background: var(--aj-accent); }
       .caps { font-weight: 900; text-transform: uppercase; letter-spacing: -0.045em; line-height: 0.88; }
-      .mark { background: #fff; -webkit-mask: url("assets/media/aj-mark-dark.webp") center / contain no-repeat; mask: url("assets/media/aj-mark-dark.webp") center / contain no-repeat; }
+      .mark { background: #fff; -webkit-mask: url("assets/media/logo-mark.webp") center / contain no-repeat; mask: url("assets/media/logo-mark.webp") center / contain no-repeat; }
       .label { font-size: 22px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.8; }
 
       /* S1 */
@@ -109,7 +109,7 @@
       <section id="s1" class="scene clip" data-start="0" data-duration="2.3">
         <div id="s1-img"><img src="assets/media/ocean-texture.webp" alt="" /></div>
         <div id="s1-title" class="caps"><div id="t1">Our systems.</div><div id="t2">In motion.</div></div>
-        <div id="s1-sign"><span class="mark"></span>System Built by AJ</div>
+        <div id="s1-sign"><span class="mark"></span>{{brand.name}}</div>
       </section>
 
       <section id="s2" class="scene clip" data-start="2.3" data-duration="1.7">
@@ -123,7 +123,7 @@
 
       <section id="s4" class="scene clip" data-start="5.65" data-duration="2.6">
         <div id="tiles" class="tiles">
-          <div class="tile blue t-logo" id="tl-1"><div class="label" style="position: absolute; top: 26px; left: 26px">Logo</div><span class="mark"></span><span>System Built by AJ</span></div>
+          <div class="tile blue t-logo" id="tl-1"><div class="label" style="position: absolute; top: 26px; left: 26px">Logo</div><span class="mark"></span><span>{{brand.name}}</span></div>
           <div class="tile dark" id="tl-2"><div class="label">Colour</div><div class="swatches"><div class="blue">Electric</div><div style="background: #fff; color: #000">White</div><div style="background: #000; border: 1px solid #333">Night</div></div></div>
           <div class="tile blue t-type" id="tl-3"><div class="label">Typography</div><p class="serif">Inspired by how businesses actually run.</p></div>
           <div class="tile white" id="tl-4"><div class="label">Timing</div><div class="timing"><div>1.00</div><div>2.00</div><div>3.00</div></div></div>
@@ -198,7 +198,7 @@
           <line x1="0" y1="270" x2="1920" y2="270" /><line x1="0" y1="810" x2="1920" y2="810" />
           <line x1="480" y1="0" x2="480" y2="1080" /><line x1="1440" y1="0" x2="1440" y2="1080" />
         </svg>
-        <div id="lock"><span class="mark" id="lock-mark"></span><div id="lock-name">System Built by AJ</div><div id="lock-role" class="serif">AI Automation &amp; Business Systems Engineer</div></div>
+        <div id="lock"><span class="mark" id="lock-mark"></span><div id="lock-name">{{brand.name}}</div><div id="lock-role" class="serif">{{brand.role}}</div></div>
       </section>
 
       <audio id="mix" src="assets/audio/mix.wav" data-start="0" data-duration="20.5" data-volume="1"></audio>

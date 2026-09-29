@@ -99,7 +99,7 @@ Camera: 14 Whip · 15 Zoom-through · 16 Guide motif
 - **Deeper:** blueprint `prompt-type-submit-generate`, `agent-progress-theater`, `cursor-click-ripple`.
 
 ### 13. Node canvas + pull-back
-- **Intent:** show a system. This one is on-brand for AJ's automation work.
+- **Intent:** show a system. This one is on-brand for automation and systems work.
 - **When:** workflows, integrations, "how it works".
 - **How:** nodes are cards connected by SVG curves (draw them with `svg-path-draw`). The camera pans
   node to node (`viewport-change` / `multi-phase-camera`), then pulls back to reveal the whole graph.

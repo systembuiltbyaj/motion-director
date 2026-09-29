@@ -29,7 +29,7 @@ has a runnable demo: `node scripts/scaffold.mjs <project> --demo <name>`.
 | A service, agency, or personal-brand promo with real photos or screens | **Agency Split** | Typed copy + image panels move fast and carry a lot of real material |
 | A personal brand or portfolio reel: "here's my work, here's what runs behind it, here's me" | **Portfolio Reveal** | Earns the reveal of the person by showing the work first; the "front vs. system" twist sells technical depth |
 
-AJ's automation work usually wants **AI Canvas** (how a system works) or **Launch Hype** (what it
+Automation and systems work usually wants **AI Canvas** (how a system works) or **Launch Hype** (what it
 achieves). His own brand and portfolio reels want **Portfolio Reveal**. Client promos with footage usually want **Agency Split**.
 
 ## 2. Brand System  ·  demo `brand-system`  ·  source: brand-guideline film

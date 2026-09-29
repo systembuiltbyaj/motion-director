@@ -83,7 +83,7 @@ grid used for the visuals.
 | `drive` | four-on-the-floor kick, off-beat hats, 8th-note bass | Launch Hype, Agency Split |
 | `pulse` | half-time kick, claps, 16th hats, plucked arp | Brand System, AI Canvas |
 | `ambient` | pads, soft sub, slow arp, one kick per bar | Narrated Journey, any voice-led piece |
-| `none` | SFX only | when AJ supplies a licensed track |
+| `none` | SFX only | when the user supplies a licensed track |
 
 ## 5. Voiceover
 
@@ -99,7 +99,7 @@ grid used for the visuals.
 - **One clip per slammed word.** A spoken list ("trigger, route, automate") comes out ~0.4 s apart,
   faster than slams on a 2-beat grid. Generate each word as its own line and place each on its slam.
 - Under a voice, scale all SFX gains by ~0.8 and duck music −9 dB.
-- AJ can replace Kokoro with his own recording or an ElevenLabs voice later. Keep the same file names
+- The user can replace Kokoro with their own recording or an ElevenLabs voice later. Keep the same file names
   and re-run `sound.mjs`.
 
 ## 6. Levels

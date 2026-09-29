@@ -18,9 +18,9 @@ to compare looks.
 | Texture | Bloom glow, orbs | Crisp, minimal orbs | Heavy grain, painterly orbs | Flat, faint orbs |
 | Default for layout | Launch Hype (and Narrated Journey as a green/lime variant) | Brand System | AI Canvas | Agency Split |
 | Energy | Medium-high | High, fast cuts in montage | Calm, fluid | High, punchy |
-| Best for | AI, SaaS, fintech, launches, **AJ's automation work** | Brand systems, agencies, bold identities | AI creative tools, product demos, wellness, premium services | Agencies, services, events, social promos |
+| Best for | AI, SaaS, fintech, launches, **automation and systems work** | Brand systems, agencies, bold identities | AI creative tools, product demos, wellness, premium services | Agencies, services, events, social promos |
 
-**Default for AJ's own brand work:** Glow Dark, with his real brand accent swapped in if it's defined.
+**Default for your own brand work:** Glow Dark, with the `accent` from `brand.json` swapped in if it's set.
 
 ## Choosing
 
