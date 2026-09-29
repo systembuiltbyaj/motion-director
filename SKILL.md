@@ -15,7 +15,8 @@ description: >
 A motion design system distilled from five reference films plus a personal portfolio reel. It is
 **not one template.** Each presents differently, so the skill keeps six
 **layouts** (different structures, pacing, camera, and audio) on top of one shared type-and-motion
-language, with interchangeable color **flavors**. Everything runs locally and free: no API keys.
+language, with interchangeable color **flavors**. Everything runs locally and free by default; API
+keys are only for optional voice providers.
 
 **Division of labor.** This skill decides *how it looks, moves, and sounds*. HyperFrames
 (`/hyperframes` → `/general-video`, `/motion-graphics`, `/product-launch-video` …) builds, checks, and
@@ -83,7 +84,9 @@ Every layout follows these. They're what all five references have in common.
    Motion numbers are in [references/motion-grammar.md](references/motion-grammar.md).
 5. **Voice.** Narrated layouts, or a sparse line per scene when the user asks for voice. Write `vo.json`,
    run `scripts/voice.mjs`, get word times with `scripts/transcribe.py --words`, and land each key
-   word on its visual. See [references/sound-design.md](references/sound-design.md).
+   word on its visual. Kokoro is the default; if the user wants ElevenLabs or their own cloned voice, set
+   `"provider"` and follow the consent, licence and cost checks in
+   [references/sound-design.md](references/sound-design.md) §5 (run `--dry-run` before any paid call).
 6. **Build** the composition: replace the demo copy and media with the project's, keep the move
    structure, keep the helpers' determinism rules.
 7. **Sound.** Write `cues.json` at the same timestamps as the tweens, run `scripts/sound.mjs`, and
@@ -136,6 +139,6 @@ by most references becomes a law.
 - `assets/motion-director.js` · `assets/motion-director.css` · `assets/fonts/` (Inter, Instrument Serif, Dancing Script; OFL) · `assets/frame-template.md`
 - `assets/demos/<layout>/` (index.html with `{{brand.*}}` tokens, cues.json, vo.json for voiced ones; `<layout>-9x16/` for ready-made vertical versions) · `assets/demos/MEDIA.md` (what each demo image should show) · `assets/demos/_placeholders/` (committed SAMPLE media) · `assets/demos/_media/` (optional, never committed: your own images, used before the samples)
 - `brand.example.json` → `brand.json` (who the video is for; `scripts/brand.mjs` validates and fills it)
-- `scripts/doctor.mjs` (setup check) · `scripts/scaffold.mjs` · `scripts/prep-media.mjs` (any image in → WebP + shape, size and palette report) · `scripts/sound.mjs` · `scripts/voice.mjs` · `scripts/capture-site.mjs` · `scripts/transcribe.py` · `scripts/make-placeholders.mjs` (maintainers only)
+- `scripts/doctor.mjs` (setup check) · `scripts/scaffold.mjs` · `scripts/prep-media.mjs` (any image in → WebP + shape, size and palette report) · `scripts/sound.mjs` · `scripts/voice.mjs` (+ `scripts/voice/` providers, `scripts/env.mjs` for keys, `.env.example`) · `scripts/capture-site.mjs` · `scripts/transcribe.py` · `scripts/make-placeholders.mjs` (maintainers only)
 - [PROMPTS.md](PROMPTS.md): copy-paste prompts for users
 - Tests: `node --test tests/*.test.mjs`

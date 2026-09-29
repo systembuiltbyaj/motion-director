@@ -10,8 +10,9 @@ import { homedir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { validateBrand } from "./brand.mjs";
+import { loadEnv } from "./env.mjs";
 import { findChromium, loadPlaywright } from "./playwright.mjs";
-import { HYPERFRAMES } from "./voice.mjs";
+import { HYPERFRAMES } from "./voice/kokoro.mjs";
 
 const skillRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const isWindows = process.platform === "win32";
@@ -87,6 +88,15 @@ function checks() {
 
   const python = run(isWindows ? "python" : "python3", ["-c", "import whisper, sys; print(sys.version.split()[0])"]);
   add(false, "Whisper (voice sync)", python.ok, python.ok ? `python ${python.out.trim()}` : "not installed", "pip install openai-whisper   (needs Python 3.9+)");
+
+  // Names only: a key's value is never shown.
+  const env = loadEnv({ skillDir: skillRoot });
+  const voice = [
+    "kokoro",
+    env.ELEVENLABS_API_KEY && env.ELEVENLABS_BASE_URL ? "elevenlabs" : null,
+    env.VOICE_API_BASE_URL ? "openai-compatible" : null,
+  ].filter(Boolean);
+  add(false, "Voice providers", voice.length === 3, voice.join(" · "), `Optional: copy ${join(skillRoot, ".env.example")} to .env and fill in ElevenLabs or a local voice server.`);
 
   let playwrightOk = false;
   try {

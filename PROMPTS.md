@@ -100,6 +100,14 @@ The voice line at [0:08] is too fast. Slow it down and re-sync the words.
 Show me frames at every beat before the final render.
 ```
 
+**Changing the voice** (Kokoro is the free default; the others need a key or server in `.env`, see `.env.example`):
+
+```
+Re-voice it with ElevenLabs, voice ID [id]. Show me the character count before you spend credits.
+Use my cloned voice from my local voice server: model [omnivoice], voice [profile id].
+Audition three Kokoro voices on the first two lines and tell me which one fits.
+```
+
 ## Tips
 
 - **Give real assets.** A real screenshot beats anything Claude can mock up.
