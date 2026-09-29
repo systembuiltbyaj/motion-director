@@ -61,7 +61,7 @@ Camera: 14 Whip · 15 Zoom-through · 16 Guide motif
 ### 7. Flash card
 - **Intent:** punctuation. It resets attention between acts.
 - **When:** 1–2 times per minute, never back to back.
-- **Call:** a full-bleed `.aj-flash` element + `flashCard(tl, "#flash", t, { hold })`. Put one hero word
+- **Call:** a full-bleed `.md-flash` element + `flashCard(tl, "#flash", t, { hold })`. Put one hero word
   inside (move 5).
 
 ### 8. Panel push
@@ -89,7 +89,7 @@ Camera: 14 Whip · 15 Zoom-through · 16 Guide motif
 ### 11. Tilted UI float
 - **Intent:** a premium product shot without 3D software.
 - **When:** any dashboard, app screen, or workflow card.
-- **Call:** wrap it in `.aj-stage` and call `tiltFloat(tl, "#card", t, { until })`. Stagger inner rows with `arrive`.
+- **Call:** wrap it in `.md-stage` and call `tiltFloat(tl, "#card", t, { until })`. Stagger inner rows with `arrive`.
 - **Deeper:** `3d-page-scroll`, `orbit-3d-entry`, blueprint `device-surface-showcase`.
 
 ### 12. Prompt → chips → selection
@@ -99,7 +99,7 @@ Camera: 14 Whip · 15 Zoom-through · 16 Guide motif
 - **Deeper:** blueprint `prompt-type-submit-generate`, `agent-progress-theater`, `cursor-click-ripple`.
 
 ### 13. Node canvas + pull-back
-- **Intent:** show a system. This one is on-brand for AJ's automation work.
+- **Intent:** show a system. This one is on-brand for automation and systems work.
 - **When:** workflows, integrations, "how it works".
 - **How:** nodes are cards connected by SVG curves (draw them with `svg-path-draw`). The camera pans
   node to node (`viewport-change` / `multi-phase-camera`), then pulls back to reveal the whole graph.
@@ -119,7 +119,7 @@ Camera: 14 Whip · 15 Zoom-through · 16 Guide motif
 
 ### 16. Guide motif
 - **Intent:** continuity. A small accent element leads the eye to what reveals next.
-- **Call:** `.aj-motif` + `motifPath(tl, "#motif", [{ x, y }, …, { to: "#next-thing" }], t)`. Land it
+- **Call:** `.md-motif` + `motifPath(tl, "#motif", [{ x, y }, …, { to: "#next-thing" }], t)`. Land it
   on the target as the target reveals, then burst it out (scale 3, opacity 0).
 - **Rule:** one motif per video. It's a signature, so repeat it at the start, once mid-piece, and at the lockup.
 

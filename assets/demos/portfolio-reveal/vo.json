@@ -37,7 +37,7 @@
     },
     {
       "id": "v7",
-      "text": "I'm AJ. I build the systems behind the business."
+      "text": "I'm {{brand.first}}. I build the systems behind the business."
     },
     {
       "id": "v8",

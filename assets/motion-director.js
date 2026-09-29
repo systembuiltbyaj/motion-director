@@ -1,5 +1,5 @@
 /*
- * aj-motion.js: AJ's signature motion moves as deterministic GSAP helpers.
+ * motion-director.js: signature motion moves as deterministic GSAP helpers.
  *
  * This is a classic script, not an ES module, on purpose. HyperFrames compositions load it with a
  * plain <script src> after gsap, and Node can require() the same file so the pure planners are
@@ -16,7 +16,7 @@
 (function (root, factory) {
   const api = factory(root);
   if (typeof module === "object" && module.exports) module.exports = api;
-  else root.AJMotion = api;
+  else root.MotionDirector = api;
 })(typeof globalThis !== "undefined" ? globalThis : this, function (root) {
   "use strict";
 
@@ -53,7 +53,7 @@
 
   function assertFiniteNumber(value, name) {
     if (typeof value !== "number" || !Number.isFinite(value)) {
-      throw new TypeError(`AJMotion: ${name} must be a finite number, got ${value}`);
+      throw new TypeError(`MotionDirector: ${name} must be a finite number, got ${value}`);
     }
   }
 
@@ -84,7 +84,7 @@
     assertFiniteNumber(start, "start");
     const words = tokenize(text);
     if (times && times.length !== words.length) {
-      throw new RangeError(`AJMotion: times has ${times.length} entries but the line has ${words.length} words`);
+      throw new RangeError(`MotionDirector: times has ${times.length} entries but the line has ${words.length} words`);
     }
     const normalized = words.map(normalizeWord);
     const isKeyword = new Array(words.length).fill(false);
@@ -126,7 +126,7 @@
   function planType(text, opts = {}) {
     const { cps = TIMING.typeCps, start = 0, jitter = 0.25, seed = 7 } = opts;
     assertFiniteNumber(cps, "cps");
-    if (cps <= 0) throw new RangeError("AJMotion: cps must be greater than 0");
+    if (cps <= 0) throw new RangeError("MotionDirector: cps must be greater than 0");
     const step = 1 / cps;
     const random = seededRandom(seed);
     let cursor = start;
@@ -150,7 +150,7 @@
 
   function beatLength(bpm) {
     assertFiniteNumber(bpm, "bpm");
-    if (bpm <= 0) throw new RangeError("AJMotion: bpm must be greater than 0");
+    if (bpm <= 0) throw new RangeError("MotionDirector: bpm must be greater than 0");
     return 60 / bpm;
   }
 
@@ -192,18 +192,18 @@
 
   function resolveOne(target) {
     if (typeof target !== "string") {
-      if (!target) throw new Error("AJMotion: missing target element");
+      if (!target) throw new Error("MotionDirector: missing target element");
       return target;
     }
     const element = root.document.querySelector(target);
-    if (!element) throw new Error(`AJMotion: no element matches "${target}"`);
+    if (!element) throw new Error(`MotionDirector: no element matches "${target}"`);
     return element;
   }
 
   function resolveAll(targets) {
     if (typeof targets === "string") {
       const list = Array.from(root.document.querySelectorAll(targets));
-      if (!list.length) throw new Error(`AJMotion: no elements match "${targets}"`);
+      if (!list.length) throw new Error(`MotionDirector: no elements match "${targets}"`);
       return list;
     }
     return Array.isArray(targets) ? targets : Array.from(targets);
@@ -223,7 +223,7 @@
 
   /**
    * Split an element's text into word spans. Consecutive keyword words are grouped in one
-   * `.aj-key` span that carries the highlight layer. Idempotent.
+   * `.md-key` span that carries the highlight layer. Idempotent.
    */
   function splitWords(target, opts = {}) {
     const element = resolveOne(target);
@@ -234,12 +234,12 @@
     const keyGroups = [];
     let group = null;
     plan.forEach((item, i) => {
-      const word = el("span", "aj-word");
-      word.appendChild(el("span", "aj-word-in", item.word));
+      const word = el("span", "md-word");
+      word.appendChild(el("span", "md-word-in", item.word));
       if (item.isKeyword) {
         if (!group) {
-          group = el("span", "aj-key");
-          group.appendChild(el("span", "aj-key-bg"));
+          group = el("span", "md-key");
+          group.appendChild(el("span", "md-key-bg"));
           element.appendChild(group);
           keyGroups.push(group);
         } else {
@@ -259,21 +259,21 @@
   }
 
   function addHighlight(tl, group, at, mode, element) {
-    const accent = cssToken(element, "--aj-accent", "#3df5b0");
-    const onAccent = cssToken(element, "--aj-on-accent", "#04120d");
-    const inner = group.querySelectorAll(".aj-word-in");
-    const bg = group.querySelector(".aj-key-bg");
+    const accent = cssToken(element, "--md-accent", "#3df5b0");
+    const onAccent = cssToken(element, "--md-on-accent", "#04120d");
+    const inner = group.querySelectorAll(".md-word-in");
+    const bg = group.querySelector(".md-key-bg");
     if (mode === "fill") {
       tl.fromTo(bg, { scaleX: 0 }, { scaleX: 1, duration: TIMING.highlight, ease: EASE.move }, at);
       tl.to(inner, { color: onAccent, duration: 0.2, ease: "none" }, at + 0.12);
     } else if (mode === "sweep") {
-      group.classList.add("aj-key--sweep");
+      group.classList.add("md-key--sweep");
       tl.fromTo(bg, { scaleX: 0 }, { scaleX: 1, duration: TIMING.highlight, ease: EASE.move }, at);
       tl.to(inner, { color: accent, duration: 0.25, ease: "none" }, at);
     } else if (mode === "bracket") {
-      group.classList.add("aj-key--bracket");
+      group.classList.add("md-key--bracket");
       const corners = ["tl", "tr", "bl", "br"].map((pos) => {
-        const corner = el("span", `aj-corner aj-corner--${pos}`);
+        const corner = el("span", `md-corner md-corner--${pos}`);
         group.appendChild(corner);
         return corner;
       });
@@ -305,7 +305,7 @@
     });
     let end = at + (plan.length ? plan[plan.length - 1].at : 0) + duration;
     keyGroups.forEach((group) => {
-      const firstIndex = words.indexOf(group.querySelector(".aj-word-in"));
+      const firstIndex = words.indexOf(group.querySelector(".md-word-in"));
       const landed = at + plan[firstIndex].at + duration * 0.55;
       end = Math.max(end, addHighlight(tl, group, landed, highlight, element));
     });
@@ -319,7 +319,7 @@
     const { stagger = TIMING.exitStagger, duration = TIMING.exitDuration } = opts;
     tl.to(words, { yPercent: -50, opacity: 0, filter: "blur(10px)", duration, ease: EASE.exit, stagger }, at);
     // Highlight layers (pill, sweep, bracket corners) live outside the words, so they leave separately.
-    const decor = element.querySelectorAll(".aj-key-bg, .aj-corner");
+    const decor = element.querySelectorAll(".md-key-bg, .md-corner");
     if (decor.length) tl.to(decor, { opacity: 0, duration: duration * 0.8, ease: EASE.exit }, at);
     return round(at + duration + stagger * (words.length - 1));
   }
@@ -363,7 +363,7 @@
   }
 
   /**
-   * Typewriter reveal with an accent caret. Characters are hidden by `.aj-typing` CSS and revealed
+   * Typewriter reveal with an accent caret. Characters are hidden by `.md-typing` CSS and revealed
    * with `set`, so seeking backward restores them exactly.
    * @returns {number} time typing ends
    */
@@ -371,12 +371,12 @@
     const element = resolveOne(target);
     const { caret = true, blinkUntil } = opts;
     const text = element.textContent;
-    element.classList.add("aj-typing");
-    const chars = splitChars(element, text, "aj-ch");
+    element.classList.add("md-typing");
+    const chars = splitChars(element, text, "md-ch");
     const plan = planType(text, { ...opts, start: at });
     chars.forEach((span, i) => tl.set(span, { display: "inline" }, plan.chars[i].at));
     if (caret) {
-      const caretEl = el("span", "aj-caret");
+      const caretEl = el("span", "md-caret");
       element.appendChild(caretEl);
       tl.fromTo(caretEl, { opacity: 0 }, { opacity: 1, duration: 0.01 }, Math.max(0, at - 0.3));
       if (blinkUntil) addCaretBlink(tl, caretEl, plan.end, blinkUntil);
@@ -392,13 +392,13 @@
   function swapWord(tl, target, words, at, opts = {}) {
     const element = resolveOne(target);
     const { hold = 0.8, cps = 18, eraseCps = 40, caret = true, blinkUntil } = opts;
-    element.classList.add("aj-typing", "aj-swap");
+    element.classList.add("md-typing", "md-swap");
     element.textContent = "";
     let cursor = at;
     words.forEach((word, index) => {
-      const holder = el("span", "aj-swap-word");
+      const holder = el("span", "md-swap-word");
       element.appendChild(holder);
-      const chars = splitChars(holder, word, "aj-ch");
+      const chars = splitChars(holder, word, "md-ch");
       const plan = planType(word, { cps, start: cursor, seed: 11 + index });
       chars.forEach((span, i) => tl.set(span, { display: "inline" }, plan.chars[i].at));
       cursor = plan.end;
@@ -411,7 +411,7 @@
       }
     });
     if (caret) {
-      const caretEl = el("span", "aj-caret");
+      const caretEl = el("span", "md-caret");
       element.appendChild(caretEl);
       tl.fromTo(caretEl, { opacity: 0 }, { opacity: 1, duration: 0.01 }, Math.max(0, at - 0.3));
       if (blinkUntil) addCaretBlink(tl, caretEl, cursor, blinkUntil);
@@ -429,7 +429,7 @@
       .map((prop) => [prop, computed[prop]])
       // Gradient text uses a transparent color; let the ghost's own CSS color win instead.
       .filter(([prop, value]) => !(prop === "color" && /rgba\(.*,\s*0\)$|transparent/.test(value)));
-    const wrap = el("span", "aj-echo");
+    const wrap = el("span", "md-echo");
     element.parentNode.insertBefore(wrap, element);
     wrap.appendChild(element);
     planEcho(count, { gap, falloff }).forEach((ghostPlan) => {
@@ -438,8 +438,8 @@
       // Earlier tweens may have written inline from-states (blur, offsets) onto the source; ghosts start clean.
       ghost.removeAttribute("style");
       typography.forEach(([prop, value]) => { ghost.style[prop] = value; });
-      ghost.classList.add("aj-echo-ghost");
-      if (outline) ghost.classList.add("aj-echo-ghost--outline");
+      ghost.classList.add("md-echo-ghost");
+      if (outline) ghost.classList.add("md-echo-ghost--outline");
       ghost.setAttribute("aria-hidden", "true");
       wrap.insertBefore(ghost, element);
       tl.fromTo(
@@ -511,8 +511,8 @@
       tl.to(chip, { scale: 0.92, duration: 0.08, ease: "power2.in" }, pressAt);
       tl.to(chip, { scale: 1, duration: 0.4, ease: EASE.pop }, pressAt + 0.08);
       tl.to(chip, {
-        backgroundColor: cssToken(chip, "--aj-accent", "#3df5b0"),
-        color: cssToken(chip, "--aj-on-accent", "#04120d"),
+        backgroundColor: cssToken(chip, "--md-accent", "#3df5b0"),
+        color: cssToken(chip, "--md-on-accent", "#04120d"),
         duration: 0.2,
         ease: "none",
       }, pressAt + 0.08);
@@ -600,7 +600,7 @@
   function motifPath(tl, target, points, at, opts = {}) {
     const element = resolveOne(target);
     const { duration = 1.2, ease = EASE.move } = opts;
-    if (!Array.isArray(points) || points.length === 0) throw new Error("AJMotion: motifPath needs at least one point");
+    if (!Array.isArray(points) || points.length === 0) throw new Error("MotionDirector: motifPath needs at least one point");
     const segment = duration / points.length;
     const keyframes = points.map((point) => {
       const { x, y } = point.to ? centerIn(element, point.to) : point;
@@ -672,7 +672,7 @@
       top: "inset(0% 0% 100% 0%)",
       bottom: "inset(100% 0% 0% 0%)",
     }[from];
-    if (!hidden) throw new Error(`AJMotion: wipeIn from must be left|right|top|bottom, got "${from}"`);
+    if (!hidden) throw new Error(`MotionDirector: wipeIn from must be left|right|top|bottom, got "${from}"`);
     tl.fromTo(resolveAll(typeof target === "string" ? target : [target].flat()), { clipPath: hidden }, { clipPath: "inset(0% 0% 0% 0%)", duration, ease, stagger: opts.stagger || 0 }, at);
     return round(at + duration);
   }

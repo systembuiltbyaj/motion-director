@@ -1,8 +1,8 @@
 # Motion Grammar
 
 The numbers behind the feel. They were measured from the references (cut detection plus audio
-onsets across 246 s of footage) and tuned for 30/60 fps HyperFrames renders. `AJMotion.EASE` and
-`AJMotion.TIMING` hold the defaults.
+onsets across 246 s of footage) and tuned for 30/60 fps HyperFrames renders. `MotionDirector.EASE` and
+`MotionDirector.TIMING` hold the defaults.
 
 ## Contents
 1. Easing
@@ -60,7 +60,7 @@ the line longer, keep something alive during the hold (orb drift, caret blink, c
   breathes (2–3 s). The ending holds (2.5–3.5 s on the lockup).
 - Scene starts and flash cards land **on** a beat. Keywords land a hair after (the keyword delay), so
   they feel like the answer to the beat.
-- If AJ supplies music, measure it first (`analyze-reference.mjs` onsets, or the student kit's
+- If the user supplies music, measure it first (`analyze-reference.mjs` onsets, or the student kit's
   `music-grid.mjs`) and retime to its real BPM and phase.
 
 ## 5. Cut budget

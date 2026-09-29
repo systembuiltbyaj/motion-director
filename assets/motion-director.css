@@ -1,0 +1,268 @@
+/*
+ * motion-director.css: flavor tokens and the classes motion-director.js builds on.
+ *
+ * Set `data-md-flavor` on the composition root to switch the whole look. The motion language never
+ * changes between flavors; only color, surface, and texture do. Override any token per project from
+ * the project's frame.md values. A client brand usually means changing --md-accent and
+ * --md-on-accent only.
+ */
+
+[data-md-flavor] {
+  --md-font-display: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --md-font-body: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --md-font-serif: Georgia, "Times New Roman", serif;
+  --md-key-weight: 800;
+  --md-key-radius: 0.16em;
+  --md-glow-strength: 0;
+  --md-grain-opacity: 0;
+}
+
+/* Glow Dark: deep tinted-dark base, one neon accent, soft bloom. For tech, launches, and AI products. */
+[data-md-flavor="glow-dark"] {
+  --md-bg: #05110f;
+  --md-bg-2: #0a2621;
+  --md-surface: rgba(255, 255, 255, 0.05);
+  --md-surface-border: rgba(61, 245, 176, 0.35);
+  --md-fg: #eafaf4;
+  --md-muted: #8fb3a8;
+  --md-accent: #3df5b0;
+  --md-on-accent: #03120d;
+  --md-orb-1: rgba(61, 245, 176, 0.32);
+  --md-orb-2: rgba(22, 160, 133, 0.35);
+  --md-orb-3: rgba(180, 255, 90, 0.18);
+  --md-glow-strength: 1;
+}
+
+/* Electric System: black and white with one saturated brand color as whole panels. For brand systems and agencies. */
+[data-md-flavor="electric-system"] {
+  --md-bg: #0a0a0d;
+  --md-bg-2: #15161c;
+  --md-surface: #ffffff;
+  --md-surface-border: rgba(255, 255, 255, 0.14);
+  --md-fg: #ffffff;
+  --md-muted: #9aa3b5;
+  --md-accent: #1f5bff;
+  --md-on-accent: #ffffff;
+  --md-orb-1: rgba(31, 91, 255, 0.35);
+  --md-orb-2: rgba(31, 91, 255, 0.18);
+  --md-orb-3: rgba(255, 255, 255, 0.06);
+}
+
+/* Warm Canvas: grainy warm gradient atmosphere around a clean light UI canvas. For AI tools and creative SaaS. */
+[data-md-flavor="warm-canvas"] {
+  --md-bg: #f1efec;
+  --md-bg-2: #e7e3de;
+  --md-surface: #ffffff;
+  --md-surface-border: rgba(28, 27, 26, 0.08);
+  --md-fg: #1c1b1a;
+  --md-muted: #8b857e;
+  --md-accent: #ff5a1f;
+  --md-on-accent: #ffffff;
+  --md-orb-1: rgba(255, 106, 43, 0.55);
+  --md-orb-2: rgba(255, 179, 107, 0.5);
+  --md-orb-3: rgba(185, 167, 240, 0.45);
+  --md-grain-opacity: 0.22;
+}
+
+/* Bold Split: charcoal, white, and one hot warm accent. Hard color-block and footage splits. For promos and services. */
+[data-md-flavor="bold-split"] {
+  --md-bg: #1e2026;
+  --md-bg-2: #272a31;
+  --md-surface: #ffb400;
+  --md-surface-border: rgba(255, 255, 255, 0.1);
+  --md-fg: #ffffff;
+  --md-muted: #a9adb8;
+  --md-accent: #ffb400;
+  --md-on-accent: #1e2026;
+  --md-orb-1: rgba(255, 180, 0, 0.12);
+  --md-orb-2: rgba(255, 255, 255, 0.04);
+  --md-orb-3: rgba(255, 180, 0, 0.06);
+}
+
+/* ------------------------------------------------------------------ kinetic type */
+
+.md-word {
+  display: inline-block;
+}
+
+.md-word-in {
+  display: inline-block;
+  will-change: transform, opacity, filter;
+}
+
+.md-key {
+  position: relative;
+  display: inline-block;
+  /* The pill overhangs into the surrounding word spaces, so the text keeps normal spacing. */
+  padding: 0 0.14em;
+  margin: 0 -0.1em;
+  font-weight: var(--md-key-weight);
+}
+
+/* Paint order instead of a negative z-index: the highlight layer comes first in the DOM, and the
+   words are positioned after it, so they always paint on top. */
+.md-key > .md-word {
+  position: relative;
+}
+
+.md-key-bg {
+  position: absolute;
+  inset: 0.04em 0;
+  display: block;
+  border-radius: var(--md-key-radius);
+  background: var(--md-accent);
+  box-shadow: 0 0 calc(40px * var(--md-glow-strength)) color-mix(in srgb, var(--md-accent) 55%, transparent);
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+.md-key--sweep .md-key-bg {
+  inset: auto 0 0.02em 0;
+  height: 0.14em;
+  border-radius: 0.07em;
+}
+
+.md-key--bracket .md-key-bg {
+  inset: -0.08em -0.1em;
+  background: transparent;
+  border: 2px dashed color-mix(in srgb, var(--md-accent) 70%, transparent);
+  box-shadow: none;
+  transform: none;
+  opacity: 0;
+}
+
+.md-corner {
+  position: absolute;
+  width: 0.16em;
+  height: 0.16em;
+  background: var(--md-fg);
+  border: 2px solid var(--md-accent);
+}
+.md-corner--tl { top: -0.16em; left: -0.18em; }
+.md-corner--tr { top: -0.16em; right: -0.18em; }
+.md-corner--bl { bottom: -0.16em; left: -0.18em; }
+.md-corner--br { bottom: -0.16em; right: -0.18em; }
+
+.md-typing .md-ch {
+  display: none;
+  /* pre-wrap keeps typed spaces but still lets long lines wrap at them. */
+  white-space: pre-wrap;
+}
+
+.md-caret {
+  display: inline-block;
+  width: 0.08em;
+  height: 1em;
+  margin-left: 0.06em;
+  vertical-align: -0.12em;
+  background: var(--md-accent);
+  opacity: 0;
+}
+
+.md-swap .md-swap-word {
+  color: var(--md-accent);
+  font-weight: var(--md-key-weight);
+}
+
+.md-echo {
+  display: inline-grid;
+}
+
+.md-echo > * {
+  grid-area: 1 / 1;
+}
+
+.md-echo-ghost {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Ghosts stay filled (their faintness comes from opacity); a transparent fill reads as invisible text. */
+.md-echo-ghost--outline {
+  -webkit-text-stroke: 1.5px currentColor;
+}
+
+/* ------------------------------------------------------------------ surfaces and atmosphere */
+
+.md-stage {
+  perspective: 1600px;
+  transform-style: preserve-3d;
+}
+
+.md-card {
+  background: var(--md-surface);
+  border: 1.5px solid var(--md-surface-border);
+  border-radius: 22px;
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.35),
+    0 0 calc(60px * var(--md-glow-strength)) color-mix(in srgb, var(--md-accent) 30%, transparent);
+  backdrop-filter: blur(18px);
+}
+
+.md-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45em 1.05em;
+  border-radius: 999px;
+  border: 1.5px solid var(--md-surface-border);
+  background: color-mix(in srgb, var(--md-fg) 7%, transparent);
+  color: var(--md-fg);
+  font-weight: 600;
+}
+
+.md-flash {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--md-accent);
+  color: var(--md-on-accent);
+  clip-path: inset(0% 100% 0% 0%);
+}
+
+.md-atmosphere {
+  position: absolute;
+  inset: -10%;
+  overflow: hidden;
+  background: radial-gradient(120% 90% at 50% 110%, var(--md-bg-2), var(--md-bg) 70%);
+}
+
+.md-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+}
+
+.md-orb--1 { width: 55%; aspect-ratio: 1; left: -8%; top: 30%; background: var(--md-orb-1); }
+.md-orb--2 { width: 45%; aspect-ratio: 1; right: -6%; top: -12%; background: var(--md-orb-2); }
+.md-orb--3 { width: 35%; aspect-ratio: 1; left: 40%; bottom: -20%; background: var(--md-orb-3); }
+
+/* Static SVG noise: deterministic grain with no per-frame randomness. */
+.md-grain {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: var(--md-grain-opacity);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+.md-vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.45));
+}
+
+[data-md-flavor="warm-canvas"] .md-vignette {
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(120, 60, 20, 0.12));
+}
+
+.md-motif {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--md-accent);
+  box-shadow: 0 0 24px 6px color-mix(in srgb, var(--md-accent) 60%, transparent);
+}

@@ -3,63 +3,63 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1920, height=1080" />
-    <title>Narrated Journey — aj-motion-style</title>
+    <title>Narrated Journey — motion-director</title>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-    <script src="assets/aj-motion.js"></script>
-    <link rel="stylesheet" href="assets/aj-motion.css" />
+    <script src="assets/motion-director.js"></script>
+    <link rel="stylesheet" href="assets/motion-director.css" />
     <style>
       @font-face { font-family: "Inter"; src: url("assets/fonts/inter-latin.woff2") format("woff2"); font-weight: 100 900; }
 
       /* Custom flavor derived from Glow Dark: deep green + lime, with one world change to a light canvas. */
-      [data-aj-flavor="spark-green"] {
-        --aj-bg: #04221d;
-        --aj-bg-2: #0b4a3b;
-        --aj-fg: #effbe9;
-        --aj-muted: #9cc4b2;
-        --aj-accent: #d4f25a;
-        --aj-on-accent: #0a2a20;
-        --aj-orb-1: rgba(212, 242, 90, 0.28);
-        --aj-orb-2: rgba(24, 150, 110, 0.5);
-        --aj-orb-3: rgba(212, 242, 90, 0.18);
-        --aj-glow-strength: 1;
+      [data-md-flavor="spark-green"] {
+        --md-bg: #04221d;
+        --md-bg-2: #0b4a3b;
+        --md-fg: #effbe9;
+        --md-muted: #9cc4b2;
+        --md-accent: #d4f25a;
+        --md-on-accent: #0a2a20;
+        --md-orb-1: rgba(212, 242, 90, 0.28);
+        --md-orb-2: rgba(24, 150, 110, 0.5);
+        --md-orb-3: rgba(212, 242, 90, 0.18);
+        --md-glow-strength: 1;
         --light-bg: #eef5e2;
         --light-ink: #0d3b2f;
       }
 
       body { margin: 0; background: #000; }
-      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--aj-bg); color: var(--aj-fg); font-family: "Inter", sans-serif; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--md-bg); color: var(--md-fg); font-family: "Inter", sans-serif; }
       .scene { position: absolute; inset: 0; }
       .world { position: absolute; inset: 0; transform-origin: 50% 50%; }
-      .spark { position: absolute; width: 72px; height: 72px; color: var(--aj-accent); filter: drop-shadow(0 0 18px var(--aj-accent)); }
+      .spark { position: absolute; width: 72px; height: 72px; color: var(--md-accent); filter: drop-shadow(0 0 18px var(--md-accent)); }
       .spark svg { width: 100%; height: 100%; display: block; }
 
       /* S1 */
       .rings { position: absolute; inset: 0; }
-      .rings circle { fill: none; stroke: color-mix(in srgb, var(--aj-accent) 55%, transparent); stroke-width: 2.5; }
-      #s1-line { position: absolute; left: 300px; top: 470px; margin: 0; font-size: 68px; font-weight: 600; letter-spacing: -0.02em; color: var(--aj-accent); }
+      .rings circle { fill: none; stroke: color-mix(in srgb, var(--md-accent) 55%, transparent); stroke-width: 2.5; }
+      #s1-line { position: absolute; left: 300px; top: 470px; margin: 0; font-size: 68px; font-weight: 600; letter-spacing: -0.02em; color: var(--md-accent); }
       .cursor { position: absolute; width: 46px; height: 46px; }
 
       /* S2 */
-      .word-float { position: absolute; margin: 0; font-weight: 600; letter-spacing: -0.03em; color: var(--aj-fg); }
+      .word-float { position: absolute; margin: 0; font-weight: 600; letter-spacing: -0.03em; color: var(--md-fg); }
       #w-lead { left: 240px; top: 250px; font-size: 96px; }
-      #w-question { right: 260px; top: 560px; font-size: 150px; color: var(--aj-accent); font-weight: 800; }
+      #w-question { right: 260px; top: 560px; font-size: 150px; color: var(--md-accent); font-weight: 800; }
       .ring-text { position: absolute; inset: 0; }
-      .ring-text text { font-size: 62px; font-weight: 700; fill: var(--aj-accent); letter-spacing: 0.02em; }
+      .ring-text text { font-size: 62px; font-weight: 700; fill: var(--md-accent); letter-spacing: 0.02em; }
 
       /* S3 */
       .glass-wrap { position: absolute; left: 1080px; top: 250px; width: 420px; height: 420px; perspective: 1400px; }
       .glass { position: absolute; inset: 0; border-radius: 64px; background: linear-gradient(145deg, rgba(212, 242, 90, 0.22), rgba(255, 255, 255, 0.04)); border: 2px solid rgba(212, 242, 90, 0.7); box-shadow: 0 0 80px rgba(212, 242, 90, 0.35), inset 0 0 60px rgba(212, 242, 90, 0.15); display: grid; place-items: center; }
       .glass .spark { position: relative; width: 150px; height: 150px; }
       #s3-line { position: absolute; left: 260px; top: 760px; margin: 0; font-size: 76px; font-weight: 500; letter-spacing: -0.02em; }
-      .streak { position: absolute; left: 0; top: 520px; width: 520px; height: 36px; border-radius: 18px; background: linear-gradient(90deg, transparent, var(--aj-accent)); filter: blur(2px) drop-shadow(0 0 30px var(--aj-accent)); }
+      .streak { position: absolute; left: 0; top: 520px; width: 520px; height: 36px; border-radius: 18px; background: linear-gradient(90deg, transparent, var(--md-accent)); filter: blur(2px) drop-shadow(0 0 30px var(--md-accent)); }
 
       /* Light world */
       .light { position: absolute; inset: 0; background: radial-gradient(90% 80% at 20% 20%, #f8fcf2, var(--light-bg) 60%, #dcecc6); color: var(--light-ink); }
       .light .orb { position: absolute; border-radius: 50%; filter: blur(80px); }
       #s4-line, #s5-line { position: absolute; margin: 0; font-weight: 600; letter-spacing: -0.03em; }
       #s4-line { left: 0; right: 0; top: 480px; text-align: center; font-size: 84px; }
-      .light .aj-key { color: var(--light-ink); }
-      .light .aj-key-bg { background: var(--aj-accent); box-shadow: none; }
+      .light .md-key { color: var(--light-ink); }
+      .light .md-key-bg { background: var(--md-accent); box-shadow: none; }
       .node-chip { position: absolute; left: 0; top: 0; padding: 20px 30px; border-radius: 18px; background: #fff; box-shadow: 0 18px 40px rgba(13, 59, 47, 0.14); font-size: 34px; font-weight: 700; color: var(--light-ink); white-space: nowrap; }
       .node-chip i { display: inline-block; width: 14px; height: 14px; margin-right: 14px; border-radius: 50%; background: #1b8a62; vertical-align: middle; }
       .flow-lines { position: absolute; inset: 0; }
@@ -67,7 +67,7 @@
       #s4-caption { position: absolute; left: 0; right: 0; top: 820px; margin: 0; text-align: center; font-size: 46px; font-weight: 500; color: #4d7a68; }
       #growth { position: absolute; left: 0; right: 0; top: 380px; text-align: center; }
       .growth-word { font-size: 300px; font-weight: 900; letter-spacing: -0.05em; line-height: 1; background: linear-gradient(90deg, #1b8a62, #a8d93a); -webkit-background-clip: text; background-clip: text; color: transparent; }
-      #growth .aj-echo-ghost--outline { background: none; color: #1b8a62; -webkit-text-stroke: 0; }
+      #growth .md-echo-ghost--outline { background: none; color: #1b8a62; -webkit-text-stroke: 0; }
 
       /* S5 */
       .shot { position: absolute; left: 560px; top: 250px; width: 800px; border-radius: 26px; overflow: hidden; box-shadow: 0 40px 90px rgba(13, 59, 47, 0.25); }
@@ -83,15 +83,15 @@
       #s6-row .spark { position: relative; width: 96px; height: 96px; color: #1b8a62; filter: none; }
       #s6-line { margin: 0; font-size: 110px; font-weight: 600; letter-spacing: -0.03em; }
       #s6-sign { display: flex; align-items: center; gap: 18px; font-size: 34px; font-weight: 600; color: #4d7a68; }
-      .mark { width: 54px; height: 54px; background: #1b8a62; -webkit-mask: url("assets/media/aj-mark-dark.webp") center / contain no-repeat; mask: url("assets/media/aj-mark-dark.webp") center / contain no-repeat; }
+      .mark { width: 54px; height: 54px; background: #1b8a62; -webkit-mask: url("assets/media/logo-mark.webp") center / contain no-repeat; mask: url("assets/media/logo-mark.webp") center / contain no-repeat; }
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="21" data-aj-flavor="spark-green">
-      <div class="aj-atmosphere" data-layout-allow-overflow>
-        <div class="aj-orb aj-orb--1" data-layout-allow-overflow></div>
-        <div class="aj-orb aj-orb--2" data-layout-allow-overflow></div>
-        <div class="aj-orb aj-orb--3" data-layout-allow-overflow></div>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="21" data-md-flavor="spark-green">
+      <div class="md-atmosphere" data-layout-allow-overflow>
+        <div class="md-orb md-orb--1" data-layout-allow-overflow></div>
+        <div class="md-orb md-orb--2" data-layout-allow-overflow></div>
+        <div class="md-orb md-orb--3" data-layout-allow-overflow></div>
       </div>
 
       <!-- S1 + S2: one dark world the camera pushes through -->
@@ -164,7 +164,7 @@
             <div id="s6" style="position: absolute; inset: 0">
               <div class="center">
                 <div id="s6-row"><div class="spark" id="end-spark"></div><p id="s6-line">Ready to grow?</p></div>
-                <div id="s6-sign"><span class="mark"></span>System Built by AJ</div>
+                <div id="s6-sign"><span class="mark"></span>{{brand.name}}</div>
               </div>
             </div>
           </div>
@@ -172,7 +172,7 @@
       </section>
 
       <div id="motif" class="spark" style="left: 0; top: 0"></div>
-      <div class="aj-grain"></div>
+      <div class="md-grain"></div>
       <audio id="mix" src="assets/audio/mix.wav" data-start="0" data-duration="21" data-volume="1"></audio>
     </div>
 
@@ -183,81 +183,81 @@
 
       function build() {
         document.querySelectorAll(".spark").forEach((el) => { el.innerHTML = SPARK; });
-        const AJ = window.AJMotion;
+        const MD = window.MotionDirector;
         const tl = gsap.timeline({ paused: true });
-        AJ.ambientDrift(tl, ".aj-orb", 0, 21, { amp: 90, cycle: 9, seed: 11 });
+        MD.ambientDrift(tl, ".md-orb", 0, 21, { amp: 90, cycle: 9, seed: 11 });
 
         // S1 — rings draw, the line builds on the voice, a cursor "clicks" the spark into being.
-        AJ.drawPath(tl, ".rings circle", 0.1, { duration: 1.6, stagger: 0.25 });
-        AJ.buildSentence(tl, "#s1-line", 0.4, { keyword: "spark", highlight: "fill", times: [0, 0.34, 0.78, 1.12, 1.38, 1.5] });
-        tl.fromTo("#cursor", { x: 1500, y: 700, opacity: 0 }, { x: 1180, y: 520, opacity: 1, duration: 1.1, ease: AJ.EASE.move }, 0.6);
+        MD.drawPath(tl, ".rings circle", 0.1, { duration: 1.6, stagger: 0.25 });
+        MD.buildSentence(tl, "#s1-line", 0.4, { keyword: "spark", highlight: "fill", times: [0, 0.34, 0.78, 1.12, 1.38, 1.5] });
+        tl.fromTo("#cursor", { x: 1500, y: 700, opacity: 0 }, { x: 1180, y: 520, opacity: 1, duration: 1.1, ease: MD.EASE.move }, 0.6);
         tl.to("#cursor", { scale: 0.85, duration: 0.08, yoyo: true, repeat: 1 }, 1.72);
         tl.to("#cursor", { opacity: 0, duration: 0.3 }, 2.4);
-        tl.fromTo("#motif", { x: 1250, y: 400, scale: 0, opacity: 1 }, { scale: 1, duration: 0.5, ease: AJ.EASE.pop }, 1.8);
-        AJ.exitSentence(tl, "#s1-line", 2.95);
+        tl.fromTo("#motif", { x: 1250, y: 400, scale: 0, opacity: 1 }, { scale: 1, duration: 0.5, ease: MD.EASE.pop }, 1.8);
+        MD.exitSentence(tl, "#s1-line", 2.95);
 
         // S2 — camera pushes through the rings; words land on the voice; the spark hops between them.
-        AJ.camera(tl, "#world1", 3.0, { scale: 1.12, x: -40, duration: 3.9, ease: "sine.inOut" });
+        MD.camera(tl, "#world1", 3.0, { scale: 1.12, x: -40, duration: 3.9, ease: "sine.inOut" });
         tl.to(".rings circle", { rotation: 25, svgOrigin: "960 540", duration: 3.9, ease: "sine.inOut" }, 3.0);
-        AJ.arrive(tl, "#w-lead", 3.42, { y: 30, duration: 0.5 });
-        AJ.motifPath(tl, "#motif", [{ to: "#w-lead", dx: 230, dy: -40, scale: 0.6 }], 3.2, { duration: 0.35 });
-        AJ.arrive(tl, "#w-question", 3.96, { y: 40, scale: 0.9, duration: 0.6 });
-        AJ.motifPath(tl, "#motif", [{ to: "#w-question", dx: 470, dy: -70, scale: 0.9 }], 3.75, { duration: 0.35 });
+        MD.arrive(tl, "#w-lead", 3.42, { y: 30, duration: 0.5 });
+        MD.motifPath(tl, "#motif", [{ to: "#w-lead", dx: 230, dy: -40, scale: 0.6 }], 3.2, { duration: 0.35 });
+        MD.arrive(tl, "#w-question", 3.96, { y: 40, scale: 0.9, duration: 0.6 });
+        MD.motifPath(tl, "#motif", [{ to: "#w-question", dx: 470, dy: -70, scale: 0.9 }], 3.75, { duration: 0.35 });
         tl.to(["#w-lead", "#w-question"], { opacity: 0.18, filter: "blur(4px)", duration: 0.4 }, 4.7);
-        tl.fromTo("#ring-path-text", { attr: { startOffset: "100%" } }, { attr: { startOffset: "12%" }, duration: 1.6, ease: AJ.EASE.enter }, 4.75);
-        AJ.motifPath(tl, "#motif", [{ x: 1500, y: 780, scale: 0.7 }, { x: 900, y: 360, scale: 1.2 }], 5.3, { duration: 1.3 });
-        AJ.leave(tl, ["#w-lead", "#w-question", "#ring-text", ".rings"], 6.6, { duration: 0.35 });
+        tl.fromTo("#ring-path-text", { attr: { startOffset: "100%" } }, { attr: { startOffset: "12%" }, duration: 1.6, ease: MD.EASE.enter }, 4.75);
+        MD.motifPath(tl, "#motif", [{ x: 1500, y: 780, scale: 0.7 }, { x: 900, y: 360, scale: 1.2 }], 5.3, { duration: 1.3 });
+        MD.leave(tl, ["#w-lead", "#w-question", "#ring-text", ".rings"], 6.6, { duration: 0.35 });
 
         // S3 — glass tile swings in; the spark dives into it; "worked" lights up; a streak wipes to light.
         // Explicit coordinates: #s3 isn't active at build time, so its layout can't be measured yet.
-        AJ.motifPath(tl, "#motif", [{ x: 1254, y: 424, scale: 0.3 }], 6.7, { duration: 0.45 });
+        MD.motifPath(tl, "#motif", [{ x: 1254, y: 424, scale: 0.3 }], 6.7, { duration: 0.45 });
         tl.to("#motif", { opacity: 0, duration: 0.15 }, 7.1);
-        AJ.tiltFloat(tl, "#glass", 6.95, { rx: 8, ry: -18, until: 9.2, amp: 8 });
-        tl.fromTo("#glass", { rotation: 30 }, { rotation: 8, duration: 1.2, ease: AJ.EASE.enter }, 6.95);
-        tl.fromTo("#glass-spark", { scale: 0 }, { scale: 1, rotation: 90, duration: 0.8, ease: AJ.EASE.pop }, 7.15);
-        AJ.buildSentence(tl, "#s3-line", 7.0, { keyword: "worked?", highlight: "fill", times: [0, 0.3, 0.46, 0.56, 0.78] });
+        MD.tiltFloat(tl, "#glass", 6.95, { rx: 8, ry: -18, until: 9.2, amp: 8 });
+        tl.fromTo("#glass", { rotation: 30 }, { rotation: 8, duration: 1.2, ease: MD.EASE.enter }, 6.95);
+        tl.fromTo("#glass-spark", { scale: 0 }, { scale: 1, rotation: 90, duration: 0.8, ease: MD.EASE.pop }, 7.15);
+        MD.buildSentence(tl, "#s3-line", 7.0, { keyword: "worked?", highlight: "fill", times: [0, 0.3, 0.46, 0.56, 0.78] });
         tl.fromTo("#streak", { x: -600 }, { x: 2100, duration: 0.55, ease: "power2.in" }, 8.45);
 
         // Light world — the wipe reveals it; the line builds on the voice.
-        AJ.wipeIn(tl, "#light", 8.9, { from: "left", duration: 0.5 });
-        AJ.buildSentence(tl, "#s4-line", 9.0, { keyword: ["systems thinking"], highlight: "fill", times: [0, 0.26, 0.36, 0.78, 1.2] });
-        AJ.exitSentence(tl, "#s4-line", 10.95);
+        MD.wipeIn(tl, "#light", 8.9, { from: "left", duration: 0.5 });
+        MD.buildSentence(tl, "#s4-line", 9.0, { keyword: ["systems thinking"], highlight: "fill", times: [0, 0.26, 0.36, 0.78, 1.2] });
+        MD.exitSentence(tl, "#s4-line", 10.95);
 
         // Chaos → workflows: chips scatter on "chaos", then snap into a flow on "workflows".
-        const random = AJ.seededRandom(21);
+        const random = MD.seededRandom(21);
         const chips = Array.from(document.querySelectorAll(".node-chip"));
         const slots = [[270, 520], [700, 520], [1070, 520], [1460, 520]];
         chips.forEach((chip, i) => {
           const scatter = { x: 200 + random() * 1400, y: 160 + random() * 600, rotation: -24 + random() * 48 };
-          tl.fromTo(chip, { ...scatter, scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: AJ.EASE.pop }, 11.7 + i * 0.05);
+          tl.fromTo(chip, { ...scatter, scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: MD.EASE.pop }, 11.7 + i * 0.05);
           const slot = Number(chip.dataset.slot);
           if (slot >= 0) {
-            tl.to(chip, { x: slots[slot][0], y: slots[slot][1], rotation: 0, duration: 0.8, ease: AJ.EASE.move }, 12.55 + slot * 0.05);
+            tl.to(chip, { x: slots[slot][0], y: slots[slot][1], rotation: 0, duration: 0.8, ease: MD.EASE.move }, 12.55 + slot * 0.05);
           } else {
-            tl.to(chip, { scale: 0.4, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: AJ.EASE.exit }, 12.55);
+            tl.to(chip, { scale: 0.4, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: MD.EASE.exit }, 12.55);
           }
         });
-        AJ.drawPath(tl, ".flow", 13.2, { duration: 0.45, stagger: 0.12 });
-        AJ.arrive(tl, "#s4-caption", 11.8, { y: 20, duration: 0.5 });
-        AJ.leave(tl, ["#beat-b"], 14.2, { y: -40, duration: 0.3 });
+        MD.drawPath(tl, ".flow", 13.2, { duration: 0.45, stagger: 0.12 });
+        MD.arrive(tl, "#s4-caption", 11.8, { y: 20, duration: 0.5 });
+        MD.leave(tl, ["#beat-b"], 14.2, { y: -40, duration: 0.3 });
 
         // "growth" slams with an echo stack.
-        AJ.echoStack(tl, "#growth-word", 14.6, { count: 2 });
-        AJ.slam(tl, "#growth-word", 14.42, { from: 1.35, duration: 0.6 });
-        AJ.leave(tl, "#growth", 15.25, { duration: 0.35 });
+        MD.echoStack(tl, "#growth-word", 14.6, { count: 2 });
+        MD.slam(tl, "#growth-word", 14.42, { from: 1.35, duration: 0.6 });
+        MD.leave(tl, "#growth", 15.25, { duration: 0.35 });
 
         // Ribbon wraps a real dashboard; text rides the ribbon; the line builds on the voice.
-        AJ.tiltFloat(tl, "#shot", 15.4, { rx: 6, ry: -10, until: 18.3, amp: 6 });
-        AJ.drawPath(tl, "#ribbon-band", 15.5, { duration: 1.2 });
+        MD.tiltFloat(tl, "#shot", 15.4, { rx: 6, ry: -10, until: 18.3, amp: 6 });
+        MD.drawPath(tl, "#ribbon-band", 15.5, { duration: 1.2 });
         tl.fromTo("#ribbon-text", { attr: { startOffset: "0%" } }, { attr: { startOffset: "-40%" }, duration: 3, ease: "none" }, 15.5);
         tl.fromTo("#ribbon-text", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 15.9);
-        AJ.buildSentence(tl, "#s5-line", 15.6, { keyword: "sleep.", highlight: "fill", times: [0, 0.28, 0.46, 0.78, 1.32, 1.56, 1.7] });
-        AJ.leave(tl, "#beat-c", 18.2, { duration: 0.35 });
+        MD.buildSentence(tl, "#s5-line", 15.6, { keyword: "sleep.", highlight: "fill", times: [0, 0.28, 0.46, 0.78, 1.32, 1.56, 1.7] });
+        MD.leave(tl, "#beat-c", 18.2, { duration: 0.35 });
 
         // Close — spark + question on the voice, then the signature.
-        tl.fromTo("#end-spark", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.7, ease: AJ.EASE.pop }, 18.45);
-        AJ.buildSentence(tl, "#s6-line", 18.6, { keyword: "grow?", highlight: "fill", times: [0, 0.32, 0.54] });
-        AJ.arrive(tl, "#s6-sign", 19.6, { y: 20, duration: 0.6 });
+        tl.fromTo("#end-spark", { scale: 0, rotation: -90 }, { scale: 1, rotation: 0, duration: 0.7, ease: MD.EASE.pop }, 18.45);
+        MD.buildSentence(tl, "#s6-line", 18.6, { keyword: "grow?", highlight: "fill", times: [0, 0.32, 0.54] });
+        MD.arrive(tl, "#s6-sign", 19.6, { y: 20, duration: 0.6 });
 
         window.__timelines["main"] = tl;
       }

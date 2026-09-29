@@ -1,28 +1,21 @@
 ---
-name: aj-motion-style
+name: motion-director
 description: >
-  AJ's signature motion design system, distilled from his five reference films and his own brand
-  reel, and the starting point for every motion presentation, promo, explainer, product or brand
-  video, launch video, portfolio piece or reel he makes. It offers six distinct presentation layouts
-  (Brand System, Narrated Journey, Launch Hype, AI Canvas, Agency Split, Portfolio Reveal), each with
-  its own structure, pacing, camera, and sound, plus four color flavors, a shared kinetic-type language (word builds with one
-  highlighted keyword, typewriter swaps, echo type), deterministic GSAP helpers, a free local sound
-  engine (synthesized music bed + motion-synced SFX + Kokoro voiceover), live-site capture for real
-  portfolio assets, and six runnable demos for HyperFrames. Use this skill whenever AJ asks to make, design, style, storyboard, score, or animate
-  any motion graphic, video presentation, promo, ad, reel, or animated deck: "make a video for my
-  client", "motion presentation", "promo in my style", "animate this", "product launch video",
-  "portfolio reel", "personal brand video", "showreel from my website", "explainer", "add sound
-  effects / voiceover". Use it even when he doesn't say "my
-  style", and use it alongside /hyperframes (which stays the render engine), never instead of it.
-  Also use it when adding new reference videos to evolve the style.
+  Use when the user asks to make, design, storyboard, score or animate any motion video: a promo, ad,
+  explainer, product or launch video, brand film, website case study, portfolio reel or showreel,
+  animated deck, or a social reel (16:9, or 9:16 for Reels, Shorts and TikTok). Also use when they
+  share a website URL, screenshots, a Figma file, a PDF or pitch deck, a screen recording, or only a
+  text brief and want a video made from it; when they ask for kinetic typography, sound effects, a
+  music bed or voiceover on a video; or when adding reference videos to evolve the style. Use it
+  alongside /hyperframes, which stays the render engine, never instead of it.
 ---
 
-# AJ Motion Style
+# Motion Director
 
-This is AJ's motion system, distilled from five reference films plus his own brand reel. It is
-**not one template.** Each presents differently, so the skill keeps six **layouts** (different
-structures, pacing, camera, and audio) on top of one shared type-and-motion language, with
-interchangeable color **flavors**.
+A motion design system distilled from five reference films plus a personal portfolio reel. It is
+**not one template.** Each presents differently, so the skill keeps six
+**layouts** (different structures, pacing, camera, and audio) on top of one shared type-and-motion
+language, with interchangeable color **flavors**. Everything runs locally and free: no API keys.
 
 **Division of labor.** This skill decides *how it looks, moves, and sounds*. HyperFrames
 (`/hyperframes` → `/general-video`, `/motion-graphics`, `/product-launch-video` …) builds, checks, and
@@ -55,23 +48,40 @@ Every layout follows these. They're what all five references have in common.
 
 ## Workflow
 
+0. **Setup (first video on a machine).** If a script fails on a missing tool, run
+   `node ~/.claude/skills/motion-director/scripts/doctor.mjs` and relay its fixes. **Whose brand is
+   this?** For the user's own brand, use the skill-folder `brand.json`; if it doesn't exist, ask for
+   the fields in [brand.example.json](brand.example.json) once and write it there. For a client, write
+   `brand.json` in the project folder instead, so the user's own brand never leaks into client work.
 1. **Intake.** If `/hyperframes` already wrote `BRIEF.md`, read it and ask nothing it answers. Get
    the message, audience, length, aspect, brand, and real assets (screens, footage, numbers).
-   **Never invent stats or client names.** Given a URL, capture the real pages yourself:
-   `node ~/.claude/skills/aj-motion-style/scripts/capture-site.mjs <out> name=https://… [...]`.
-   Portfolio sites often hide their work behind buttons or galleries, so open those with a short
-   Playwright script and collect the image URLs before settling for the landing page.
+   **Never invent stats or client names.** Route every input with
+   [references/intake.md](references/intake.md): a URL, a local app, screenshots, a Figma link, a
+   PDF or deck, a screen recording, a logo only, or a text brief with no assets. Run
+   `scripts/prep-media.mjs` on any images you're given. Before picking a layout, write the
+   **asset inventory** (the block in intake.md) and show it to the user:
+
+   ```
+   Asset inventory
+   Have:        <each real asset: file · shape · how big it can appear>
+   Missing:     <what the story needs that nobody supplied>
+   Build in HTML: <UI or diagrams recreated as code, labeled as concept>
+   Numbers:     <every figure on screen and where it came from, or "none">
+   ```
 2. **Pick the layout** with [references/layouts.md](references/layouts.md) (the choosing table), then
    the **flavor** with [references/flavors.md](references/flavors.md) (layout default, a different
-   flavor, or one derived from the client brand). State both picks in one line each.
+   flavor, or one derived from the brand; `media-report.json` suggests an accent from screenshots).
+   State both picks in one line each.
 3. **Scaffold** from the matching demo, which is the fastest way to a working piece:
-   `node ~/.claude/skills/aj-motion-style/scripts/scaffold.mjs <project-dir> --demo <layout> [--dry-run]`
-   (`--list` shows demos; never overwrites existing files). Then write `frame.md` from
+   `node ~/.claude/skills/motion-director/scripts/scaffold.mjs <project-dir> --demo <layout> [--aspect 9:16] [--brand <file>] [--dry-run]`
+   (`--list` shows every demo and its ready-made aspects; it never overwrites existing files). It
+   fills the brand into the copy and seeds any image you haven't supplied with a SAMPLE placeholder:
+   replace every one it lists before the final render. Then write `frame.md` from
    [assets/frame-template.md](assets/frame-template.md).
 4. **Beat sheet.** Use the layout's structure and [references/story-structures.md](references/story-structures.md)
    for durations; assign moves from [references/signature-moves.md](references/signature-moves.md).
    Motion numbers are in [references/motion-grammar.md](references/motion-grammar.md).
-5. **Voice.** Narrated layouts, or a sparse line per scene when AJ asks for voice. Write `vo.json`,
+5. **Voice.** Narrated layouts, or a sparse line per scene when the user asks for voice. Write `vo.json`,
    run `scripts/voice.mjs`, get word times with `scripts/transcribe.py --words`, and land each key
    word on its visual. See [references/sound-design.md](references/sound-design.md).
 6. **Build** the composition: replace the demo copy and media with the project's, keep the move
@@ -83,7 +93,7 @@ Every layout follows these. They're what all five references have in common.
    `scripts/transcribe.py <render>.mp4` to confirm every voice line is intelligible, and check
    loudness. Fix, then do the final render.
 
-## Runtime (`assets/aj-motion.js`, global `AJMotion`)
+## Runtime (`assets/motion-director.js`, global `MotionDirector`)
 
 Every applier is `fn(tl, target, at, opts)`: it adds tweens to your paused timeline at an absolute
 time and returns the time its move settles.
@@ -117,12 +127,15 @@ by most references becomes a law.
 
 ## Files
 
+- [references/intake.md](references/intake.md): what to do with each kind of input (URL, screenshots, Figma, PDF, footage, brief only) + the asset inventory
 - [references/layouts.md](references/layouts.md): the six layouts (structure, pacing, moves, audio) and how to choose
 - [references/website-case-study.md](references/website-case-study.md): recipe + capture rules + gotchas for films that present a website
 - [references/sound-design.md](references/sound-design.md): cue sheets, SFX palette, music styles, voiceover, loudness
 - [references/flavors.md](references/flavors.md): palettes and deriving one from a client brand
 - [references/design-language.md](references/design-language.md) · [references/motion-grammar.md](references/motion-grammar.md) · [references/signature-moves.md](references/signature-moves.md) · [references/story-structures.md](references/story-structures.md) · [references/audit.md](references/audit.md)
-- `assets/aj-motion.js` · `assets/aj-motion.css` · `assets/fonts/` (Inter, Instrument Serif, Dancing Script; OFL) · `assets/frame-template.md`
-- `assets/demos/<layout>/` (index.html, cues.json, vo.json for voiced ones) · `assets/demos/MEDIA.md` (what each demo image should show) · `assets/demos/_media/` (local only, never committed: AJ's portfolio images)
-- `scripts/scaffold.mjs` · `scripts/sound.mjs` · `scripts/voice.mjs` · `scripts/capture-site.mjs` · `scripts/transcribe.py`
-- Tests: `node --test tests/aj-motion.test.mjs tests/sound.test.mjs tests/scripts.test.mjs`
+- `assets/motion-director.js` · `assets/motion-director.css` · `assets/fonts/` (Inter, Instrument Serif, Dancing Script; OFL) · `assets/frame-template.md`
+- `assets/demos/<layout>/` (index.html with `{{brand.*}}` tokens, cues.json, vo.json for voiced ones; `<layout>-9x16/` for ready-made vertical versions) · `assets/demos/MEDIA.md` (what each demo image should show) · `assets/demos/_placeholders/` (committed SAMPLE media) · `assets/demos/_media/` (optional, never committed: your own images, used before the samples)
+- `brand.example.json` → `brand.json` (who the video is for; `scripts/brand.mjs` validates and fills it)
+- `scripts/doctor.mjs` (setup check) · `scripts/scaffold.mjs` · `scripts/prep-media.mjs` (any image in → WebP + shape, size and palette report) · `scripts/sound.mjs` · `scripts/voice.mjs` · `scripts/capture-site.mjs` · `scripts/transcribe.py` · `scripts/make-placeholders.mjs` (maintainers only)
+- [PROMPTS.md](PROMPTS.md): copy-paste prompts for users
+- Tests: `node --test tests/*.test.mjs`

@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <title>Agency Split 9:16 — motion-director</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script src="assets/motion-director.js"></script>
+    <link rel="stylesheet" href="assets/motion-director.css" />
+    <style>
+      /* Vertical re-layout of agency-split: same beats and timings; side-by-side splits stack top/bottom. */
+      @font-face { font-family: "Inter"; src: url("assets/fonts/inter-latin.woff2") format("woff2"); font-weight: 100 900; }
+      body { margin: 0; background: #000; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--md-bg); color: var(--md-fg); font-family: "Inter", sans-serif; }
+      .scene { position: absolute; inset: 0; overflow: hidden; }
+      .amber { background: var(--md-accent); color: var(--md-on-accent); }
+      .img { position: absolute; overflow: hidden; }
+      .img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .caps { font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.92; }
+      .typed { font-size: 70px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.12; }
+      .typed .md-caret, .swap-line .md-caret { background: var(--md-accent); }
+      .swap-line { font-weight: 800; color: var(--md-accent); }
+      .mark { background: #fff; -webkit-mask: url("assets/media/logo-mark.webp") center / contain no-repeat; mask: url("assets/media/logo-mark.webp") center / contain no-repeat; }
+
+      /* S1: mark above the typed brand */
+      #s1-row { position: absolute; left: 0; right: 0; top: 560px; display: flex; flex-direction: column; align-items: center; gap: 60px; }
+      #s1-row .mark { width: 260px; height: 260px; }
+      #s1-words { width: 960px; font-size: 128px; font-weight: 800; letter-spacing: -0.04em; line-height: 1.02; text-align: center; }
+      #s1-w2 { min-height: 1em; }
+
+      /* S2 / S6: accent panel and image stacked, typed strip below */
+      .top { position: absolute; left: 0; top: 0; width: 1080px; height: 1320px; }
+      .panel { position: absolute; left: 0; width: 1080px; height: 660px; display: flex; flex-direction: column; justify-content: center; padding: 0 80px; box-sizing: border-box; }
+      #s2-caps { font-size: 132px; }
+      #s2-caps div:last-child, #s6-caps div:last-child { color: #fff; }
+      .strip { position: absolute; left: 80px; top: 1420px; width: 920px; }
+
+      /* S3 */
+      #s3-in { position: absolute; left: 80px; top: 640px; width: 920px; }
+      #s3-swap { font-size: 160px; letter-spacing: -0.04em; line-height: 1.05; min-height: 1em; }
+
+      /* S4: image on top, text below */
+      #s4-img { left: 0; top: 0; width: 1080px; height: 980px; }
+      #s4-text { position: absolute; left: 80px; top: 1100px; width: 920px; font-size: 92px; font-weight: 500; letter-spacing: -0.03em; line-height: 1.05; }
+      #s4-swap { font-size: 118px; }
+
+      /* S5 */
+      #s5-img { inset: 0; }
+      #s5-img::after { content: ""; position: absolute; inset: 0; background: rgba(20, 21, 26, 0.62); }
+      #s5-img img { filter: blur(3px); }
+      #s5-word { position: absolute; left: 40px; right: 40px; top: 830px; margin: 0; text-align: center; font-size: 190px; font-weight: 900; letter-spacing: -0.05em; color: #fff; text-shadow: 0 20px 60px rgba(0, 0, 0, 0.45); }
+
+      /* S6 */
+      #s6-caps { font-size: 116px; }
+      #badge { position: absolute; right: 60px; top: 50px; width: 190px; }
+
+      /* S7 */
+      #s7 .amber { position: absolute; inset: 0; display: grid; place-items: center; }
+      #s7-word { width: 920px; font-size: 170px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; text-align: center; }
+
+      /* S8: 3 × 2 logo grid; the highlight hops tile to tile */
+      #s8-line { position: absolute; left: 80px; top: 470px; width: 920px; }
+      #logos { position: absolute; left: 80px; top: 820px; width: 920px; display: grid; grid-template-columns: repeat(3, 280px); gap: 40px; }
+      .logo { width: 280px; height: 180px; border-radius: 22px; background: #2a2d35; display: grid; place-items: center; }
+      .logo img { max-width: 150px; max-height: 110px; }
+      #hl { position: absolute; left: 80px; top: 820px; width: 280px; height: 180px; border-radius: 22px; border: 3px solid var(--md-accent); box-shadow: 0 0 40px rgba(255, 180, 0, 0.35); }
+
+      /* S9 */
+      #mosaic { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 12px; padding: 12px; box-sizing: border-box; transform-origin: 50% 50%; }
+      #mosaic div { overflow: hidden; border-radius: 10px; }
+      #mosaic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      #end { position: absolute; left: 60px; right: 60px; top: 560px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 56px; text-align: center; }
+      #end .mark { width: 240px; height: 240px; }
+      #end-q { font-size: 80px; font-weight: 500; letter-spacing: -0.02em; }
+      #end-cta { font-size: 128px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; min-height: 1em; }
+      #end-url { margin-top: 22px; font-size: 44px; font-weight: 500; color: var(--md-accent); }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="19.5" data-md-flavor="bold-split">
+      <section id="s1" class="scene clip" data-start="0" data-duration="2.6">
+        <div id="s1-row"><div id="s1-mark" class="mark"></div><div id="s1-words"><div id="s1-w1" class="typed" style="font-size: inherit; font-weight: inherit">{{brand.line1}}</div><div id="s1-w2" class="swap-line" data-words="Automation|{{brand.line2}}"></div></div></div>
+      </section>
+
+      <section id="s2" class="scene clip" data-start="2.5" data-duration="2.5">
+        <div id="s2-top" class="top">
+          <div id="s2-panel" class="panel amber" style="top: 0"><div id="s2-caps" class="caps"><div>AI</div><div>Automation</div><div>Systems</div></div></div>
+          <div id="s2-img" class="img" style="left: 0; top: 660px; width: 1080px; height: 660px"><img src="assets/media/coach-gym-funnel.webp" alt="" /></div>
+        </div>
+        <div class="strip"><span id="s2-typed" class="typed">We build systems that sell, book, and follow up.</span></div>
+      </section>
+
+      <section id="s3" class="scene clip" data-start="4.9" data-duration="2.6">
+        <div id="s3-in"><div id="s3-line" class="typed" style="font-size: 96px">We build systems for your</div><div id="s3-swap" class="swap-line"></div></div>
+      </section>
+
+      <section id="s4" class="scene clip" data-start="7.4" data-duration="2.3">
+        <div id="s4-img" class="img"><img src="assets/media/sb-ai-lead-qualifier.webp" alt="" /></div>
+        <div id="s4-text"><span id="s4-typed">We don't just automate. We</span><div id="s4-swap" class="swap-line"></div></div>
+      </section>
+
+      <section id="s5" class="scene clip" data-start="9.6" data-duration="1.8">
+        <div id="s5-img" class="img"><img src="assets/media/slack-agent.webp" alt="" /></div>
+        <p id="s5-word">Ops-first.</p>
+      </section>
+
+      <section id="s6" class="scene clip" data-start="11.3" data-duration="2.1">
+        <div class="top">
+          <div id="s6-img" class="img" style="left: 0; top: 0; width: 1080px; height: 660px"><img src="assets/media/ghl-full-system-build.webp" alt="" /></div>
+          <div id="s6-panel" class="panel amber" style="top: 660px"><div id="s6-caps" class="caps"><div>{{brand.cred1Line1}}</div><div>{{brand.cred1Line2}}</div></div><img id="badge" src="assets/media/credential-badge.webp" alt="{{brand.cred1}} badge" /></div>
+        </div>
+        <div class="strip"><span id="s6-typed" class="typed">{{brand.tagline}}</span></div>
+      </section>
+
+      <section id="s7" class="scene clip" data-start="13.3" data-duration="1.8">
+        <div id="s7-panel" class="amber"><div id="s7-word">Systems Strategy</div></div>
+      </section>
+
+      <section id="s8" class="scene clip" data-start="15.0" data-duration="1.9">
+        <div id="s8-line" class="typed">We work with the tools you trust.</div>
+        <div id="logos">
+          <div class="logo"><img src="assets/media/gohighlevel.png" alt="GoHighLevel" /></div>
+          <div class="logo"><img src="assets/media/n8n.svg" alt="n8n" /></div>
+          <div class="logo"><img src="assets/media/zapier.svg" alt="Zapier" /></div>
+          <div class="logo"><img src="assets/media/claude.svg" alt="Claude" /></div>
+          <div class="logo"><img src="assets/media/openai.svg" alt="OpenAI" /></div>
+          <div class="logo"><img src="assets/media/trigger.svg" alt="Trigger.dev" /></div>
+        </div>
+        <div id="hl"></div>
+      </section>
+
+      <section id="s9" class="scene clip" data-start="16.8" data-duration="2.7">
+        <div id="mosaic">
+          <div><img src="assets/media/casa-lume-hotel.webp" alt="" /></div><div><img src="assets/media/sb-deal-won.webp" alt="" /></div><div><img src="assets/media/ai-learning-hub.webp" alt="" /></div>
+          <div><img src="assets/media/rag-knowledge-bot.webp" alt="" /></div><div><img src="assets/media/funnel-builder.webp" alt="" /></div><div><img src="assets/media/sb-smart-lead-router.webp" alt="" /></div>
+          <div><img src="assets/media/coach-gym-funnel.webp" alt="" /></div><div><img src="assets/media/sales-dashboard.webp" alt="" /></div><div><img src="assets/media/slack-agent.webp" alt="" /></div>
+        </div>
+        <div id="end"><div id="end-mark" class="mark"></div><div><div id="end-q">Any questions?</div><div id="end-cta" class="swap-line"></div><div id="end-url">{{brand.url}}</div></div></div>
+      </section>
+
+      <audio id="mix" src="assets/audio/mix.wav" data-start="0" data-duration="19.5" data-volume="1"></audio>
+    </div>
+
+    <script>
+      function build() {
+        const MD = window.MotionDirector;
+        const tl = gsap.timeline({ paused: true });
+
+        // S1 — mark pops, name types, the second line swaps before landing on the brand.
+        MD.slam(tl, "#s1-mark", 0.1, { from: 0.6, duration: 0.5 });
+        const w1 = MD.typeOn(tl, "#s1-w1", 0.3, { cps: 20, caret: false });
+        MD.swapWord(tl, "#s1-w2", document.querySelector("#s1-w2").dataset.words.split("|"), w1 + 0.1, { hold: 0.3, cps: 26, eraseCps: 60, blinkUntil: 2.5 });
+
+        // S2 — panel wipes down from the top, image wipes up from the bottom, caps slam, strip types below.
+        MD.wipeIn(tl, "#s2-panel", 2.5, { from: "top", duration: 0.45 });
+        MD.wipeIn(tl, "#s2-img", 2.5, { from: "bottom", duration: 0.45 });
+        tl.fromTo("#s2-img img", { scale: 1.2 }, { scale: 1, duration: 2.5, ease: "power2.out" }, 2.5);
+        document.querySelectorAll("#s2-caps div").forEach((line, i) => MD.slam(tl, line, 2.7 + i * 0.24, { from: 1.3, duration: 0.4 }));
+        MD.typeOn(tl, "#s2-typed", 3.3, { cps: 30 });
+        tl.to("#s2-top", { yPercent: -100, duration: 0.5, ease: MD.EASE.move }, 4.6);
+        tl.to("#s2 .strip", { y: -600, opacity: 0, duration: 0.5, ease: MD.EASE.move }, 4.6);
+
+        // S3 — full-frame line, big amber word types, erases, retypes: three services in one frame.
+        MD.buildSentence(tl, "#s3-line", 4.95, { stagger: 0.05 });
+        MD.swapWord(tl, "#s3-swap", ["funnels.", "CRMs.", "AI agents."], 5.45, { hold: 0.35, cps: 24, eraseCps: 60 });
+
+        // S4 — image panel wipes down; text types; the payoff word lands in amber.
+        MD.wipeIn(tl, "#s4-img", 7.4, { from: "top", duration: 0.45 });
+        tl.fromTo("#s4-img img", { scale: 1.15 }, { scale: 1, duration: 2.3, ease: "power2.out" }, 7.4);
+        const s4 = MD.typeOn(tl, "#s4-typed", 7.55, { cps: 32, caret: false });
+        MD.swapWord(tl, "#s4-swap", ["engineer."], s4 + 0.05, { cps: 20, blinkUntil: 9.6 });
+
+        // S5 — full-bleed image, hard slam of the one-word claim.
+        tl.fromTo("#s5-img img", { scale: 1.25 }, { scale: 1.05, duration: 1.8, ease: "power1.out" }, 9.6);
+        MD.slam(tl, "#s5-word", 9.75, { from: 1.5, duration: 0.5 });
+
+        // S6 — proof split: image + credential panel + badge, strip types the background.
+        MD.wipeIn(tl, "#s6-img", 11.3, { from: "left", duration: 0.4 });
+        MD.wipeIn(tl, "#s6-panel", 11.3, { from: "right", duration: 0.4 });
+        document.querySelectorAll("#s6-caps div").forEach((line, i) => MD.slam(tl, line, 11.5 + i * 0.24, { from: 1.3, duration: 0.4 }));
+        tl.fromTo("#badge", { rotation: -25, scale: 0 }, { rotation: 8, scale: 1, duration: 0.6, ease: MD.EASE.pop }, 11.95);
+        MD.typeOn(tl, "#s6-typed", 11.7, { cps: 32 });
+
+        // S7 — full amber, echo type.
+        MD.slam(tl, "#s7-word", 13.35, { from: 1.4, duration: 0.5 });
+        MD.echoStack(tl, "#s7-word", 13.5, { count: 2, gap: 0.95 });
+
+        // S8 — line types; logos pop; the highlight hops across the 3 × 2 grid on the beat.
+        MD.typeOn(tl, "#s8-line", 15.05, { cps: 34 });
+        MD.chipPop(tl, ".logo", 15.35, { stagger: 0.07 });
+        tl.fromTo("#hl", { opacity: 0 }, { opacity: 1, duration: 0.1 }, 15.8);
+        for (let i = 1; i < 6; i += 1) tl.to("#hl", { x: (i % 3) * 320, y: Math.floor(i / 3) * 220, duration: 0.18, ease: MD.EASE.move }, 15.8 + i * 0.18);
+
+        // S9 — the work mosaic pulls back and sinks away; the end card types its call to action.
+        tl.fromTo("#mosaic", { scale: 1.6 }, { scale: 1, duration: 0.8, ease: MD.EASE.move }, 16.8);
+        tl.to("#mosaic", { scale: 0.6, opacity: 0, filter: "blur(12px)", duration: 0.5, ease: MD.EASE.exit }, 17.55);
+        MD.slam(tl, "#end-mark", 17.85, { from: 0.6, duration: 0.5 });
+        MD.typeOn(tl, "#end-q", 17.95, { cps: 30, caret: false });
+        MD.swapWord(tl, "#end-cta", ["Get in touch!"], 18.4, { cps: 26, blinkUntil: 19.5 });
+        MD.arrive(tl, "#end-url", 18.9, { y: 12, duration: 0.4 });
+
+        window.__timelines["main"] = tl;
+      }
+
+      async function init() {
+        await document.fonts.ready;
+        build();
+      }
+      init();
+    </script>
+  </body>
+</html>

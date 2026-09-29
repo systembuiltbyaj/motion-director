@@ -1,8 +1,8 @@
 # Presentation Layouts
 
-Six distinct ways to present: five from the reference films, plus Portfolio Reveal, built for AJ's
-own brand reel. A **layout** decides structure, pacing,
-camera, and audio. A **flavor** (`flavors.md`) decides palette. They're independent: any layout can
+Six distinct ways to present: five from the reference films, plus Portfolio Reveal, built from a
+personal brand reel. A **layout** decides structure, pacing, camera, and audio. A **flavor**
+(`flavors.md`) decides palette. They're independent: any layout can
 take any flavor, but each has a default that matches its source.
 
 Pick the layout first, based on the message and the assets you have, then the flavor. Every layout
@@ -29,8 +29,8 @@ has a runnable demo: `node scripts/scaffold.mjs <project> --demo <name>`.
 | A service, agency, or personal-brand promo with real photos or screens | **Agency Split** | Typed copy + image panels move fast and carry a lot of real material |
 | A personal brand or portfolio reel: "here's my work, here's what runs behind it, here's me" | **Portfolio Reveal** | Earns the reveal of the person by showing the work first; the "front vs. system" twist sells technical depth |
 
-AJ's automation work usually wants **AI Canvas** (how a system works) or **Launch Hype** (what it
-achieves). His own brand and portfolio reels want **Portfolio Reveal**. Client promos with footage usually want **Agency Split**.
+Automation and systems work usually wants **AI Canvas** (how a system works) or **Launch Hype** (what it
+achieves). Personal brand and portfolio reels want **Portfolio Reveal**. Client promos with footage usually want **Agency Split**.
 
 ## 2. Brand System  ·  demo `brand-system`  ·  source: brand-guideline film
 
@@ -108,11 +108,12 @@ achieves). His own brand and portfolio reels want **Portfolio Reveal**. Client p
 - **Audio:** music + SFX, no voice. `type` SFX follows every typed line (count ≈ characters),
   impacts on slams, whooshes on panel wipes.
 
-## 7. Portfolio Reveal  ·  demo `portfolio-reveal`  ·  source: AJ's own brand reel (not a reference film)
+## 7. Portfolio Reveal  ·  demo `portfolio-reveal`  ·  source: a personal brand reel (not a reference film)
 
-- **Default flavor:** a custom brand flavor: near-black `#07050D`, white type, violet `#6C20FF`
-  for systems (grid, glows, wires, borders), yellow `#F7CB1E` only for impact words and active
-  states. Black and white dominate.
+- **Default flavor:** `reveal`, the one flavor with two color roles: near-black `#0A0A0D`, white
+  type, a **system** color `--md-system` (`#1F5BFF`) for grid, glows, wires and borders, and the
+  **impact** accent `--md-accent` (`#FF5A1F`) only for impact words and active states. Black and
+  white dominate. Swap both roles for the brand's colors; the system color stays the quieter one.
 - **Pacing:** 124 BPM `drive`, speed-ramped. Scene lengths vary on purpose: hook 2 s, work 3–4 s
   each, twist 2 s, system 4 s, person 3 s, CTA 3 s. Transitions are 0.3–0.5 s (8–15 frames).
 - **Structure:** *show the work → reveal the system → reveal the builder.*
@@ -123,7 +124,7 @@ achieves). His own brand and portfolio reels want **Portfolio Reveal**. Client p
   workspace of real workflow screenshots: **TRIGGER** (node fires) → **ROUTE** (wires branch with
   pulses riding them) → **AUTOMATE** (every card lights) → headline over the dimmed workspace →
   **everything collapses to one point that blooms into the portrait** → script "Hello, I'm" + huge
-  name + giant violet background initials → brand lockup, services, socials held long enough to read.
+  name + giant system-color background initials → brand lockup, services, socials held long enough to read.
 - **Signature moves:** mask-up headlines (`yPercent 112 → 0` inside `overflow: hidden`), browser
   frames with real URL bars, parallax stacks, split-open reveal (two `clip-path` halves of the same
   page), `drawPath` wires with a pulse riding each wire (`getPointAtLength` keyframes), `slam` words

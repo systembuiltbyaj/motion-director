@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Local Whisper transcription for aj-motion-style (free, offline after the first model download).
+"""Local Whisper transcription for motion-director (free, offline after the first model download).
 
 Two jobs:
   word timings  python transcribe.py --words vo/l1.wav vo/l2.wav
