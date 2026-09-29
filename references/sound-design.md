@@ -19,19 +19,19 @@ dependencies, deterministic), and the voice comes from HyperFrames' bundled Koko
 ## 1. Workflow
 
 1. **(Voice layouts only)** Write `vo.json` (one line per phrase), then run
-   `node ~/.claude/skills/aj-motion-style/scripts/voice.mjs vo.json`. It prints each line's real
+   `node ~/.claude/skills/motion-director/scripts/voice.mjs vo.json`. It prints each line's real
    duration. For word-level sync:
-   `python ~/.claude/skills/aj-motion-style/scripts/transcribe.py --words vo/*.wav`
+   `python ~/.claude/skills/motion-director/scripts/transcribe.py --words vo/*.wav`
    and feed the word starts to `buildSentence(..., { times: [...] })`, or offset each clip so its
    key word lands on its visual.
 2. Build the timeline, then write `cues.json` using the **same timestamps** as the tweens: an SFX
    lands where its motion lands.
-3. `node ~/.claude/skills/aj-motion-style/scripts/sound.mjs cues.json` → `assets/audio/mix.wav`.
+3. `node ~/.claude/skills/motion-director/scripts/sound.mjs cues.json` → `assets/audio/mix.wav`.
 4. Reference it once in the composition:
    `<audio id="mix" src="assets/audio/mix.wav" data-start="0" data-duration="<total>" data-volume="1"></audio>`
    (an `id` is required, or HyperFrames renders silent).
 5. After rendering, **verify the voice is intelligible** (you can't listen, Whisper can):
-   `python ~/.claude/skills/aj-motion-style/scripts/transcribe.py renders/final.mp4`
+   `python ~/.claude/skills/motion-director/scripts/transcribe.py renders/final.mp4`
    Every line must come back at its time. A missing or garbled line means the mix buries it.
 6. Check loudness:
    `ffmpeg -i out.mp4 -af ebur128=peak=true -f null -` → aim for **I ≈ −14 to −16 LUFS, peak ≤ −1 dBFS**.

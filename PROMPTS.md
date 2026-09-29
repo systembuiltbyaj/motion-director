@@ -6,7 +6,7 @@ everything in `[brackets]`.
 ## 1. First time only: set up
 
 ```
-Set up aj-motion-style for me. Run its doctor and fix what's missing, then create my brand.json.
+Set up motion-director for me. Run its doctor and fix what's missing, then create my brand.json.
 My brand: [business name]. Me: [first and last name], [one-line role].
 Tagline: [one line about what you do]. Credentials: [up to two, e.g. "Certified HubSpot Partner"].
 Website: [yourdomain.com]. Handle: [@yourhandle]. Brand color: [#hex, or "take it from my logo"].

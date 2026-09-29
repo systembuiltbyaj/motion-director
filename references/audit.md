@@ -12,7 +12,7 @@ only show up in pixels.
 - [ ] **Weight contrast.** Keywords are visibly heavier than their line.
 - [ ] **No SAMPLE media left** in the final render (`scaffold.mjs` lists them); every image is the user's or rebuilt in HTML.
 - [ ] **Brand is right:** the lockup, URL and handle match this film's `brand.json` (client films use the client's).
-- [ ] **Flavor is consistent.** A single `data-aj-flavor`; custom tokens only through CSS variables.
+- [ ] **Flavor is consistent.** A single `data-md-flavor`; custom tokens only through CSS variables.
 - [ ] Text sits inside the safe margins at its **largest** animated size (overshoot, echo, zoom).
 
 ## Motion
@@ -46,8 +46,8 @@ only show up in pixels.
 
 - [ ] One `gsap.timeline({ paused: true })`, registered on `window.__timelines[<id>]` **after** the build.
 - [ ] Build runs after `document.fonts.ready` (the helpers split and measure text).
-- [ ] No `Date.now()`, no unseeded `Math.random()` (use `AJMotion.seededRandom`), no `repeat: -1`
-      (use `AJMotion.repeatCount`).
+- [ ] No `Date.now()`, no unseeded `Math.random()` (use `MotionDirector.seededRandom`), no `repeat: -1`
+      (use `MotionDirector.repeatCount`).
 - [ ] No tweens on `.clip` elements' visibility. Animate inner wrappers.
 - [ ] Decorative overflow (orbs, zooming stats) carries `data-layout-allow-overflow`.
 

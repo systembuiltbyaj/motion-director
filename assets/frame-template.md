@@ -1,8 +1,8 @@
 ---
 version: alpha
-name: "<Project> — AJ Motion Style (<flavor>)"
+name: "<Project> — Motion Director (<flavor>)"
 description: >
-  Frame-scale spec for <project>, built on the aj-motion-style skill. One base, one ink, ONE accent.
+  Frame-scale spec for <project>, built on the motion-director skill. One base, one ink, ONE accent.
   Kinetic grotesk type with a single highlighted keyword per line, tilted glass UI cards, blurred
   atmosphere orbs, and continuous camera transitions on a 128 BPM grid. Replace every <placeholder>;
   the defaults below are the Glow Dark flavor.
@@ -84,9 +84,9 @@ components:
 
 <One paragraph: what this video is, who it's for, and why this flavor fits them.>
 
-This project uses the **aj-motion-style** language: kinetic type as the lead actor, one accent,
+This project uses the **motion-director** language: kinetic type as the lead actor, one accent,
 continuous camera, product proof on screen, atmosphere always present. Motion rules live in
-`~/.claude/skills/aj-motion-style/references/motion-grammar.md`; this file holds the brand truth.
+`~/.claude/skills/motion-director/references/motion-grammar.md`; this file holds the brand truth.
 
 ## The Frame
 

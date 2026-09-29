@@ -1,5 +1,5 @@
 ---
-name: aj-motion-style
+name: motion-director
 description: >
   Use when the user asks to make, design, storyboard, score or animate any motion video: a promo, ad,
   explainer, product or launch video, brand film, website case study, portfolio reel or showreel,
@@ -10,10 +10,10 @@ description: >
   alongside /hyperframes, which stays the render engine, never instead of it.
 ---
 
-# AJ Motion Style
+# Motion Director
 
-A motion design system distilled by AJ Bactad (System Built by AJ) from five reference films plus
-his own brand reel. It is **not one template.** Each presents differently, so the skill keeps six
+A motion design system distilled from five reference films plus a personal portfolio reel. It is
+**not one template.** Each presents differently, so the skill keeps six
 **layouts** (different structures, pacing, camera, and audio) on top of one shared type-and-motion
 language, with interchangeable color **flavors**. Everything runs locally and free: no API keys.
 
@@ -49,7 +49,7 @@ Every layout follows these. They're what all five references have in common.
 ## Workflow
 
 0. **Setup (first video on a machine).** If a script fails on a missing tool, run
-   `node ~/.claude/skills/aj-motion-style/scripts/doctor.mjs` and relay its fixes. **Whose brand is
+   `node ~/.claude/skills/motion-director/scripts/doctor.mjs` and relay its fixes. **Whose brand is
    this?** For the user's own brand, use the skill-folder `brand.json`; if it doesn't exist, ask for
    the fields in [brand.example.json](brand.example.json) once and write it there. For a client, write
    `brand.json` in the project folder instead, so the user's own brand never leaks into client work.
@@ -73,7 +73,7 @@ Every layout follows these. They're what all five references have in common.
    flavor, or one derived from the brand; `media-report.json` suggests an accent from screenshots).
    State both picks in one line each.
 3. **Scaffold** from the matching demo, which is the fastest way to a working piece:
-   `node ~/.claude/skills/aj-motion-style/scripts/scaffold.mjs <project-dir> --demo <layout> [--aspect 9:16] [--brand <file>] [--dry-run]`
+   `node ~/.claude/skills/motion-director/scripts/scaffold.mjs <project-dir> --demo <layout> [--aspect 9:16] [--brand <file>] [--dry-run]`
    (`--list` shows every demo and its ready-made aspects; it never overwrites existing files). It
    fills the brand into the copy and seeds any image you haven't supplied with a SAMPLE placeholder:
    replace every one it lists before the final render. Then write `frame.md` from
@@ -93,7 +93,7 @@ Every layout follows these. They're what all five references have in common.
    `scripts/transcribe.py <render>.mp4` to confirm every voice line is intelligible, and check
    loudness. Fix, then do the final render.
 
-## Runtime (`assets/aj-motion.js`, global `AJMotion`)
+## Runtime (`assets/motion-director.js`, global `MotionDirector`)
 
 Every applier is `fn(tl, target, at, opts)`: it adds tweens to your paused timeline at an absolute
 time and returns the time its move settles.
@@ -133,7 +133,7 @@ by most references becomes a law.
 - [references/sound-design.md](references/sound-design.md): cue sheets, SFX palette, music styles, voiceover, loudness
 - [references/flavors.md](references/flavors.md): palettes and deriving one from a client brand
 - [references/design-language.md](references/design-language.md) · [references/motion-grammar.md](references/motion-grammar.md) · [references/signature-moves.md](references/signature-moves.md) · [references/story-structures.md](references/story-structures.md) · [references/audit.md](references/audit.md)
-- `assets/aj-motion.js` · `assets/aj-motion.css` · `assets/fonts/` (Inter, Instrument Serif, Dancing Script; OFL) · `assets/frame-template.md`
+- `assets/motion-director.js` · `assets/motion-director.css` · `assets/fonts/` (Inter, Instrument Serif, Dancing Script; OFL) · `assets/frame-template.md`
 - `assets/demos/<layout>/` (index.html with `{{brand.*}}` tokens, cues.json, vo.json for voiced ones; `<layout>-9x16/` for ready-made vertical versions) · `assets/demos/MEDIA.md` (what each demo image should show) · `assets/demos/_placeholders/` (committed SAMPLE media) · `assets/demos/_media/` (optional, never committed: your own images, used before the samples)
 - `brand.example.json` → `brand.json` (who the video is for; `scripts/brand.mjs` validates and fills it)
 - `scripts/doctor.mjs` (setup check) · `scripts/scaffold.mjs` · `scripts/prep-media.mjs` (any image in → WebP + shape, size and palette report) · `scripts/sound.mjs` · `scripts/voice.mjs` · `scripts/capture-site.mjs` · `scripts/transcribe.py` · `scripts/make-placeholders.mjs` (maintainers only)

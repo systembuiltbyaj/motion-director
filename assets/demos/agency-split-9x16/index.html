@@ -3,23 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1080, height=1920" />
-    <title>Agency Split 9:16 — aj-motion-style</title>
+    <title>Agency Split 9:16 — motion-director</title>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-    <script src="assets/aj-motion.js"></script>
-    <link rel="stylesheet" href="assets/aj-motion.css" />
+    <script src="assets/motion-director.js"></script>
+    <link rel="stylesheet" href="assets/motion-director.css" />
     <style>
       /* Vertical re-layout of agency-split: same beats and timings; side-by-side splits stack top/bottom. */
       @font-face { font-family: "Inter"; src: url("assets/fonts/inter-latin.woff2") format("woff2"); font-weight: 100 900; }
       body { margin: 0; background: #000; }
-      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--aj-bg); color: var(--aj-fg); font-family: "Inter", sans-serif; }
+      #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--md-bg); color: var(--md-fg); font-family: "Inter", sans-serif; }
       .scene { position: absolute; inset: 0; overflow: hidden; }
-      .amber { background: var(--aj-accent); color: var(--aj-on-accent); }
+      .amber { background: var(--md-accent); color: var(--md-on-accent); }
       .img { position: absolute; overflow: hidden; }
       .img img { width: 100%; height: 100%; object-fit: cover; display: block; }
       .caps { font-weight: 900; text-transform: uppercase; letter-spacing: -0.03em; line-height: 0.92; }
       .typed { font-size: 70px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.12; }
-      .typed .aj-caret, .swap-line .aj-caret { background: var(--aj-accent); }
-      .swap-line { font-weight: 800; color: var(--aj-accent); }
+      .typed .md-caret, .swap-line .md-caret { background: var(--md-accent); }
+      .swap-line { font-weight: 800; color: var(--md-accent); }
       .mark { background: #fff; -webkit-mask: url("assets/media/logo-mark.webp") center / contain no-repeat; mask: url("assets/media/logo-mark.webp") center / contain no-repeat; }
 
       /* S1: mark above the typed brand */
@@ -63,7 +63,7 @@
       #logos { position: absolute; left: 80px; top: 820px; width: 920px; display: grid; grid-template-columns: repeat(3, 280px); gap: 40px; }
       .logo { width: 280px; height: 180px; border-radius: 22px; background: #2a2d35; display: grid; place-items: center; }
       .logo img { max-width: 150px; max-height: 110px; }
-      #hl { position: absolute; left: 80px; top: 820px; width: 280px; height: 180px; border-radius: 22px; border: 3px solid var(--aj-accent); box-shadow: 0 0 40px rgba(255, 180, 0, 0.35); }
+      #hl { position: absolute; left: 80px; top: 820px; width: 280px; height: 180px; border-radius: 22px; border: 3px solid var(--md-accent); box-shadow: 0 0 40px rgba(255, 180, 0, 0.35); }
 
       /* S9 */
       #mosaic { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); gap: 12px; padding: 12px; box-sizing: border-box; transform-origin: 50% 50%; }
@@ -73,11 +73,11 @@
       #end .mark { width: 240px; height: 240px; }
       #end-q { font-size: 80px; font-weight: 500; letter-spacing: -0.02em; }
       #end-cta { font-size: 128px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; min-height: 1em; }
-      #end-url { margin-top: 22px; font-size: 44px; font-weight: 500; color: var(--aj-accent); }
+      #end-url { margin-top: 22px; font-size: 44px; font-weight: 500; color: var(--md-accent); }
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="19.5" data-aj-flavor="bold-split">
+    <div id="root" data-composition-id="main" data-start="0" data-width="1080" data-height="1920" data-duration="19.5" data-md-flavor="bold-split">
       <section id="s1" class="scene clip" data-start="0" data-duration="2.6">
         <div id="s1-row"><div id="s1-mark" class="mark"></div><div id="s1-words"><div id="s1-w1" class="typed" style="font-size: inherit; font-weight: inherit">{{brand.line1}}</div><div id="s1-w2" class="swap-line" data-words="Automation|{{brand.line2}}"></div></div></div>
       </section>
@@ -143,61 +143,61 @@
 
     <script>
       function build() {
-        const AJ = window.AJMotion;
+        const MD = window.MotionDirector;
         const tl = gsap.timeline({ paused: true });
 
         // S1 — mark pops, name types, the second line swaps before landing on the brand.
-        AJ.slam(tl, "#s1-mark", 0.1, { from: 0.6, duration: 0.5 });
-        const w1 = AJ.typeOn(tl, "#s1-w1", 0.3, { cps: 20, caret: false });
-        AJ.swapWord(tl, "#s1-w2", document.querySelector("#s1-w2").dataset.words.split("|"), w1 + 0.1, { hold: 0.3, cps: 26, eraseCps: 60, blinkUntil: 2.5 });
+        MD.slam(tl, "#s1-mark", 0.1, { from: 0.6, duration: 0.5 });
+        const w1 = MD.typeOn(tl, "#s1-w1", 0.3, { cps: 20, caret: false });
+        MD.swapWord(tl, "#s1-w2", document.querySelector("#s1-w2").dataset.words.split("|"), w1 + 0.1, { hold: 0.3, cps: 26, eraseCps: 60, blinkUntil: 2.5 });
 
         // S2 — panel wipes down from the top, image wipes up from the bottom, caps slam, strip types below.
-        AJ.wipeIn(tl, "#s2-panel", 2.5, { from: "top", duration: 0.45 });
-        AJ.wipeIn(tl, "#s2-img", 2.5, { from: "bottom", duration: 0.45 });
+        MD.wipeIn(tl, "#s2-panel", 2.5, { from: "top", duration: 0.45 });
+        MD.wipeIn(tl, "#s2-img", 2.5, { from: "bottom", duration: 0.45 });
         tl.fromTo("#s2-img img", { scale: 1.2 }, { scale: 1, duration: 2.5, ease: "power2.out" }, 2.5);
-        document.querySelectorAll("#s2-caps div").forEach((line, i) => AJ.slam(tl, line, 2.7 + i * 0.24, { from: 1.3, duration: 0.4 }));
-        AJ.typeOn(tl, "#s2-typed", 3.3, { cps: 30 });
-        tl.to("#s2-top", { yPercent: -100, duration: 0.5, ease: AJ.EASE.move }, 4.6);
-        tl.to("#s2 .strip", { y: -600, opacity: 0, duration: 0.5, ease: AJ.EASE.move }, 4.6);
+        document.querySelectorAll("#s2-caps div").forEach((line, i) => MD.slam(tl, line, 2.7 + i * 0.24, { from: 1.3, duration: 0.4 }));
+        MD.typeOn(tl, "#s2-typed", 3.3, { cps: 30 });
+        tl.to("#s2-top", { yPercent: -100, duration: 0.5, ease: MD.EASE.move }, 4.6);
+        tl.to("#s2 .strip", { y: -600, opacity: 0, duration: 0.5, ease: MD.EASE.move }, 4.6);
 
         // S3 — full-frame line, big amber word types, erases, retypes: three services in one frame.
-        AJ.buildSentence(tl, "#s3-line", 4.95, { stagger: 0.05 });
-        AJ.swapWord(tl, "#s3-swap", ["funnels.", "CRMs.", "AI agents."], 5.45, { hold: 0.35, cps: 24, eraseCps: 60 });
+        MD.buildSentence(tl, "#s3-line", 4.95, { stagger: 0.05 });
+        MD.swapWord(tl, "#s3-swap", ["funnels.", "CRMs.", "AI agents."], 5.45, { hold: 0.35, cps: 24, eraseCps: 60 });
 
         // S4 — image panel wipes down; text types; the payoff word lands in amber.
-        AJ.wipeIn(tl, "#s4-img", 7.4, { from: "top", duration: 0.45 });
+        MD.wipeIn(tl, "#s4-img", 7.4, { from: "top", duration: 0.45 });
         tl.fromTo("#s4-img img", { scale: 1.15 }, { scale: 1, duration: 2.3, ease: "power2.out" }, 7.4);
-        const s4 = AJ.typeOn(tl, "#s4-typed", 7.55, { cps: 32, caret: false });
-        AJ.swapWord(tl, "#s4-swap", ["engineer."], s4 + 0.05, { cps: 20, blinkUntil: 9.6 });
+        const s4 = MD.typeOn(tl, "#s4-typed", 7.55, { cps: 32, caret: false });
+        MD.swapWord(tl, "#s4-swap", ["engineer."], s4 + 0.05, { cps: 20, blinkUntil: 9.6 });
 
         // S5 — full-bleed image, hard slam of the one-word claim.
         tl.fromTo("#s5-img img", { scale: 1.25 }, { scale: 1.05, duration: 1.8, ease: "power1.out" }, 9.6);
-        AJ.slam(tl, "#s5-word", 9.75, { from: 1.5, duration: 0.5 });
+        MD.slam(tl, "#s5-word", 9.75, { from: 1.5, duration: 0.5 });
 
         // S6 — proof split: image + credential panel + badge, strip types the background.
-        AJ.wipeIn(tl, "#s6-img", 11.3, { from: "left", duration: 0.4 });
-        AJ.wipeIn(tl, "#s6-panel", 11.3, { from: "right", duration: 0.4 });
-        document.querySelectorAll("#s6-caps div").forEach((line, i) => AJ.slam(tl, line, 11.5 + i * 0.24, { from: 1.3, duration: 0.4 }));
-        tl.fromTo("#badge", { rotation: -25, scale: 0 }, { rotation: 8, scale: 1, duration: 0.6, ease: AJ.EASE.pop }, 11.95);
-        AJ.typeOn(tl, "#s6-typed", 11.7, { cps: 32 });
+        MD.wipeIn(tl, "#s6-img", 11.3, { from: "left", duration: 0.4 });
+        MD.wipeIn(tl, "#s6-panel", 11.3, { from: "right", duration: 0.4 });
+        document.querySelectorAll("#s6-caps div").forEach((line, i) => MD.slam(tl, line, 11.5 + i * 0.24, { from: 1.3, duration: 0.4 }));
+        tl.fromTo("#badge", { rotation: -25, scale: 0 }, { rotation: 8, scale: 1, duration: 0.6, ease: MD.EASE.pop }, 11.95);
+        MD.typeOn(tl, "#s6-typed", 11.7, { cps: 32 });
 
         // S7 — full amber, echo type.
-        AJ.slam(tl, "#s7-word", 13.35, { from: 1.4, duration: 0.5 });
-        AJ.echoStack(tl, "#s7-word", 13.5, { count: 2, gap: 0.95 });
+        MD.slam(tl, "#s7-word", 13.35, { from: 1.4, duration: 0.5 });
+        MD.echoStack(tl, "#s7-word", 13.5, { count: 2, gap: 0.95 });
 
         // S8 — line types; logos pop; the highlight hops across the 3 × 2 grid on the beat.
-        AJ.typeOn(tl, "#s8-line", 15.05, { cps: 34 });
-        AJ.chipPop(tl, ".logo", 15.35, { stagger: 0.07 });
+        MD.typeOn(tl, "#s8-line", 15.05, { cps: 34 });
+        MD.chipPop(tl, ".logo", 15.35, { stagger: 0.07 });
         tl.fromTo("#hl", { opacity: 0 }, { opacity: 1, duration: 0.1 }, 15.8);
-        for (let i = 1; i < 6; i += 1) tl.to("#hl", { x: (i % 3) * 320, y: Math.floor(i / 3) * 220, duration: 0.18, ease: AJ.EASE.move }, 15.8 + i * 0.18);
+        for (let i = 1; i < 6; i += 1) tl.to("#hl", { x: (i % 3) * 320, y: Math.floor(i / 3) * 220, duration: 0.18, ease: MD.EASE.move }, 15.8 + i * 0.18);
 
         // S9 — the work mosaic pulls back and sinks away; the end card types its call to action.
-        tl.fromTo("#mosaic", { scale: 1.6 }, { scale: 1, duration: 0.8, ease: AJ.EASE.move }, 16.8);
-        tl.to("#mosaic", { scale: 0.6, opacity: 0, filter: "blur(12px)", duration: 0.5, ease: AJ.EASE.exit }, 17.55);
-        AJ.slam(tl, "#end-mark", 17.85, { from: 0.6, duration: 0.5 });
-        AJ.typeOn(tl, "#end-q", 17.95, { cps: 30, caret: false });
-        AJ.swapWord(tl, "#end-cta", ["Get in touch!"], 18.4, { cps: 26, blinkUntil: 19.5 });
-        AJ.arrive(tl, "#end-url", 18.9, { y: 12, duration: 0.4 });
+        tl.fromTo("#mosaic", { scale: 1.6 }, { scale: 1, duration: 0.8, ease: MD.EASE.move }, 16.8);
+        tl.to("#mosaic", { scale: 0.6, opacity: 0, filter: "blur(12px)", duration: 0.5, ease: MD.EASE.exit }, 17.55);
+        MD.slam(tl, "#end-mark", 17.85, { from: 0.6, duration: 0.5 });
+        MD.typeOn(tl, "#end-q", 17.95, { cps: 30, caret: false });
+        MD.swapWord(tl, "#end-cta", ["Get in touch!"], 18.4, { cps: 26, blinkUntil: 19.5 });
+        MD.arrive(tl, "#end-url", 18.9, { y: 12, duration: 0.4 });
 
         window.__timelines["main"] = tl;
       }

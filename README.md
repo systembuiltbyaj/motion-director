@@ -1,4 +1,4 @@
-# aj-motion-style
+# motion-director
 
 A [Claude Code](https://claude.com/claude-code) skill that gives Claude a complete motion-design system
 for [HyperFrames](https://hyperframes.heygen.com) videos: six presentation layouts, a shared
@@ -6,9 +6,9 @@ kinetic-typography language, color flavors, deterministic GSAP helpers, and a fr
 (music bed, motion-synced sound effects, and voiceover). No API keys, no subscriptions: everything renders
 on your machine.
 
-Built by **AJ Bactad** ([System Built by AJ](https://workwithaj.ajautomate.co)) from five reference
-motion films plus his own brand reel. Instead of re-deriving a style for every video, Claude starts
-from this system: pick a layout, pick a flavor, drop in real assets, render.
+Distilled from five reference motion films plus a personal portfolio reel. Instead of re-deriving a
+style for every video, Claude starts from this system: pick a layout, pick a flavor, drop in real
+assets, render.
 
 ## What's inside
 
@@ -32,7 +32,7 @@ each, and it lists what it has and what's missing before it builds anything.
 **1. Install**
 
 ```sh
-git clone https://github.com/systembuiltbyaj/aj-motion-style.git ~/.claude/skills/aj-motion-style
+git clone https://github.com/systembuiltbyaj/motion-director.git ~/.claude/skills/motion-director
 npx skills add heygen-com/hyperframes --all      # the HyperFrames skills (render engine), if you don't have them
 ```
 
@@ -41,7 +41,7 @@ On Windows, run these in Git Bash, or replace `~` with `%USERPROFILE%` in Comman
 **2. Check your setup**
 
 ```sh
-node ~/.claude/skills/aj-motion-style/scripts/doctor.mjs
+node ~/.claude/skills/motion-director/scripts/doctor.mjs
 ```
 
 It checks Node 22+, FFmpeg, Chrome, HyperFrames, and the optional extras, and prints the fix for anything
@@ -70,11 +70,11 @@ More in [PROMPTS.md](PROMPTS.md): one prompt for each kind of input, layout name
 ## Try a demo without Claude
 
 ```sh
-node ~/.claude/skills/aj-motion-style/scripts/scaffold.mjs --list                 # layouts and their aspects
-node ~/.claude/skills/aj-motion-style/scripts/scaffold.mjs my-reel --demo launch-hype --aspect 9:16
+node ~/.claude/skills/motion-director/scripts/scaffold.mjs --list                 # layouts and their aspects
+node ~/.claude/skills/motion-director/scripts/scaffold.mjs my-reel --demo launch-hype --aspect 9:16
 cd my-reel
-node ~/.claude/skills/aj-motion-style/scripts/voice.mjs vo.json      # voiced demos only
-node ~/.claude/skills/aj-motion-style/scripts/sound.mjs cues.json
+node ~/.claude/skills/motion-director/scripts/voice.mjs vo.json      # voiced demos only
+node ~/.claude/skills/motion-director/scripts/sound.mjs cues.json
 npx hyperframes preview
 ```
 
@@ -85,9 +85,9 @@ publish.
 
 ## Tools
 
-- `assets/aj-motion.js`: 25+ timeline helpers (`buildSentence`, `typeOn`, `slam`, `whip`,
+- `assets/motion-director.js`: 25+ timeline helpers (`buildSentence`, `typeOn`, `slam`, `whip`,
   `zoomThrough`, `tiltFloat`, `drawPath`, `camera`, …), all seek-safe for frame-by-frame rendering.
-- `assets/aj-motion.css`: flavor tokens (Glow Dark, Electric System, Warm Canvas, Bold Split).
+- `assets/motion-director.css`: flavor tokens (Glow Dark, Electric System, Warm Canvas, Bold Split).
 - `scripts/doctor.mjs`: setup check with a fix for each missing piece.
 - `scripts/scaffold.mjs`: seeds a HyperFrames project from any demo, with your brand and SAMPLE media.
 - `scripts/prep-media.mjs`: turns any screenshots or images into WebP and reports each one's shape, how big it
@@ -113,13 +113,17 @@ publish.
 | Site capture fails | Install Playwright (see Optional above), or set `PLAYWRIGHT_CHROMIUM` to a Chrome executable. |
 
 Run `doctor.mjs` first for anything else. If it still fails,
-[open an issue](https://github.com/systembuiltbyaj/aj-motion-style/issues) and include its output.
+[open an issue](https://github.com/systembuiltbyaj/motion-director/issues) and include its output.
 
 ## Tests
 
 ```sh
 node --test tests/*.test.mjs
 ```
+
+## Credits
+
+Created by AJ Bactad · [System Built by AJ](https://workwithaj.ajautomate.co).
 
 ## License
 

@@ -2,12 +2,12 @@
   "name": "Your Studio",
   "firstName": "Alex",
   "lastName": "Rivera",
-  "role": "Automation & Web Systems Builder",
-  "tagline": "Operations lead, turned systems builder.",
-  "credentials": ["Certified Builder", "+ AI Systems Specialist"],
+  "role": "Designer & Developer",
+  "tagline": "I design the front and build what runs behind it.",
+  "credentials": ["Certified Developer", "+ Systems Specialist"],
   "url": "example.com",
   "handle": "@yourhandle",
-  "accent": "#F7CB1E",
+  "accent": "#FF5A1F",
   "logo": "",
   "portrait": ""
 }

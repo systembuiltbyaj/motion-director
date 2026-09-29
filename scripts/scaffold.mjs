@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Copy the aj-motion-style runtime (helpers, flavor CSS, fonts) into a HyperFrames project's assets/.
+// Copy the motion-director runtime (helpers, flavor CSS, fonts) into a HyperFrames project's assets/.
 // With --demo <name>, it also seeds the project from one of the layout demos: index.html, cues.json and
 // vo.json go to the project root, and only the media that demo references goes to assets/media/.
 // Brand tokens ({{brand.name}} …) in index.html and vo.json are filled from brand.json (see brand.mjs).
@@ -132,8 +132,8 @@ async function main() {
 
   // [source, destination, transform?]
   const plan = [
-    [join(skillRoot, "assets/aj-motion.js"), join(projectDir, "assets/aj-motion.js")],
-    [join(skillRoot, "assets/aj-motion.css"), join(projectDir, "assets/aj-motion.css")],
+    [join(skillRoot, "assets/motion-director.js"), join(projectDir, "assets/motion-director.js")],
+    [join(skillRoot, "assets/motion-director.css"), join(projectDir, "assets/motion-director.css")],
   ];
   for (const file of await listFiles(join(skillRoot, "assets/fonts"))) {
     plan.push([file, join(projectDir, "assets/fonts", relative(join(skillRoot, "assets/fonts"), file))]);

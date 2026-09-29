@@ -3,58 +3,57 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=1920, height=1080" />
-    <title>Portfolio Reveal — aj-motion-style</title>
+    <title>Portfolio Reveal — motion-director</title>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
-    <script src="assets/aj-motion.js"></script>
-    <link rel="stylesheet" href="assets/aj-motion.css" />
+    <script src="assets/motion-director.js"></script>
+    <link rel="stylesheet" href="assets/motion-director.css" />
     <style>
       @font-face { font-family: "Inter"; src: url("assets/fonts/inter-latin.woff2") format("woff2"); font-weight: 100 900; }
       @font-face { font-family: "Dancing Script"; src: url("assets/fonts/dancing-script-latin.woff2") format("woff2"); font-weight: 400 700; }
 
-      /* Reveal flavor: black foundation, white type, violet systems, yellow impact (used sparingly). */
-      [data-aj-flavor="reveal"] {
-        --aj-bg: #07050d;
-        --aj-fg: #ffffff;
-        --aj-muted: #a79cc4;
-        --aj-accent: #f7cb1e;
-        --aj-on-accent: #07050d;
-        --violet: #6c20ff;
-        --violet-soft: rgba(108, 32, 255, 0.35);
-        --yellow: #f7cb1e;
-        --aj-glow-strength: 0;
+      /* Reveal flavor: black foundation, white type, a system color for structure, one impact accent (used sparingly). */
+      [data-md-flavor="reveal"] {
+        --md-bg: #0a0a0d;
+        --md-fg: #ffffff;
+        --md-muted: #9aa3b5;
+        --md-accent: #ff5a1f;
+        --md-on-accent: #0a0a0d;
+        --md-system: #1f5bff;
+        --md-system-soft: rgba(31, 91, 255, 0.35);
+        --md-glow-strength: 0;
       }
 
       body { margin: 0; background: #000; }
-      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--aj-bg); color: #fff; font-family: "Inter", sans-serif; }
+      #root { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--md-bg); color: #fff; font-family: "Inter", sans-serif; }
       .scene { position: absolute; inset: 0; }
-      .y { color: var(--yellow); }
-      .v { color: #9d6bff; }
+      .y { color: var(--md-accent); }
+      .v { color: #7fa2ff; }
       .display { font-weight: 900; letter-spacing: -0.055em; line-height: 0.86; text-transform: uppercase; }
       .micro { margin: 0; font-size: 24px; font-weight: 600; letter-spacing: 0.22em; text-transform: uppercase; color: rgba(255, 255, 255, 0.72); }
       .mask { overflow: hidden; padding-bottom: 0.04em; }
       .mask > div { display: block; }
 
-      /* Atmosphere: a faint violet system grid and two glows. */
+      /* Atmosphere: a faint system-color grid and two glows. */
       #grid { position: absolute; left: -240px; top: -260px; width: 2400px; height: 1600px; opacity: 0;
-        background-image: linear-gradient(rgba(108, 32, 255, 0.16) 1px, transparent 1px), linear-gradient(90deg, rgba(108, 32, 255, 0.16) 1px, transparent 1px);
+        background-image: linear-gradient(rgba(31, 91, 255, 0.16) 1px, transparent 1px), linear-gradient(90deg, rgba(31, 91, 255, 0.16) 1px, transparent 1px);
         background-size: 80px 80px; -webkit-mask: radial-gradient(ellipse at center, #000 20%, transparent 70%); mask: radial-gradient(ellipse at center, #000 20%, transparent 70%); }
-      .glow { position: absolute; border-radius: 50%; filter: blur(120px); background: rgba(108, 32, 255, 0.45); opacity: 0; }
+      .glow { position: absolute; border-radius: 50%; filter: blur(120px); background: rgba(31, 91, 255, 0.45); opacity: 0; }
       #glow-a { width: 900px; height: 900px; left: 510px; top: 90px; }
-      #glow-b { width: 700px; height: 700px; right: -200px; bottom: -300px; background: rgba(108, 32, 255, 0.3); }
+      #glow-b { width: 700px; height: 700px; right: -200px; bottom: -300px; background: rgba(31, 91, 255, 0.3); }
 
       /* S1 hook */
       #s1-small { position: absolute; left: 0; right: 0; top: 520px; text-align: center; }
-      #s1-small .aj-caret { background: var(--yellow); }
+      #s1-small .md-caret { background: var(--md-accent); }
       #s1-big { position: absolute; left: 0; right: 0; top: 250px; text-align: center; font-size: 300px; transform-origin: 50% 50%; }
       #s1-sub { position: absolute; left: 0; right: 0; top: 820px; text-align: center; }
-      #s1-sub .aj-key { color: #9d6bff; font-weight: 700; }
+      #s1-sub .md-key { color: #7fa2ff; font-weight: 700; }
 
       /* Browser frames */
       .stage { position: absolute; inset: 0; perspective: 1800px; }
-      .browser { position: absolute; border-radius: 14px; overflow: hidden; background: #0e0b18; border: 1px solid rgba(108, 32, 255, 0.5); box-shadow: 0 40px 100px rgba(0, 0, 0, 0.65), 0 0 70px rgba(108, 32, 255, 0.22); }
+      .browser { position: absolute; border-radius: 14px; overflow: hidden; background: #0e0b18; border: 1px solid rgba(31, 91, 255, 0.5); box-shadow: 0 40px 100px rgba(0, 0, 0, 0.65), 0 0 70px rgba(31, 91, 255, 0.22); }
       .bar { position: absolute; left: 0; right: 0; top: 0; height: 40px; display: flex; align-items: center; gap: 8px; padding: 0 16px; background: #120e20; border-bottom: 1px solid rgba(255, 255, 255, 0.06); z-index: 2; }
       .bar i { width: 11px; height: 11px; border-radius: 50%; background: #2c2444; }
-      .bar i:first-child { background: var(--violet); }
+      .bar i:first-child { background: var(--md-system); }
       .url { margin-left: 14px; padding: 5px 16px; border-radius: 999px; background: #1b1532; font-size: 15px; color: #b3a6dc; letter-spacing: 0.01em; }
       .vp { position: absolute; left: 0; right: 0; top: 40px; bottom: 0; overflow: hidden; }
       .vp img { width: 100%; display: block; }
@@ -64,9 +63,9 @@
       #fb3 { left: 1140px; top: 80px; width: 680px; height: 420px; opacity: 0.3; filter: blur(3px); }
       #t-funnels { position: absolute; left: 90px; top: 330px; }
       #t-funnels-big { font-size: 196px; }
-      #t-convert { margin: 18px 0 0; font-size: 84px; font-weight: 900; letter-spacing: -0.04em; text-transform: uppercase; color: var(--yellow); }
+      #t-convert { margin: 18px 0 0; font-size: 84px; font-weight: 900; letter-spacing: -0.04em; text-transform: uppercase; color: var(--md-accent); }
       #f-chips { position: absolute; left: 90px; top: 700px; display: flex; gap: 12px; }
-      .chip { padding: 10px 20px; border-radius: 999px; border: 1px solid rgba(108, 32, 255, 0.7); background: rgba(108, 32, 255, 0.12); font-size: 20px; font-weight: 600; letter-spacing: 0.12em; color: #d9ccff; }
+      .chip { padding: 10px 20px; border-radius: 999px; border: 1px solid rgba(31, 91, 255, 0.7); background: rgba(31, 91, 255, 0.12); font-size: 20px; font-weight: 600; letter-spacing: 0.12em; color: #d9ccff; }
 
       #wb-left { left: 70px; top: 150px; width: 700px; height: 450px; transform: rotateY(22deg); transform-origin: 100% 50%; }
       #wb-right { left: 1150px; top: 150px; width: 700px; height: 450px; transform: rotateY(-22deg); transform-origin: 0% 50%; }
@@ -76,38 +75,38 @@
       #t-web { position: absolute; left: 90px; top: 680px; }
       #t-web-big { font-size: 170px; }
       #t-diff { margin: 14px 0 0; font-size: 76px; font-weight: 900; letter-spacing: -0.04em; text-transform: uppercase; }
-      #t-diff .aj-key { color: var(--yellow); }
+      #t-diff .md-key { color: var(--md-accent); }
       #w-micro { position: absolute; left: 1230px; top: 900px; display: flex; gap: 26px; }
 
       /* S4 twist */
       #peek { position: absolute; inset: 0; opacity: 0; }
       #peek img { position: absolute; border-radius: 12px; opacity: 0.38; }
       .wires { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
-      .wire { fill: none; stroke: var(--violet); stroke-width: 3; filter: drop-shadow(0 0 8px rgba(108, 32, 255, 0.9)); }
-      .node { fill: #07050d; stroke: var(--violet); stroke-width: 3; }
+      .wire { fill: none; stroke: var(--md-system); stroke-width: 3; filter: drop-shadow(0 0 8px rgba(31, 91, 255, 0.9)); }
+      .node { fill: #0a0a0d; stroke: var(--md-system); stroke-width: 3; }
       #t-twist { position: absolute; left: 120px; top: 300px; }
       #t-but { margin: 0 0 10px; font-size: 72px; font-weight: 800; letter-spacing: -0.03em; text-transform: uppercase; color: rgba(255, 255, 255, 0.85); }
       #t-front { font-size: 210px; }
 
       /* S5 automation workspace */
       #ws { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; transform-origin: 50% 45%; }
-      .wcard { position: absolute; border-radius: 14px; background: #0f0b1a; border: 1px solid rgba(108, 32, 255, 0.4); overflow: hidden; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6); }
+      .wcard { position: absolute; border-radius: 14px; background: #0f0b1a; border: 1px solid rgba(31, 91, 255, 0.4); overflow: hidden; box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6); }
       .wcard .lab { height: 34px; display: flex; align-items: center; gap: 10px; padding: 0 14px; background: #130e24; font-size: 13px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #c2b3ff; }
       .wcard .lab img { width: 16px; height: 16px; }
       .wcard > img { display: block; width: 100%; }
-      .wcard .ring { position: absolute; inset: 0; border-radius: 14px; border: 2px solid var(--yellow); box-shadow: 0 0 30px rgba(247, 203, 30, 0.5); opacity: 0; }
-      .tnode { fill: var(--yellow); }
-      .pulse { fill: var(--yellow); filter: drop-shadow(0 0 6px var(--yellow)); opacity: 0; }
+      .wcard .ring { position: absolute; inset: 0; border-radius: 14px; border: 2px solid var(--md-accent); box-shadow: 0 0 30px rgba(255, 90, 31, 0.5); opacity: 0; }
+      .tnode { fill: var(--md-accent); }
+      .pulse { fill: var(--md-accent); filter: drop-shadow(0 0 6px var(--md-accent)); opacity: 0; }
       #trig-ring { opacity: 0; }
       .bigword { position: absolute; left: 110px; top: 870px; font-size: 170px; }
       #s5-scrim { position: absolute; left: 0; right: 0; bottom: 0; height: 330px; background: linear-gradient(transparent, rgba(7, 5, 13, 0.92) 55%); }
       #t-run { position: absolute; left: 0; right: 0; top: 270px; text-align: center; font-size: 250px; }
       #tech { position: absolute; left: 0; right: 0; top: 820px; display: flex; justify-content: center; gap: 22px; font-size: 26px; font-weight: 700; letter-spacing: 0.2em; }
-      #tech span.sl { color: var(--violet); }
-      #point { position: absolute; left: 950px; top: 530px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 0 40px 12px rgba(108, 32, 255, 0.9); }
+      #tech span.sl { color: var(--md-system); }
+      #point { position: absolute; left: 950px; top: 530px; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 0 40px 12px rgba(31, 91, 255, 0.9); }
 
       /* S6 the builder */
-      #bg-aj { position: absolute; right: -40px; top: -80px; font-size: 1050px; font-weight: 900; letter-spacing: -0.07em; line-height: 1; color: rgba(108, 32, 255, 0.13); }
+      #bg-initials { position: absolute; right: -40px; top: -80px; font-size: 1050px; font-weight: 900; letter-spacing: -0.07em; line-height: 1; color: rgba(31, 91, 255, 0.13); }
       #portrait { position: absolute; left: 930px; bottom: 0; height: 1000px; }
       #hello { position: absolute; left: 110px; top: 210px; margin: 0; font-family: "Dancing Script", cursive; font-size: 72px; font-weight: 700; color: rgba(255, 255, 255, 0.9); }
       #name { position: absolute; left: 100px; top: 300px; font-size: 250px; }
@@ -115,7 +114,7 @@
       #behind { position: absolute; left: 110px; top: 900px; margin: 0; width: 900px; font-size: 30px; font-weight: 500; color: rgba(255, 255, 255, 0.72); }
 
       /* S7 final */
-      #s7-line { position: absolute; left: 0; top: 500px; width: 1920px; height: 3px; background: var(--violet); box-shadow: 0 0 30px var(--violet); transform-origin: 0 50%; opacity: 0.6; }
+      #s7-line { position: absolute; left: 0; top: 500px; width: 1920px; height: 3px; background: var(--md-system); box-shadow: 0 0 30px var(--md-system); transform-origin: 0 50%; opacity: 0.6; }
       #lockup { position: absolute; left: 0; right: 0; top: 190px; display: flex; justify-content: center; align-items: center; gap: 44px; }
       .mark { width: 190px; height: 190px; background: #fff; -webkit-mask: url("assets/media/logo-mark.webp") center / contain no-repeat; mask: url("assets/media/logo-mark.webp") center / contain no-repeat; }
       #brand { font-size: 150px; }
@@ -128,11 +127,11 @@
       #url { position: absolute; left: 0; right: 0; top: 900px; text-align: center; font-size: 28px; font-weight: 600; color: #b3a6dc; letter-spacing: 0.04em; }
 
       #cursor { position: absolute; left: 0; top: 0; width: 44px; height: 44px; }
-      #ripple { position: absolute; left: 0; top: 0; width: 70px; height: 70px; border-radius: 50%; border: 3px solid var(--yellow); opacity: 0; }
+      #ripple { position: absolute; left: 0; top: 0; width: 70px; height: 70px; border-radius: 50%; border: 3px solid var(--md-accent); opacity: 0; }
     </style>
   </head>
   <body>
-    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="21" data-aj-flavor="reveal">
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="21" data-md-flavor="reveal">
       <div id="grid" data-layout-allow-overflow></div>
       <div id="glow-a" class="glow" data-layout-allow-overflow></div>
       <div id="glow-b" class="glow" data-layout-allow-overflow></div>
@@ -205,7 +204,7 @@
             <path class="wire auto" d="M 1350 481 C 1385 481, 1385 431, 1420 431" />
             <path class="wire auto" d="M 1350 743 C 1385 743, 1385 641, 1420 641" />
             <circle class="tnode" id="trig" cx="110" cy="295" r="12" />
-            <circle id="trig-ring" cx="110" cy="295" r="12" fill="none" stroke="#f7cb1e" stroke-width="3" />
+            <circle id="trig-ring" cx="110" cy="295" r="12" fill="none" stroke="#ff5a1f" stroke-width="3" />
             <circle class="pulse" r="7" /><circle class="pulse" r="7" /><circle class="pulse" r="7" />
             <circle class="pulse" r="7" /><circle class="pulse" r="7" /><circle class="pulse" r="7" />
           </svg>
@@ -221,7 +220,7 @@
 
       <!-- S6 · who builds it -->
       <section id="s6" class="scene clip" data-start="15.1" data-duration="2.85">
-        <div id="bg-aj" data-layout-allow-overflow>{{brand.initials}}</div>
+        <div id="bg-initials" data-layout-allow-overflow>{{brand.initials}}</div>
         <img id="portrait" src="assets/media/portrait-cutout.webp" alt="{{brand.first}} {{brand.last}}" />
         <p id="hello">Hello, I'm</p>
         <div id="name" class="display"><div class="mask"><div id="n1">{{brand.first}}</div></div><div class="mask"><div id="n2">{{brand.last}}</div></div></div>
@@ -236,18 +235,18 @@
         <div id="services"><span>Funnels.</span><span>Websites.</span><span class="y">Automations.</span></div>
         <p id="follow" class="micro">Follow my builds</p>
         <div id="socials">
-          <span class="soc" id="so-li"><svg viewBox="0 0 40 40"><rect width="40" height="40" rx="8" fill="#fff" /><circle cx="12" cy="11.5" r="3" fill="#07050d" /><rect x="9.3" y="16" width="5.4" height="15" fill="#07050d" /><path d="M18 16h5v2.2c.9-1.5 2.6-2.6 5-2.6 3.8 0 5.5 2.4 5.5 6.6V31h-5.3v-8c0-2.2-.8-3.4-2.6-3.4s-2.9 1.3-2.9 3.4v8H18z" fill="#07050d" /></svg></span>
-          <span class="soc" id="so-fb"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="#fff" /><path d="M22.2 40V25.3h4.6l.7-5.4h-5.3v-3.4c0-1.6.4-2.6 2.7-2.6h2.8V9.1c-.5-.1-2.2-.2-4.1-.2-4 0-6.8 2.5-6.8 7v3.9h-4.6v5.4h4.6V40z" fill="#07050d" /></svg></span>
+          <span class="soc" id="so-li"><svg viewBox="0 0 40 40"><rect width="40" height="40" rx="8" fill="#fff" /><circle cx="12" cy="11.5" r="3" fill="#0a0a0d" /><rect x="9.3" y="16" width="5.4" height="15" fill="#0a0a0d" /><path d="M18 16h5v2.2c.9-1.5 2.6-2.6 5-2.6 3.8 0 5.5 2.4 5.5 6.6V31h-5.3v-8c0-2.2-.8-3.4-2.6-3.4s-2.9 1.3-2.9 3.4v8H18z" fill="#0a0a0d" /></svg></span>
+          <span class="soc" id="so-fb"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="20" fill="#fff" /><path d="M22.2 40V25.3h4.6l.7-5.4h-5.3v-3.4c0-1.6.4-2.6 2.7-2.6h2.8V9.1c-.5-.1-2.2-.2-4.1-.2-4 0-6.8 2.5-6.8 7v3.9h-4.6v5.4h4.6V40z" fill="#0a0a0d" /></svg></span>
           <span class="soc" id="so-ig"><svg viewBox="0 0 40 40"><rect x="3" y="3" width="34" height="34" rx="10" fill="none" stroke="#fff" stroke-width="3.5" /><circle cx="20" cy="20" r="7.5" fill="none" stroke="#fff" stroke-width="3.5" /><circle cx="29.5" cy="10.5" r="2.4" fill="#fff" /></svg></span>
           <span id="handle">{{brand.handle}}</span>
         </div>
         <div id="url">{{brand.url}}</div>
       </section>
 
-      <svg id="cursor" viewBox="0 0 24 24"><path d="M3 2l7.5 19 2.4-7.6L20.5 11z" fill="#f7cb1e" stroke="#07050d" stroke-width="1.4" /></svg>
+      <svg id="cursor" viewBox="0 0 24 24"><path d="M3 2l7.5 19 2.4-7.6L20.5 11z" fill="#ff5a1f" stroke="#0a0a0d" stroke-width="1.4" /></svg>
       <div id="ripple"></div>
-      <div class="aj-grain" style="--aj-grain-opacity: 0.12"></div>
-      <div class="aj-vignette"></div>
+      <div class="md-grain" style="--md-grain-opacity: 0.12"></div>
+      <div class="md-vignette"></div>
       <audio id="mix" src="assets/audio/mix.wav" data-start="0" data-duration="21" data-volume="1"></audio>
     </div>
 
@@ -269,7 +268,7 @@
       }
 
       function build() {
-        const AJ = window.AJMotion;
+        const MD = window.MotionDirector;
         const tl = gsap.timeline({ paused: true });
 
         // Atmosphere runs the whole piece.
@@ -278,39 +277,39 @@
         tl.to("#glow-b", { opacity: 1, duration: 2 }, 0);
 
         // ---- S1 HOOK (0–2.1)
-        AJ.typeOn(tl, "#s1-small", 0.12, { cps: 40 });
-        AJ.leave(tl, "#s1-small", 0.72, { y: -30, duration: 0.2 });
+        MD.typeOn(tl, "#s1-small", 0.12, { cps: 40 });
+        MD.leave(tl, "#s1-small", 0.72, { y: -30, duration: 0.2 });
         tl.to("#glow-a", { opacity: 1, duration: 0.8, ease: "sine.out" }, 0.8);
         maskUp(tl, ["#big1", "#big2"], 0.85, { duration: 0.55, stagger: 0.07 });
         tl.fromTo("#s1-big", { scale: 0.62, filter: "blur(10px)" }, { scale: 1, filter: "blur(0px)", duration: 0.6, ease: "expo.out" }, 0.85);
         tl.to("#s1-big", { scale: 1.16, duration: 0.3, ease: "none" }, 1.45);
-        AJ.buildSentence(tl, "#s1-sub", 1.2, { keyword: "Automated.", highlight: "color", stagger: 0.09 });
+        MD.buildSentence(tl, "#s1-sub", 1.2, { keyword: "Automated.", highlight: "color", stagger: 0.09 });
         // Zoom through the type into the first build.
         tl.to("#s1-big", { scale: 4.2, opacity: 0, filter: "blur(18px)", duration: 0.4, ease: "expo.in" }, 1.75);
-        AJ.leave(tl, "#s1-sub", 1.75, { y: 40, duration: 0.25 });
+        MD.leave(tl, "#s1-sub", 1.75, { y: 40, duration: 0.25 });
         tl.to("#glow-a", { opacity: 0.35, duration: 0.6 }, 1.9);
 
         // ---- S2 FUNNELS (1.85–6)
         tl.fromTo("#fb1", { y: 760, rotationX: 22, opacity: 0 }, { y: 0, rotationX: 0, opacity: 1, duration: 0.7, ease: "expo.out" }, 1.85);
         tl.fromTo("#fb2", { y: 560, opacity: 0 }, { y: 0, opacity: 0.5, duration: 0.7, ease: "expo.out" }, 2.05);
         tl.fromTo("#fb3", { y: 460, opacity: 0 }, { y: 0, opacity: 0.3, duration: 0.7, ease: "expo.out" }, 2.2);
-        AJ.camera(tl, "#world", 2.5, { scale: 1.05, duration: 2.8, ease: "sine.inOut" });
+        MD.camera(tl, "#world", 2.5, { scale: 1.05, duration: 2.8, ease: "sine.inOut" });
         maskUp(tl, "#t-funnels-big", 2.3, { duration: 0.5 });
-        AJ.buildSentence(tl, "#t-convert", 2.62, { stagger: 0.07 });
+        MD.buildSentence(tl, "#t-convert", 2.62, { stagger: 0.07 });
         // Pages scroll in two beats; the back stack drifts slower for parallax.
         tl.to("#fb1-img", { y: -620, duration: 0.9, ease: "expo.inOut" }, 2.9);
         tl.to("#fb1-img", { y: -1450, duration: 0.9, ease: "expo.inOut" }, 4.0);
         tl.to("#fb2-img", { y: -900, duration: 3.0, ease: "sine.inOut" }, 2.4);
         tl.to("#fb3-img", { y: -700, duration: 3.0, ease: "sine.inOut" }, 2.4);
         tl.to(["#fb2", "#fb3"], { x: -40, duration: 3.2, ease: "sine.inOut" }, 2.3);
-        AJ.chipPop(tl, "#f-chips .chip", 3.3, { stagger: 0.1 });
+        MD.chipPop(tl, "#f-chips .chip", 3.3, { stagger: 0.1 });
         // Cursor taps the live page.
         tl.fromTo("#cursor", { x: 1760, y: 1000, opacity: 0 }, { x: 1420, y: 660, opacity: 1, duration: 0.55, ease: "expo.out" }, 4.15);
         tl.to("#cursor", { scale: 0.8, duration: 0.07, yoyo: true, repeat: 1 }, 4.72);
         tl.set("#ripple", { x: 1390, y: 625, scale: 0.2, opacity: 1 }, 4.74);
         tl.to("#ripple", { scale: 1.6, opacity: 0, duration: 0.5, ease: "expo.out" }, 4.74);
         tl.to("#cursor", { x: 1760, y: 1100, opacity: 0, duration: 0.4, ease: "power3.in" }, 5.05);
-        AJ.leave(tl, "#f-chips", 4.95, { y: 20, duration: 0.25 });
+        MD.leave(tl, "#f-chips", 4.95, { y: 20, duration: 0.25 });
 
         // ---- S2 → S3: the funnel stack whips left, websites arrive from the right.
         tl.to("#t-funnels", { x: -500, opacity: 0, filter: "blur(16px)", duration: 0.4, ease: "power4.in" }, 5.35);
@@ -320,38 +319,38 @@
 
         // ---- S3 WEBSITES (6–9)
         maskUp(tl, "#t-web-big", 6.3, { duration: 0.5 });
-        AJ.buildSentence(tl, "#t-diff", 6.62, { keyword: "different.", highlight: "color", stagger: 0.08 });
+        MD.buildSentence(tl, "#t-diff", 6.62, { keyword: "different.", highlight: "color", stagger: 0.08 });
         tl.fromTo("#w-micro .micro", { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "expo.out", stagger: 0.12 }, 7.1);
         tl.to(".wbc-img", { y: -900, duration: 2.4, ease: "sine.inOut" }, 6.4);
         tl.to("#wbl-img", { y: -700, duration: 2.6, ease: "sine.inOut" }, 6.3);
         tl.to("#wbr-img", { y: -800, duration: 2.6, ease: "sine.inOut" }, 6.3);
 
         // ---- S4 THE TWIST (8.95–11): freeze, push in, split the front open.
-        AJ.leave(tl, ["#t-web", "#w-micro"], 8.9, { y: 30, duration: 0.25 });
+        MD.leave(tl, ["#t-web", "#w-micro"], 8.9, { y: 30, duration: 0.25 });
         tl.to(["#wb-left", "#wb-right"], { opacity: 0, filter: "blur(10px)", duration: 0.3 }, 8.95);
-        AJ.camera(tl, "#world", 8.95, { scale: 1.85, duration: 0.42, ease: "expo.in" });
+        MD.camera(tl, "#world", 8.95, { scale: 1.85, duration: 0.42, ease: "expo.in" });
         tl.to("#wbc-a", { y: -760, rotation: -4, filter: "blur(6px)", duration: 0.55, ease: "expo.in" }, 9.3);
         tl.to("#wbc-b", { y: 760, rotation: 4, filter: "blur(6px)", duration: 0.55, ease: "expo.in" }, 9.3);
         tl.to("#peek", { opacity: 1, duration: 0.5 }, 9.35);
-        AJ.drawPath(tl, ".tw", 9.5, { duration: 0.8, stagger: 0.18 });
-        AJ.buildSentence(tl, "#t-but", 9.42, { stagger: 0.08 });
+        MD.drawPath(tl, ".tw", 9.5, { duration: 0.8, stagger: 0.18 });
+        MD.buildSentence(tl, "#t-but", 9.42, { stagger: 0.08 });
         maskUp(tl, "#t-front", 9.8, { duration: 0.55 });
         tl.to("#t-twist", { y: -60, opacity: 0, filter: "blur(14px)", duration: 0.3, ease: "power3.in" }, 10.85);
         tl.to("#peek", { opacity: 0, duration: 0.3 }, 10.9);
 
         // ---- S5 AUTOMATIONS (11–15)
-        AJ.arrive(tl, "#ws .wcard", 10.9, { y: 40, scale: 0.9, blur: 14, duration: 0.5, stagger: 0.05 });
-        AJ.camera(tl, "#ws", 11.0, { scale: 1.04, duration: 2.6, ease: "sine.inOut" });
+        MD.arrive(tl, "#ws .wcard", 10.9, { y: 40, scale: 0.9, blur: 14, duration: 0.5, stagger: 0.05 });
+        MD.camera(tl, "#ws", 11.0, { scale: 1.04, duration: 2.6, ease: "sine.inOut" });
         // TRIGGER → the workflow begins.
-        AJ.slam(tl, "#w-trigger", 11.25, { from: 1.3, duration: 0.4 });
+        MD.slam(tl, "#w-trigger", 11.25, { from: 1.3, duration: 0.4 });
         tl.fromTo("#trig", { scale: 0, svgOrigin: "110 295" }, { scale: 1, duration: 0.3, ease: "back.out(3)" }, 11.3);
         tl.set("#trig-ring", { attr: { r: 12 }, opacity: 1 }, 11.35);
         tl.to("#trig-ring", { attr: { r: 60 }, opacity: 0, duration: 0.7, ease: "expo.out" }, 11.35);
         tl.fromTo("#c-a .ring", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 11.35);
         tl.to("#w-trigger", { y: -40, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power3.in" }, 11.95);
         // ROUTE → the connection branches into three systems.
-        AJ.slam(tl, "#w-route", 12.05, { from: 1.3, duration: 0.4 });
-        AJ.drawPath(tl, ".route", 12.05, { duration: 0.45, stagger: 0.1 });
+        MD.slam(tl, "#w-route", 12.05, { from: 1.3, duration: 0.4 });
+        MD.drawPath(tl, ".route", 12.05, { duration: 0.45, stagger: 0.1 });
         const pulses = document.querySelectorAll(".pulse");
         const routes = document.querySelectorAll(".route");
         const autos = document.querySelectorAll(".auto");
@@ -366,11 +365,11 @@
         tl.fromTo(["#c-b .ring", "#c-c .ring", "#c-d .ring"], { opacity: 0 }, { opacity: 1, duration: 0.2, stagger: 0.1 }, 12.5);
         tl.to("#w-route", { y: -40, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power3.in" }, 12.75);
         // AUTOMATE → the whole system activates.
-        AJ.slam(tl, "#w-auto", 12.85, { from: 1.3, duration: 0.4 });
-        AJ.drawPath(tl, ".auto", 12.85, { duration: 0.35, stagger: 0.08 });
+        MD.slam(tl, "#w-auto", 12.85, { from: 1.3, duration: 0.4 });
+        MD.drawPath(tl, ".auto", 12.85, { duration: 0.35, stagger: 0.08 });
         autos.forEach((path, i) => ride(pulses[i + 3], path, 12.95 + i * 0.08, 0.35, 8));
         tl.fromTo(["#c-e .ring", "#c-f .ring", "#c-g .ring"], { opacity: 0 }, { opacity: 1, duration: 0.2, stagger: 0.08 }, 13.1);
-        tl.to(".wcard", { boxShadow: "0 0 60px rgba(108, 32, 255, 0.55)", duration: 0.4 }, 13.1);
+        tl.to(".wcard", { boxShadow: "0 0 60px rgba(31, 91, 255, 0.55)", duration: 0.4 }, 13.1);
         tl.to("#w-auto", { y: -40, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power3.in" }, 13.55);
         // SYSTEMS THAT RUN — the workspace steps back and the type takes the frame.
         tl.to("#ws", { opacity: 0.18, filter: "blur(5px)", duration: 0.4, ease: "power2.out" }, 13.6);
@@ -385,26 +384,26 @@
         tl.to("#point", { scale: 60, opacity: 0, duration: 0.3, ease: "expo.in" }, 15.3);
 
         // ---- S6 WHO BUILDS IT (15.1–17.9)
-        tl.fromTo("#bg-aj", { x: 140, opacity: 0 }, { x: 0, opacity: 1, duration: 1.4, ease: "expo.out" }, 15.25);
+        tl.fromTo("#bg-initials", { x: 140, opacity: 0 }, { x: 0, opacity: 1, duration: 1.4, ease: "expo.out" }, 15.25);
         tl.fromTo("#portrait", { y: 160, opacity: 0, filter: "blur(12px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.7, ease: "expo.out" }, 15.3);
         tl.to("#portrait", { scale: 1.03, duration: 2.2, ease: "sine.inOut", transformOrigin: "50% 100%" }, 15.9);
-        AJ.typeOn(tl, "#hello", 15.4, { cps: 22, caret: false });
+        MD.typeOn(tl, "#hello", 15.4, { cps: 22, caret: false });
         maskUp(tl, ["#n1", "#n2"], 15.8, { duration: 0.55, stagger: 0.1 });
-        AJ.arrive(tl, ["#cr1", "#cr2"], 16.45, { y: 20, blur: 8, duration: 0.45, stagger: 0.14 });
-        AJ.buildSentence(tl, "#behind", 16.95, { stagger: 0.05 });
+        MD.arrive(tl, ["#cr1", "#cr2"], 16.45, { y: 20, blur: 8, duration: 0.45, stagger: 0.14 });
+        MD.buildSentence(tl, "#behind", 16.95, { stagger: 0.05 });
         tl.to(["#hello", "#name", "#creds", "#behind"], { x: -260, opacity: 0, filter: "blur(12px)", duration: 0.35, ease: "power4.in" }, 17.6);
-        tl.to(["#portrait", "#bg-aj"], { x: 260, opacity: 0, filter: "blur(12px)", duration: 0.35, ease: "power4.in" }, 17.6);
+        tl.to(["#portrait", "#bg-initials"], { x: 260, opacity: 0, filter: "blur(12px)", duration: 0.35, ease: "power4.in" }, 17.6);
 
         // ---- S7 FINAL (17.7–20)
         tl.fromTo("#s7-line", { scaleX: 0 }, { scaleX: 1, duration: 0.6, ease: "expo.inOut" }, 17.7);
         tl.to("#s7-line", { opacity: 0.15, duration: 0.6 }, 18.3);
-        AJ.slam(tl, "#mark", 17.8, { from: 1.4, duration: 0.5 });
+        MD.slam(tl, "#mark", 17.8, { from: 1.4, duration: 0.5 });
         maskUp(tl, ["#b1", "#b2"], 17.85, { duration: 0.55, stagger: 0.08 });
         tl.fromTo("#services span", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "expo.out", stagger: 0.12 }, 18.2);
-        AJ.arrive(tl, "#follow", 18.5, { y: 12, blur: 6, duration: 0.35 });
-        AJ.chipPop(tl, ["#so-li", "#so-fb", "#so-ig"], 18.6, { stagger: 0.08 });
-        AJ.arrive(tl, "#handle", 18.75, { y: 10, blur: 6, duration: 0.35 });
-        AJ.arrive(tl, "#url", 18.85, { y: 10, blur: 6, duration: 0.35 });
+        MD.arrive(tl, "#follow", 18.5, { y: 12, blur: 6, duration: 0.35 });
+        MD.chipPop(tl, ["#so-li", "#so-fb", "#so-ig"], 18.6, { stagger: 0.08 });
+        MD.arrive(tl, "#handle", 18.75, { y: 10, blur: 6, duration: 0.35 });
+        MD.arrive(tl, "#url", 18.85, { y: 10, blur: 6, duration: 0.35 });
         // Everything is on screen by ~19.2 s; the frame then holds so the handle and URL can be read.
 
         window.__timelines["main"] = tl;

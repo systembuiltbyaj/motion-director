@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Something in aj-motion-style doesn't work
+about: Something in motion-director doesn't work
 labels: bug
 ---
 
@@ -8,7 +8,7 @@ labels: bug
 
 **What happened** (paste the error, or attach a frame/screenshot):
 
-**Doctor output** (`node ~/.claude/skills/aj-motion-style/scripts/doctor.mjs`):
+**Doctor output** (`node ~/.claude/skills/motion-director/scripts/doctor.mjs`):
 
 ```
 paste here

@@ -6,7 +6,7 @@ import { join } from "node:path";
 import { SAMPLE_BRAND, brandTokens, fillTemplate, loadBrand, splitLines, validateBrand } from "../scripts/brand.mjs";
 
 test("splitLines balances two lines and keeps single words whole", () => {
-  assert.deepEqual(splitLines("System Built by AJ"), ["System", "Built by AJ"]);
+  assert.deepEqual(splitLines("Northwind Design Studio"), ["Northwind", "Design Studio"]);
   assert.deepEqual(splitLines("Certified GHL Admin"), ["Certified", "GHL Admin"]);
   assert.deepEqual(splitLines("Acme"), ["Acme", ""]);
   assert.deepEqual(splitLines("  "), ["", ""]);
@@ -39,14 +39,14 @@ test("validateBrand rejects non-objects and non-image logo paths", () => {
 });
 
 test("brandTokens derives lines, initials and credential lines", () => {
-  const tokens = brandTokens(validateBrand({ name: "System Built by AJ", firstName: "AJ", lastName: "Bactad", credentials: ["Certified GHL Admin"] }));
-  assert.equal(tokens.line1, "System");
-  assert.equal(tokens.line2, "Built by AJ");
-  assert.equal(tokens.initials, "AB");
+  const tokens = brandTokens(validateBrand({ name: "Northwind Design Studio", firstName: "Jordan", lastName: "Lee", credentials: ["Certified GHL Admin"] }));
+  assert.equal(tokens.line1, "Northwind");
+  assert.equal(tokens.line2, "Design Studio");
+  assert.equal(tokens.initials, "JL");
   assert.equal(tokens.cred1Line1, "Certified");
   assert.equal(tokens.cred1Line2, "GHL Admin");
   assert.equal(tokens.cred2, "");
-  assert.equal(brandTokens(validateBrand({ name: "X", firstName: "AJ", lastName: "Bactad", initials: "aj" })).initials, "AJ");
+  assert.equal(brandTokens(validateBrand({ name: "X", firstName: "Jordan", lastName: "Lee", initials: "jl" })).initials, "JL");
 });
 
 test("brandTokens does not give a business brand the sample person", () => {

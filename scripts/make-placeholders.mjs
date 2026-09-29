@@ -148,7 +148,7 @@ async function main() {
 
   const { chromium } = loadPlaywright();
   const browser = await chromium.launch(launchOptions({ headless: true }));
-  const scratch = join(tmpdir(), `aj-placeholders-${process.pid}.png`);
+  const scratch = join(tmpdir(), `md-placeholders-${process.pid}.png`);
   try {
     const tab = await browser.newPage();
     // The one PNG in the demos (a tool logo) is rendered from its SVG tile.

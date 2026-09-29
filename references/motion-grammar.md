@@ -1,8 +1,8 @@
 # Motion Grammar
 
 The numbers behind the feel. They were measured from the references (cut detection plus audio
-onsets across 246 s of footage) and tuned for 30/60 fps HyperFrames renders. `AJMotion.EASE` and
-`AJMotion.TIMING` hold the defaults.
+onsets across 246 s of footage) and tuned for 30/60 fps HyperFrames renders. `MotionDirector.EASE` and
+`MotionDirector.TIMING` hold the defaults.
 
 ## Contents
 1. Easing

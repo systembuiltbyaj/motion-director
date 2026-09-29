@@ -4,6 +4,16 @@
 
 First community release.
 
+### Renamed (breaking)
+- The skill is now **motion-director** (was `aj-motion-style`) and carries no personal branding; the
+  author is credited in the README and LICENSE.
+- Runtime: `assets/aj-motion.js` / `.css` → `assets/motion-director.js` / `.css`, global `AJMotion` →
+  `MotionDirector` (demos alias it as `MD`), CSS `--aj-*` / `.aj-*` / `data-aj-flavor` → `--md-*` /
+  `.md-*` / `data-md-flavor`. Compositions built on the old names keep working from their own copy of the
+  runtime; copy the new files in to upgrade.
+- Portfolio Reveal's `reveal` flavor uses neutral defaults (system `#1F5BFF`, impact `#FF5A1F`) via the
+  `--md-system` and `--md-accent` tokens.
+
 ### Added
 - **Brand setup:** `brand.example.json` → `brand.json` (git-ignored). Demos carry `{{brand.*}}` tokens that
   `scaffold.mjs` fills in, so nobody's first render shows someone else's name. A client video gets its own

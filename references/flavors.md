@@ -2,8 +2,8 @@
 
 A flavor is the **palette and texture**: color, surface, glow, grain. Structure, pacing, camera, and
 sound belong to the **layout** (`layouts.md`). Pick the layout first, then the flavor. Each layout
-has a default flavor, but any combination works. Switch with `data-aj-flavor` on the composition
-root (tokens live in `assets/aj-motion.css`), or expose it as a HyperFrames enum variable
+has a default flavor, but any combination works. Switch with `data-md-flavor` on the composition
+root (tokens live in `assets/motion-director.css`), or expose it as a HyperFrames enum variable
 (`data-composition-variables` + `render --variables '{"flavor":"warm-canvas"}'`) when a client wants
 to compare looks.
 
@@ -20,12 +20,15 @@ to compare looks.
 | Energy | Medium-high | High, fast cuts in montage | Calm, fluid | High, punchy |
 | Best for | AI, SaaS, fintech, launches, **automation and systems work** | Brand systems, agencies, bold identities | AI creative tools, product demos, wellness, premium services | Agencies, services, events, social promos |
 
-**Default for your own brand work:** Glow Dark, with the `accent` from `brand.json` swapped in if it's set.
+**When `brand.json` sets an accent:** Glow Dark with that accent swapped in.
+
+Portfolio Reveal ships its own `reveal` flavor (defined in its demo, see layouts.md §7): the one
+exception with two color roles, a quiet **system** color for structure and an **impact** accent.
 
 ## Choosing
 
 1. **Client brand exists?** Keep the flavor structure that matches their base (dark or light) and set
-   `--aj-accent` to their primary. Pick `--aj-on-accent` by contrast (≥ 4.5:1 against the accent).
+   `--md-accent` to their primary. Pick `--md-on-accent` by contrast (≥ 4.5:1 against the accent).
    If the brand has two colors, the second becomes an orb tint, never a second accent.
 2. **No brand:** pick by audience and energy (table above) and state the choice.
 3. **Mixing:** don't mix flavors within one video. The exception is a single "world change" beat
@@ -36,18 +39,18 @@ to compare looks.
 Override only these tokens in the project's `frame.md` and CSS:
 
 ```css
-[data-aj-flavor="client-x"] {
-  --aj-bg: #...;          /* base: dark tinted toward the accent, or a warm or cool light neutral */
-  --aj-bg-2: #...;        /* 1 step lighter/darker than bg, for the atmosphere gradient */
-  --aj-surface: ...;      /* card fill */
-  --aj-surface-border: ...;
-  --aj-fg: #...;          /* ink */
-  --aj-muted: #...;       /* ~55% contrast ink */
-  --aj-accent: #...;      /* the ONE color */
-  --aj-on-accent: #...;   /* text on accent */
-  --aj-orb-1: ...; --aj-orb-2: ...; --aj-orb-3: ...;  /* accent-adjacent, 15–55% alpha */
-  --aj-glow-strength: 0 | 1;   /* 1 on dark bases only */
-  --aj-grain-opacity: 0–0.25;  /* light and warm bases */
+[data-md-flavor="client-x"] {
+  --md-bg: #...;          /* base: dark tinted toward the accent, or a warm or cool light neutral */
+  --md-bg-2: #...;        /* 1 step lighter/darker than bg, for the atmosphere gradient */
+  --md-surface: ...;      /* card fill */
+  --md-surface-border: ...;
+  --md-fg: #...;          /* ink */
+  --md-muted: #...;       /* ~55% contrast ink */
+  --md-accent: #...;      /* the ONE color */
+  --md-on-accent: #...;   /* text on accent */
+  --md-orb-1: ...; --md-orb-2: ...; --md-orb-3: ...;  /* accent-adjacent, 15–55% alpha */
+  --md-glow-strength: 0 | 1;   /* 1 on dark bases only */
+  --md-grain-opacity: 0–0.25;  /* light and warm bases */
 }
 ```
 

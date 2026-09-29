@@ -11,9 +11,9 @@ export const SAMPLE_BRAND = Object.freeze({
   name: "Your Studio",
   firstName: "Alex",
   lastName: "Rivera",
-  role: "Automation & Web Systems Builder",
-  tagline: "Operations lead, turned systems builder.",
-  credentials: ["Certified Builder", "+ AI Systems Specialist"],
+  role: "Designer & Developer",
+  tagline: "I design the front and build what runs behind it.",
+  credentials: ["Certified Developer", "+ Systems Specialist"],
   url: "example.com",
   handle: "@yourhandle",
 });
@@ -49,14 +49,14 @@ export function validateBrand(input) {
     else out[key] = input[key];
   }
   if (input.accent !== undefined) {
-    if (typeof input.accent !== "string" || !/^#[0-9a-f]{6}$/i.test(input.accent)) errors.push("accent must be a hex colour like #F7CB1E");
+    if (typeof input.accent !== "string" || !/^#[0-9a-f]{6}$/i.test(input.accent)) errors.push("accent must be a hex colour like #FF5A1F");
     else out.accent = input.accent;
   }
   if (errors.length) throw new Error(`brand.json is invalid:\n  - ${errors.join("\n  - ")}`);
   return out;
 }
 
-/** Splits a phrase into two lines with the most even lengths ("System Built by AJ" → "System" / "Built by AJ"). */
+/** Splits a phrase into two lines with the most even lengths ("Northwind Design Studio" → "Northwind" / "Design Studio"). */
 export function splitLines(text) {
   const words = String(text).trim().split(/\s+/).filter(Boolean);
   if (words.length < 2) return [words[0] ?? "", ""];

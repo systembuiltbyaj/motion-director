@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Preflight for aj-motion-style: checks everything the skill needs and prints the fix for anything missing.
+// Preflight for motion-director: checks everything the skill needs and prints the fix for anything missing.
 // Required items fail the run (exit 1); optional ones only unlock extras (voice sync, site capture).
 // Chrome detection is delegated to `hyperframes doctor`, which owns the render browser.
 //
@@ -69,7 +69,7 @@ function checks() {
   const skillsDir = join(homedir(), ".claude", "skills");
   const hyperframesSkill = existsSync(join(skillsDir, "hyperframes", "SKILL.md"));
   add(true, "HyperFrames skills", hyperframesSkill, hyperframesSkill ? "~/.claude/skills/hyperframes" : "not installed", "npx skills add heygen-com/hyperframes --all");
-  const expected = join(skillsDir, "aj-motion-style");
+  const expected = join(skillsDir, "motion-director");
   add(true, "Skill location", resolve(skillRoot) === resolve(expected), skillRoot, `Clone into ${expected} so Claude Code finds it.`);
 
   const brandPath = join(skillRoot, "brand.json");
@@ -106,7 +106,7 @@ function main() {
     console.log(JSON.stringify({ ...result, checks: results }, null, 2));
     process.exit(result.code);
   }
-  console.log("aj-motion-style doctor\n");
+  console.log("motion-director doctor\n");
   for (const check of results) {
     const mark = check.ok ? "ok  " : check.required ? "FAIL" : "opt ";
     console.log(`  ${mark}  ${check.name.padEnd(26)} ${check.detail}`);

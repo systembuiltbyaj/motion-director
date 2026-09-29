@@ -17,14 +17,14 @@ const SCAFFOLD = join(ROOT, "scripts/scaffold.mjs");
 test("mediaReferences finds src, url() and mask references once each, sorted", () => {
   const html = `
     <img src="assets/media/w-convert.webp" />
-    <div style="mask: url('assets/media/aj-mark-dark.webp') center"></div>
+    <div style="mask: url('assets/media/brand-mark.webp') center"></div>
     <img src="assets/media/w-convert.webp" />
     <img src="assets/media/gohighlevel.png" />`;
-  assert.deepEqual(mediaReferences(html), ["aj-mark-dark.webp", "gohighlevel.png", "w-convert.webp"]);
+  assert.deepEqual(mediaReferences(html), ["brand-mark.webp", "gohighlevel.png", "w-convert.webp"]);
 });
 
 test("mediaReferences ignores non-media assets", () => {
-  assert.deepEqual(mediaReferences('<script src="assets/aj-motion.js"></script>'), []);
+  assert.deepEqual(mediaReferences('<script src="assets/motion-director.js"></script>'), []);
 });
 
 test("parseTargets splits name=url pairs and skips flags", () => {

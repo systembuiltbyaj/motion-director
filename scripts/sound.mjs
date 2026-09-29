@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Sound engine for aj-motion-style: synthesizes a beat-locked music bed and motion-synced SFX, places
+// Sound engine for motion-director: synthesizes a beat-locked music bed and motion-synced SFX, places
 // voiceover clips with ducking, and writes one stereo 16-bit WAV per composition. Zero dependencies
 // and fully deterministic (seeded noise), so the same cue sheet always yields the same bytes.
 //

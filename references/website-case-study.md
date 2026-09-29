@@ -74,7 +74,7 @@ site in a bento or stack → end on the live homepage footage → question + clo
 - Initial hidden states go in `gsap.set(...)`, not `tl.set(..., 0)` (a set at 0 does not render frame 0).
 - Several `fromTo` on the same elements need a `gsap.set` baseline plus `to`.
 - `drawPath` wants a selector string or elements, not an array of selector strings.
-- Typed text wraps at spaces (`.aj-ch` is pre-wrap); set `white-space: pre` for single-line giant type.
+- Typed text wraps at spaces (`.md-ch` is pre-wrap); set `white-space: pre` for single-line giant type.
 - Tween transforms (`x`, `y`, `scale`), not `left`/`top`, or motion snaps to whole pixels.
 - `check` flags transparent-fill outline text as unpainted; give it a faint fill.
 - Tall serif display fonts trigger `content_overlap` false positives; verify visually.
