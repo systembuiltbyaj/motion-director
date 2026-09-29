@@ -10,7 +10,7 @@
 //
 // --sample-media skips the private _media folder, so the result is exactly what a fresh install produces.
 //
-// Usage: node scaffold.mjs <project-dir> [--demo <name>] [--aspect 16:9|9:16] [--brand <file>] [--sample-media] [--dry-run]
+// Usage: node scaffold.mjs <project-dir> [--demo <name>] [--aspect 16:9|9:16|4:5|1:1] [--brand <file>] [--sample-media] [--dry-run]
 //        node scaffold.mjs --list
 import { execFileSync } from "node:child_process";
 import { cp, mkdir, readdir, readFile, writeFile, access, stat } from "node:fs/promises";
@@ -20,7 +20,8 @@ import { brandTokens, fillTemplate, loadBrand } from "./brand.mjs";
 
 const skillRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const demosDir = join(skillRoot, "assets", "demos");
-const ASPECTS = { "16:9": "", "9:16": "-9x16", "4:5": "-4x5" };
+const ASPECTS = { "16:9": "", "9:16": "-9x16", "4:5": "-4x5", "1:1": "-1x1" };
+const ASPECT_SUFFIX = new RegExp(`^(.*?)(${Object.values(ASPECTS).filter(Boolean).join("|")})?$`);
 const BRAND_MEDIA = { logo: "logo-mark.webp", portrait: "portrait-cutout.webp" };
 
 async function exists(path) {
@@ -36,15 +37,17 @@ async function exists(path) {
 export function groupDemos(folderNames) {
   const groups = {};
   for (const name of folderNames.filter((n) => !n.startsWith("_")).sort()) {
-    const match = /^(.*?)(-9x16|-4x5)?$/.exec(name);
+    const match = ASPECT_SUFFIX.exec(name);
     const aspect = Object.entries(ASPECTS).find(([, suffix]) => suffix === (match[2] ?? ""))[0];
     (groups[match[1]] ??= []).push(aspect);
   }
   return groups;
 }
 
-/** Folder name for a demo at an aspect, or a helpful error. */
-export function demoFolder(groups, demo, aspect = "16:9") {
+/** Folder name for a demo at an aspect, or a helpful error. No aspect: 16:9, or the demo's only aspect. */
+export function demoFolder(groups, demo, requested) {
+  const only = groups[demo]?.length === 1 ? groups[demo][0] : undefined;
+  const aspect = requested ?? (groups[demo]?.includes("16:9") ? "16:9" : only ?? "16:9");
   if (!(aspect in ASPECTS)) throw new Error(`unknown aspect "${aspect}". Use one of: ${Object.keys(ASPECTS).join(", ")}`);
   if (!groups[demo]) throw new Error(`unknown demo "${demo}". Available: ${Object.keys(groups).join(", ")}`);
   if (!groups[demo].includes(aspect)) {
@@ -111,7 +114,7 @@ async function main() {
     return;
   }
   if (!opts.target) {
-    console.error("Usage: node scaffold.mjs <project-dir> [--demo <name>] [--aspect 16:9|9:16] [--brand <file>] [--sample-media] [--dry-run] | --list");
+    console.error("Usage: node scaffold.mjs <project-dir> [--demo <name>] [--aspect 16:9|9:16|4:5|1:1] [--brand <file>] [--sample-media] [--dry-run] | --list");
     process.exit(1);
   }
   if (!opts.demo && opts.aspect) throw new Error("--aspect only applies together with --demo");

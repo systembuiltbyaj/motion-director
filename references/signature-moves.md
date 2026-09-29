@@ -146,3 +146,38 @@ Each is used in a demo under `assets/demos/`; copy the snippet from there.
 | **Canvas collapse to orb** | AI Canvas | `clipPath: circle(80%) → circle(3%)` + background to accent, then fade |
 | **Top split + typed strip** | Agency Split | `wipeIn` panels from opposite sides, caps `slam` per line, `typeOn` below, panels push up |
 | **Hopping highlight box** | Agency Split | an outlined box tweening `x` tile to tile on half-beats over a logo row |
+
+## UI, transitions and craft moves
+
+Built from a study of prompted AI motion films (UI morph loops, stage product films, capability reels).
+All are in `assets/motion-director.js`; see `ui-morph-loop` and `stage-film` for working use.
+
+| Move | Call | Use for |
+|---|---|---|
+| **One-shape morph** | `morphTo(tl, shape, t, { width, height, borderRadius, backgroundColor })` | One UI element becoming the next state, never cut. Center the shape with `xPercent/yPercent: -50` |
+| **Blur content swap** | `contentSwap(tl, "#old", "#new", t)` | The content inside a morphing container. Stack slots with `.md-swap-slot` |
+| **Cursor** | `cursor(tl, "#cursor", t, { x, y, click: true })` · `{ drag: true }` | A visible pointer that causes every UI change. `click` returns the press time: start the UI reaction on it |
+| **Too-fast list landing** | `listSpin(tl, "#list", t, { land, laps: 3 })` | A blur of options that slows onto the one that matters; pop a "?" or highlight 0.2 s after it lands |
+| **Strike → underline** | `strikeToUnderline(tl, "#strike", t, { drop })` | "Not X. Just Y.": the strike through X drops to underline Y. Measure `drop` between the two words |
+| **Word portal** | `textPortal(tl, "#mask-text", t, { origin, overlay })` | The outgoing word becomes the window into the next scene, then the camera dives through a letter |
+| **Micro-breath** | `breathe(tl, "#end", t)` | The final hold, so an end card never reads as a frozen frame |
+| **HUD frame** | `hudFrame(tl, "#hud", 0, total, { bpm, chapters, label })` | Timecode, BPM, chapter counter, corner brackets (layouts.md §10) |
+| **Selection box** | `selectBox(tl, "#el", "#box", t)` | A Figma-style frame with handles and W × H around a real element |
+| **Ease graph** | `easeGraph(tl, "#svg", t, { ease: "expo.out" })` | The curve being used, drawn, with a dot riding it |
+
+**Word portal setup.** A full-frame SVG overlay filled with the outgoing scene's color, masked so the word
+is cut out of it (`<mask><rect fill="#fff"/><text fill="#000">LIVE.</text></mask>`). The next scene sits
+underneath, already visible through the letters. Scale the `<text>` about a point **inside a letter's
+stroke** (measure it with `text.getExtentOfChar(i)`; a stem is about a quarter of the glyph's width in).
+An origin in a counter or a gap fills the frame with the overlay instead.
+
+**Gotchas found building these:**
+- **One `svgOrigin` per SVG element.** Two tweens scaling the same element about different origins
+  shift each other (GSAP smooths the origin change). Put the entrance on a wrapper `<g>`.
+- **A slot visible on frame 0 must not be pre-hidden.** `contentSwap` enters with `immediateRender:
+  false`, so a loop's first state stays visible until its swap comes round again. Hide other slots in CSS.
+- **Transforms, not layout properties,** for anything that moves smoothly (a slider knob uses `x`, a
+  fill uses `scaleX`). `left`/`width` snap to whole pixels and stutter frame by frame; lint flags them.
+  A morphing container's `width/height` is the exception, because the content must reflow.
+- **Set starting transforms with `gsap.set`, not CSS,** on anything GSAP later animates (lint:
+  `gsap_css_transform_conflict`).

@@ -1,9 +1,9 @@
 # Pre-Render Audit
 
 Run this before every draft render, then run `npx hyperframes lint` and `npx hyperframes check`
-(0 errors). Snapshot the beats with `npx hyperframes snapshot` or by extracting frames from a draft
-render (`ffmpeg -ss <t> -i draft.mp4 -frames:v 1 f.png`) and **look at them**. Most style failures
-only show up in pixels.
+(0 errors). After the draft render, make a beat sheet and **look at it**:
+`node scripts/beat-frames.mjs renders/draft.mp4 --bpm <cue sheet bpm>` (one frame per beat, tiled). Most
+style failures only show up in pixels.
 
 ## Style
 
@@ -26,6 +26,12 @@ only show up in pixels.
 - [ ] **Transition vocabulary.** ≤ 4 transition types, repeated deliberately.
 - [ ] **Motif** appears at the start and at the lockup.
 - [ ] Scene starts, flash cards, and stat punches sit on the beat grid (`snapToBeat`).
+- [ ] **Clean hand-offs.** An outgoing title leaves before an incoming one takes the same space; no
+      arbitrary full-frame crossfades (a transition should move something, not just dissolve).
+- [ ] **Transitions show something.** Where possible a transition demonstrates the product or the idea
+      (a morph, a portal, a strike becoming an underline) instead of only replacing one card with another.
+- [ ] **Loops loop.** A film meant to loop ends on its first frame (first vs. last frame PSNR ≥ 40 dB).
+- [ ] **Nothing on the banned list** in `frame.md` made it in.
 
 ## Sound
 
@@ -52,6 +58,9 @@ only show up in pixels.
 - [ ] Decorative overflow (orbs, zooming stats) carries `data-layout-allow-overflow`.
 
 ## Content
+
+- [ ] **Works muted.** Watch the beat sheet with no sound: the story still reads from type and picture
+      alone (most feeds autoplay muted). Voice adds; it never carries a beat by itself.
 
 - [ ] Every stat, logo, and client name is real and approved.
 - [ ] The CTA is a question or a direct action, with its keyword highlighted.

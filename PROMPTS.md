@@ -25,6 +25,18 @@ Brand: [mine / my client's: name, color, logo path]. Voiceover: [yes / no].
 Only use numbers I give you. Don't invent stats, clients or testimonials.
 ```
 
+**The detailed version**, for when you know exactly what you want. Sections you leave out are Claude's call.
+
+```
+<inputs>      What I'm giving you: [files, URL, brand color, a song and its BPM]. Ask me for anything missing.
+<direction>   The feel: [e.g. "Dribbble-level UI motion, one clean font, springs with a tiny overshoot at most"].
+              Layout: [a layout name, or "you pick and tell me why"].
+<structure>   The beats, in order: [hook → problem → product → proof → call to action], [length], [BPM].
+<banned>      Never: [e.g. bouncy easing, glows, stock footage, a second accent color, dead beats].
+<verify>      Before the final render: show me one frame per beat, confirm it works muted,
+              and [for loops] that the last frame matches the first.
+```
+
 ## 3. By what you have
 
 **A website URL**
@@ -86,8 +98,12 @@ Say the layout by name if you already know which one you want:
 | "in the **AI Canvas** layout" | AI product demo: a prompt types, an agent plans, a node canvas |
 | "in the **Brand System** layout" | Brand-guideline film: tiles slam on the beat, type and color |
 | "in the **Portfolio Reveal** layout" | Personal brand reel: the work, the system behind it, then you |
+| "in the **UI Morph Loop** layout" | One UI element morphing through states, cursor-driven, square, loops seamlessly |
+| "in the **Stage Film** layout" | Calm premium product film on a rounded stage, one idea per second |
+| "add the **HUD frame**" | Timecode, BPM and chapter counter over any layout: a craft or capability reel |
 
-Launch Hype and Agency Split have ready-made 9:16 versions; the others get re-laid-out for vertical.
+Launch Hype and Agency Split have ready-made 9:16 versions and UI Morph Loop is square; the others get
+re-laid-out for vertical.
 
 ## 5. After the first draft
 

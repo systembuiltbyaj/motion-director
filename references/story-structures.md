@@ -52,12 +52,12 @@ Openers differ by layout (full structures in `layouts.md`):
 
 ## Aspect ratios
 
-| | 16:9 (1920×1080) | 9:16 (1080×1920) | 4:5 (1080×1350) |
-|---|---|---|---|
-| Sentence size | 80–100 px | 84–110 px (it's relative to the short side) | 80–96 px |
-| Split layout | side by side | stacked: panel on top, media below | stacked or 60/40 |
-| Tilted UI | right 45% | centered, below the copy | centered |
-| Safe margin | 8% x / 8% y | 8% x / 12% y (UI overlays) | 8% x / 10% y |
-| Hero word | 180–300 px | 160–240 px, may wrap onto 2 lines | 160–240 px |
+| | 16:9 (1920×1080) | 9:16 (1080×1920) | 4:5 (1080×1350) | 1:1 (1080×1080) |
+|---|---|---|---|---|
+| Sentence size | 80–100 px | 84–110 px (it's relative to the short side) | 80–96 px | 76–92 px |
+| Split layout | side by side | stacked: panel on top, media below | stacked or 60/40 | stacked, or one centered object |
+| Tilted UI | right 45% | centered, below the copy | centered | centered, camera fills the frame with it |
+| Safe margin | 8% x / 8% y | 8% x / 12% y (UI overlays) | 8% x / 10% y | 8% x / 8% y |
+| Hero word | 180–300 px | 160–240 px, may wrap onto 2 lines | 160–240 px | 150–220 px |
 
 Keep the same beats and moves across aspects. Re-layout, don't re-time.

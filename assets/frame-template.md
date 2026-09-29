@@ -111,6 +111,12 @@ accent pill. Hero words are uppercase and tight. Stats use tabular numerals in a
 - Proof beats pair a line (left ~55%) with a tilted UI card (right ~45%).
 - Transitions limited to the `motion.transitions` list above.
 
+## Banned
+
+What this film must not do, checked in the audit. Start from the layout's list and add the brand's:
+<e.g. bouncy or elastic easing · glows on UI chrome · arbitrary crossfades · stock footage · a second
+accent color · dead beats · anything that reads as a template>
+
 ## Approved Entities
 
 <Logos, product names, client names, screenshots the client approved.>

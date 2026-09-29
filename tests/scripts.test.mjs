@@ -78,7 +78,15 @@ test("demoFolder resolves aspects and explains what is missing", () => {
   assert.equal(demoFolder(groups, "launch-hype", "9:16"), "launch-hype-9x16");
   assert.throws(() => demoFolder(groups, "brand-system", "9:16"), /no 9:16 version yet \(ready-made 9:16: launch-hype\)/);
   assert.throws(() => demoFolder(groups, "nope"), /unknown demo/);
-  assert.throws(() => demoFolder(groups, "launch-hype", "1:1"), /unknown aspect/);
+  assert.throws(() => demoFolder(groups, "launch-hype", "3:2"), /unknown aspect/);
+});
+
+test("demoFolder defaults to 16:9, or to a demo's only aspect", () => {
+  const groups = { "ui-morph-loop": ["1:1"], "launch-hype": ["16:9", "9:16"] };
+  assert.deepEqual(groupDemos(["ui-morph-loop-1x1", "launch-hype", "launch-hype-9x16"]), groups);
+  assert.equal(demoFolder(groups, "ui-morph-loop"), "ui-morph-loop-1x1");
+  assert.equal(demoFolder(groups, "launch-hype"), "launch-hype");
+  assert.throws(() => demoFolder(groups, "ui-morph-loop", "16:9"), /no 16:9 version yet/);
 });
 
 test("parseArgs reads value flags and the target in any order", () => {

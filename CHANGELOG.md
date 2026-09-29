@@ -11,6 +11,20 @@
 - `voice.mjs --list-voices`, `--dry-run` reports characters that would be sent to a paid provider, and
   `doctor.mjs` shows which providers are configured.
 - Consent, licence, cost and hardware checks for cloned voices in `references/sound-design.md` §5.
+- **Two new layouts with demos.** **UI Morph Loop** (1:1, 16 s, loops seamlessly): one element morphs
+  through ten UI states, driven by a visible cursor, with the camera re-framing each state. **Stage Film**
+  (16:9): a calm product film on a rounded stage, with a persistent progress rail, a too-fast list landing,
+  a strike that becomes the underline, a brand-color flood and a word portal.
+- **HUD frame add-on** for any layout: timecode, BPM, chapter counter and corner brackets, plus
+  `selectBox` (Figma-style selection with W × H) and `easeGraph` (the curve in use, with a riding dot).
+- **New moves:** `morphTo`, `contentSwap`, `cursor` (click / drag), `textPortal`, `listSpin`,
+  `strikeToUnderline`, `breathe`, and `EASE.spring` (tiny overshoot at most). Pure planners
+  `formatTimecode`, `planSpin`, `planEaseCurve` are unit-tested.
+- `scripts/beat-frames.mjs`: one frame per beat of a render, tiled into a contact sheet.
+- The audit checks that a film works muted, hands off titles cleanly, loops when it should (first vs.
+  last frame PSNR ≥ 40 dB) and avoids its banned list; `frame.md` gets a Banned section and PROMPTS.md a
+  structured brief (inputs, direction, structure, banned, verify).
+- `scaffold.mjs` supports 1:1 demos (`-1x1`), and picks a demo's only aspect when `--aspect` is left out.
 
 ### Changed
 - Each voice line's cache is now `<id>.json` (the full request) instead of `<id>.txt` (text only), so a
