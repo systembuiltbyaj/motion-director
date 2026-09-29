@@ -3,9 +3,10 @@
 Every reference is scored: music plus sound effects synced to the motion, and in two of five, a
 voiceover. Sound is half of why the motion feels premium, so no piece ships silent.
 
-Everything here is free and local: SFX and music are synthesized by `scripts/sound.mjs` (zero
+By default everything is free and local: SFX and music are synthesized by `scripts/sound.mjs` (zero
 dependencies, deterministic), and the voice comes from HyperFrames' bundled Kokoro TTS via
-`scripts/voice.mjs`.
+`scripts/voice.mjs`. The same script can voice with ElevenLabs or any OpenAI-compatible speech server
+instead, including a cloned voice (§5).
 
 ## Contents
 1. Workflow
@@ -88,7 +89,7 @@ grid used for the visuals.
 ## 5. Voiceover
 
 - `voice.mjs` defaults to Kokoro `am_michael` at speed 0.95–1.0. Other voices: `am_adam`,
-  `bm_george`, `af_heart`, `af_nova`, `bf_emma` (`npx hyperframes tts --list`). State the pick and
+  `bm_george`, `af_heart`, `af_nova`, `bf_emma` (`voice.mjs --list-voices`). State the pick and
   offer to swap.
 - Write for the ear: short phrases, ≤ 12 words per line, one idea per line. The screen shows the
   keyword phrase, not the full sentence.
@@ -99,8 +100,41 @@ grid used for the visuals.
 - **One clip per slammed word.** A spoken list ("trigger, route, automate") comes out ~0.4 s apart,
   faster than slams on a 2-beat grid. Generate each word as its own line and place each on its slam.
 - Under a voice, scale all SFX gains by ~0.8 and duck music −9 dB.
-- The user can replace Kokoro with their own recording or an ElevenLabs voice later. Keep the same file names
-  and re-run `sound.mjs`.
+- A human recording can replace any line: keep the file name and re-run `sound.mjs`.
+
+### Voice providers
+
+`"provider"` in `vo.json` picks the engine. File names stay the same across providers, so `cues.json`
+never changes, and every line is level-matched to the same voiced loudness (−20.5 dBFS; `"targetDb"`
+changes it, `"normalize": false` turns it off). Only lines whose request changed are re-voiced, and
+`--dry-run` shows what would be sent without calling anything.
+
+| Provider | Use when | Setup (`.env`, see `.env.example`) | Controls in `vo.json` |
+|---|---|---|---|
+| `kokoro` (default) | Drafts, and anything that must stay free and offline | none | `voice`, `speed` |
+| `elevenlabs` | A premium stock voice or the user's own ElevenLabs voice clone | `ELEVENLABS_API_KEY`, `ELEVENLABS_BASE_URL` | `voice` (ID), `model`, `settings` (`stability`, `similarity_boost`, `style`, `use_speaker_boost`) |
+| `openai-compatible` | A local cloning server (VoiceStudio, a Chatterbox or VoxCPM2 wrapper) or OpenAI | `VOICE_API_BASE_URL`, `VOICE_API_KEY` if required | `model`, `voice`, `speed`, `extra` (passed through: `seed`, `instruct`, `language` …), `timeoutSec` |
+
+```json
+{ "provider": "elevenlabs", "voice": "<voice id>", "settings": { "stability": 0.35, "style": 0.5 },
+  "lines": [{ "id": "l1", "text": "..." }] }
+```
+
+Any of these can also be set per line (`"voice"`, `"settings"`, `"extra"`…) to vary one read.
+`voice.mjs --list-voices <vo.json>` lists what the spec's provider offers.
+
+**Before using a cloned or paid voice:**
+- **Consent.** Clone only a voice whose owner gave written permission, which in practice means the user's
+  own voice. Never clone a client, a public figure or a voice from found audio.
+- **Licence of the output.** Check that the plan or model allows commercial use before client work.
+  ElevenLabs depends on the plan. For local models, check the weights licence: VoiceStudio's default
+  OmniVoice weights are non-commercial (CC-BY-NC), Chatterbox is MIT, VoxCPM2 is Apache-2.0. Say which
+  applies when you hand over the film.
+- **Cost.** ElevenLabs bills per character: run `--dry-run` first and state the count.
+- **Hardware.** Local cloning servers want an NVIDIA GPU with about 6 GB+ of VRAM; on less they fall back
+  to CPU and take minutes per line (raise `timeoutSec`).
+- A masked voice under music is a mix problem, not a level problem: raise that clip's `gain` in `cues.json`
+  and check it with `transcribe.py` rather than changing `targetDb` for every line.
 
 ## 6. Levels
 

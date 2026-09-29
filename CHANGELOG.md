@@ -1,5 +1,22 @@
 # Changelog
 
+## Unreleased
+
+### Added
+- **Voice providers.** `voice.mjs` takes `"provider"` in `vo.json`: `kokoro` (default, unchanged), `elevenlabs`
+  (stock or cloned voices) or `openai-compatible` (any `POST /audio/speech` server: VoiceStudio, a Chatterbox or
+  VoxCPM2 wrapper, OpenAI). Keys come from the environment or `.env` (`.env.example`), never from `vo.json`.
+- Every generated line is level-matched to one voiced loudness (−20.5 dBFS, measured from Kokoro), so
+  switching provider doesn't change the mix. `"normalize": false` or `"targetDb"` to change it.
+- `voice.mjs --list-voices`, `--dry-run` reports characters that would be sent to a paid provider, and
+  `doctor.mjs` shows which providers are configured.
+- Consent, licence, cost and hardware checks for cloned voices in `references/sound-design.md` §5.
+
+### Changed
+- Each voice line's cache is now `<id>.json` (the full request) instead of `<id>.txt` (text only), so a
+  change of provider, voice or settings re-voices the line. Old `.txt` files are removed on the next run;
+  Kokoro lines regenerate once, for free.
+
 ## 1.0.0 — unreleased
 
 First community release.

@@ -3,8 +3,8 @@
 A [Claude Code](https://claude.com/claude-code) skill that gives Claude a complete motion-design system
 for [HyperFrames](https://hyperframes.heygen.com) videos: six presentation layouts, a shared
 kinetic-typography language, color flavors, deterministic GSAP helpers, and a free local sound engine
-(music bed, motion-synced sound effects, and voiceover). No API keys, no subscriptions: everything renders
-on your machine.
+(music bed, motion-synced sound effects, and voiceover). No API keys or subscriptions needed: everything
+renders on your machine, with ElevenLabs or your own cloned voice as optional voice upgrades.
 
 Distilled from five reference motion films plus a personal portfolio reel. Instead of re-deriving a
 style for every video, Claude starts from this system: pick a layout, pick a flavor, drop in real
@@ -94,8 +94,10 @@ publish.
   can appear on screen, and its colors (with a suggested accent).
 - `scripts/sound.mjs`: synthesizes a beat-locked music bed plus 10 SFX types from a cue sheet and
   ducks music under voice. Zero dependencies, deterministic.
-- `scripts/voice.mjs`: voiceover with HyperFrames' bundled Kokoro TTS (free, offline). Re-voices a line
-  automatically when its text changes.
+- `scripts/voice.mjs`: voiceover, one WAV per line. Kokoro via HyperFrames by default (free, offline), or
+  set `"provider"` in `vo.json` to `elevenlabs` or `openai-compatible` (VoiceStudio, a Chatterbox or VoxCPM2
+  server, OpenAI) for a premium or cloned voice; keys go in `.env` (see `.env.example`). Every line is
+  level-matched, and a line is re-voiced only when its request changes.
 - `scripts/transcribe.py`: word timings for sync, plus a check that every voice line is audible
   in the final mix.
 - `scripts/capture-site.mjs`: full-page captures of live funnels and websites for browser-frame shots.
